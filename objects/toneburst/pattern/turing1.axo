@@ -8,7 +8,7 @@
         <inlets>
             <bool32.rising name="trig" description="Trigger Pulse" />
             <bool32.rising name="r" description="Reset Pulse" />
-            <bool32.rising name="loadseed" description="Load New Seed" />
+            <bool32.rising name="l" description="Load New Seed" />
         </inlets>
         <outlets>
             <frac32.bipolar name="pattern" description="Pattern Out (Bipolar)" />
@@ -27,64 +27,15 @@ int32_t counter = 0;
 int32_t offset = 0;
 int ntrig = 0;
 int rtrig = 0;
-int32_t bindex;
-int32_t pindex;
-int32_t outval;
-int ppos = 0;
+int ltrig = 0;
+int8_t currentval = 1;
+int32_t outval = 0;
+bool outtrig = false;
 int init = 1;
 
 ///////////////////////
 // Utility Functions //
 ///////////////////////
-
-// Return Max of 2 values
-int32_t max(int32_t minval, int32_t val) {
-    return(val >= minval) ? val : minval;
-}
-
-// Return Min of 2 values
-int32_t min(int32_t maxval, int32_t val) {
-    return(val <= maxval) ? val : maxval;
-}
-
-// Calculate pattern length based on param_length
-int32_t calculatelength(int32_t len) {
-    // Max 32 steps
-    return max(minlength, len >> 22);
-}
-
-// Calculate step-offset value based on param_offset
-int32_t calculateoffset(int32_t offs, int32_t maxoffs) {
-    // Max 32 steps
-    return min(offs >> 22, maxoffs);
-}
-
-/////////////////////////////////////////////////////////////////////////
-// Seeded Random Number Generator ///////////////////////////////////////
-// http://blog.embedded-office.com/en/blog-artikel/items/random-1.html //
-// (cryptographically rubbish, but should be fine for our porpoises) ////
-/////////////////////////////////////////////////////////////////////////
-
-int32_t a = 5;
-int32_t b = 12345;
-int32_t m = 511;
-int32_t rstate = 1;
-
-int32_t updatestate() {
-	rstate = ((rstate * a + b) % m) - 255;
-	return rstate;
-}
-
-//////////////////////////
-// Update Pattern Array //
-//////////////////////////
-
-void newpattern(int32_t a, int32_t b) {
-	rstate = a * 64 + b;
-	for(int i = 0; i < 32; i++) {
-		pattern[i] = updatestate();
-	}
-}
 
         ]]>
         </code.declaration>
@@ -95,11 +46,7 @@ void newpattern(int32_t a, int32_t b) {
 ///////////////////////////////
 
 if (init == 1) {
-    newpattern(param_bank, param_index);
-    bindex = param_bank;
-    pindex = param_index;
-    length = calculatelength(param_length);
-    offset = calculateoffset(param_offset, length);
+
 	init = 0;
 }
 
@@ -119,26 +66,15 @@ if ((inlet_r > 0) && !rtrig) {
 ///////////////////////////////
 
 if ((inlet_trig > 0) && !ntrig) {
+
     // Check for changes to parameters
     // and regenerate array if params changed
-	if ((param_bank != bindex) || (param_index != pindex)) {
-		newpattern(param_bank, param_index);
-		bindex = param_bank;
-		pindex = param_index;
-	}
-    // Calculate length and offset
-    length = calculatelength(param_length);
-    offset = calculateoffset(param_offset, length);
+	if (param_seed != seed) {
 
-    // Lookup position in pattern table
-    ppos = (counter + offset) % length;
+	}
 
     // Set output value until next trigger
-    outval = pattern[ppos];
-
-    // Set output trigger for step (read from pattern table backwards)
-    if((pattern[length - ppos] + 255) < (param_trigthresh >> 18))
-        outtrig = true;
+    outval = counter;
 
     // Update counter
     counter++;
@@ -154,12 +90,6 @@ if ((inlet_trig > 0) && !ntrig) {
 ////////////////////
 
 outlet_pattern = outval << 19;
-
-////////////////////
-// Trigger Output //
-////////////////////
-
-outlet_trigger = outtrig;
 
     ]]>
     </code.krate>
