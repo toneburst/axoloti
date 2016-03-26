@@ -1,45 +1,65 @@
 <objdefs appVersion="1.0.8">
-    <obj.normal id="turing1" uuid="f4aa3eb926415b6fc796e576dde554a273a022ac" sha="dd90350d5d9fb8162e8bc1ce69ec962871607f0c">
-        <upgradeSha>6a81606bcc6a29c922835f893193c4ff3d14c5a</upgradeSha>
-        <sDescription>Shift-register pattern generator, based on Music Thing Turing machine Eurorack module</sDescription>
-        <author>toneburst</author>
-        <license>BSD</license>
-        <helpPatch>nmpgen3.axh</helpPatch>
-        <inlets>
-            <bool32.rising name="trig" description="Trigger Pulse" />
-            <bool32.rising name="r" description="Reset Pulse" />
-            <bool32.rising name="l" description="Load New Seed" />
-        </inlets>
-        <outlets>
-            <frac32.bipolar name="pattern" description="Pattern Out (Bipolar)" />
-            <bool32 name="trigger" description="Trigger Pattern (Bool)"/>
-        </outlets>
-        <displays />
-        <params>
-            <frac32.u.map name="seed" description="Seed Number" />
-            <frac32.u.map name="offset" description="Pattern Offset" />
-        </params>
-        <attribs>
-        </attribs>
-        <code.declaration><![CDATA[
+   <obj.normal id="turing1" uuid="f4aa3eb926415b6fc796e576dde554a273a022ac">
+      <sDescription>Shift-register pattern generator, based on Music Thing Turing machine Eurorack module</sDescription>
+      <author>toneburst</author>
+      <license>BSD</license>
+      <helpPatch>nmpgen3.axh</helpPatch>
+      <inlets>
+         <bool32.rising name="trig" description="Trigger Pulse"/>
+         <bool32.rising name="r" description="Reset Pulse"/>
+         <bool32.rising name="l" description="Load New Seed"/>
+         <frac32.bipolar name="n" description="Noise"/>
+      </inlets>
+      <outlets>
+         <frac32.bipolar name="pattern" description="Pattern Out (Bipolar)"/>
+         <bool32 name="trigger" description="Trigger Pattern (Bool)"/>
+      </outlets>
+      <displays/>
+      <params>
+         <frac32.u.map name="seed" description="Seed Number"/>
+         <!--<frac32.u.map name="offset" description="Pattern Offset"/>-->
+         <frac32.s.map name="rand" description="Randomness"/>
+      </params>
+      <attribs/>
+      <code.declaration><![CDATA[
 
-int32_t counter = 0;
-int32_t offset = 0;
+int init = 1;
 int ntrig = 0;
 int rtrig = 0;
 int ltrig = 0;
-int8_t currentval = 1;
+
+uint8_t counter = 0;
+int32_t length = 8;
+int32_t offset = 0;
+uint8_t currentval = 1;
 int32_t outval = 0;
 bool outtrig = false;
-int init = 1;
 
 ///////////////////////
 // Utility Functions //
 ///////////////////////
 
-        ]]>
-        </code.declaration>
-        <code.krate><![CDATA[
+uint8_t rotate_right(uint8_t val, uint8_t shift) {
+	return (val << shift) | (val >> (8 - shift));
+}
+
+uint8_t rotate_left(uint8_t val, uint8_t shift) {
+	return (val << (8 - shift)) | (val >> shift);
+}
+
+// http://stackoverflow.com/questions/47981/how-do-you-set-clear-and-toggle-a-single-bit-in-c-c
+
+uint8_t togglebit0(uint8_t val) {
+	return val ^= 1 << 0;
+}
+
+uint8_t togglebit7(uint8_t val) {
+	return val ^= 1 << 7;
+}
+
+
+           ]]></code.declaration>
+      <code.krate><![CDATA[
 
 ///////////////////////////////
 // Loop Running For 1st Time //
@@ -55,10 +75,10 @@ if (init == 1) {
 /////////////////////////////
 
 if ((inlet_r > 0) && !rtrig) {
-    rtrig = 1;
-    counter = 0;
+	rtrig = 1;
+	counter = 0;
 } else if (!(inlet_r > 0)) {
-    rtrig = 0;
+	rtrig = 0;
 }
 
 ///////////////////////////////
@@ -67,22 +87,21 @@ if ((inlet_r > 0) && !rtrig) {
 
 if ((inlet_trig > 0) && !ntrig) {
 
-    // Check for changes to parameters
-    // and regenerate array if params changed
-	if (param_seed != seed) {
+    if (inlet_n < param_rand)
+        currentval = togglebit0(currentval);
 
-	}
+	// Set output value until next trigger
+	outval = rotate_right(currentval, counter);
+    outval = outval - 128;
 
-    // Set output value until next trigger
-    outval = counter;
+	// Update counter
+	counter = (counter < length - 1) ? counter + 1 : 0;
 
-    // Update counter
-    counter++;
-    ntrig = 1;
+	ntrig = 1;
 
 } else if (inlet_trig == 0) {
-    ntrig = 0;
-    outtrig = false;
+	ntrig = 0;
+	outtrig = false;
 }
 
 ////////////////////
@@ -91,7 +110,7 @@ if ((inlet_trig > 0) && !ntrig) {
 
 outlet_pattern = outval << 19;
 
-    ]]>
-    </code.krate>
-    </obj.normal>
+
+    ]]></code.krate>
+   </obj.normal>
 </objdefs>
