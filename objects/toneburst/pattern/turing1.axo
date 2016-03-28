@@ -57,6 +57,14 @@ uint8_t togglebit7(uint8_t val) {
 	return val ^= 1 << 7;
 }
 
+uint8_t getleftbyte(uint16_t word) {
+    return word >> 8;
+}
+
+uint8_t getrightbyte(uint16_t word) {
+    return (word << 8) >> 8;
+}
+
 
            ]]></code.declaration>
       <code.krate><![CDATA[
