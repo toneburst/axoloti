@@ -12,7 +12,7 @@
       </inlets>
       <outlets>
          <frac32.bipolar name="pattern" description="Pattern Out (Bipolar)"/>
-         <bool32 name="pulse0" description="Trigger Pattern (Bool)"/>
+         <bool32 name="flip" description="Trigger Pattern (Bool)"/>
       </outlets>
       <displays/>
       <params>
@@ -28,12 +28,12 @@ int rtrig = 0;
 int ltrig = 0;
 
 uint8_t counter = 0;
-int32_t length = 8;
-int32_t offset = 0;
-uint16_t baseval = 7559;
-uint16_t workingval = 0;
-//int16_t outval = 0;
-bool pulse0 = false;
+//int32_t length = 8;
+//int32_t offset = 0;
+uint16_t baseval = 5067;
+uint16_t workingval = baseval;
+int32_t outval = 0;
+bool flippulse = false;
 
 ///////////////////////
 // Utility Functions //
@@ -49,15 +49,19 @@ uint16_t rotate_left(uint16_t val, uint8_t shift) {
 
 // http://stackoverflow.com/questions/47981/how-do-you-set-clear-and-toggle-a-single-bit-in-c-c
 
-uint8_t togglebit0(uint16_t val) {
+uint16_t togglefirstbit(uint16_t val) {
 	return val ^= 1 << 0;
+}
+
+uint16_t togglelastbit(uint16_t val) {
+	return val ^= 1 << 15;
 }
 
 uint16_t getleftbyte(uint16_t word) {
     return word >> 8;
 }
 
-uint8_t getrightbyte(uint16_t word) {
+uint16_t getrightbyte(uint16_t word) {
     return (word << 8) >> 8;
 }
 
@@ -91,28 +95,38 @@ if ((inlet_r > 0) && !rtrig) {
 
 if ((inlet_trig > 0) && !ntrig) {
 
-    pulse0 = (inlet_n < param_rand) ? true : false;
-
 	// Set output value until next trigger
-	workingval = rotate_right(baseval, counter);
-    //outval = (workingval >> 8) << 19;
+	workingval = rotate_right(workingval, 1);
 
-	// Update counter
-	counter = (counter < 16) ? counter + 1 : 0;
+    if (inlet_n < param_rand) {
+        workingval = togglelastbit(workingval);
+        flippulse = true;
+    }
+
+    outval = (workingval >> 8) - 128;
 
 	ntrig = 1;
 
+	// Update counter
+
+    if (counter < 16) {
+        counter++;
+    } else {
+        //workingval = baseval;
+        counter = 0;
+    }
+
 } else if (inlet_trig == 0) {
 	ntrig = 0;
-	pulse0 = false;
+	flippulse = false;
 }
 
 ////////////////////
 // Pattern Output //
 ////////////////////
 
-outlet_pattern = workingval;
-outlet_pulse0 = pulse0;
+outlet_pattern = outval << 20;
+outlet_flip = flippulse;
 
 
     ]]></code.krate>
