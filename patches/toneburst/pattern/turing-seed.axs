@@ -1,7 +1,7 @@
 <patch-1.0 appVersion="1.0.8">
    <obj type="ctrl/toggle" uuid="42b8134fa729d54bfc8d62d6ef3fa99498c1de99" name="Bit 0" x="42" y="28">
       <params>
-         <bool32.tgl name="b" value="1">
+         <bool32.tgl name="b" onParent="true" value="1">
             <presets/>
          </bool32.tgl>
       </params>
@@ -9,19 +9,19 @@
    </obj>
    <obj type="ctrl/toggle" uuid="42b8134fa729d54bfc8d62d6ef3fa99498c1de99" name="Bit 8" x="112" y="28">
       <params>
-         <bool32.tgl name="b" value="1"/>
+         <bool32.tgl name="b" onParent="true" value="1"/>
       </params>
       <attribs/>
    </obj>
    <obj type="ctrl/toggle" uuid="42b8134fa729d54bfc8d62d6ef3fa99498c1de99" name="Bit 1" x="42" y="84">
       <params>
-         <bool32.tgl name="b" value="0"/>
+         <bool32.tgl name="b" onParent="true" value="0"/>
       </params>
       <attribs/>
    </obj>
    <obj type="ctrl/toggle" uuid="42b8134fa729d54bfc8d62d6ef3fa99498c1de99" name="Bit 9" x="112" y="84">
       <params>
-         <bool32.tgl name="b" value="0"/>
+         <bool32.tgl name="b" onParent="true" value="0"/>
       </params>
       <attribs/>
    </obj>
@@ -30,92 +30,83 @@
       <params/>
       <attribs/>
    </obj>
-   <obj type="disp/i" uuid="5e35fd0c62d81e70017289250cf28edd26e19e4a" name="i_1" x="364" y="112">
+   <obj type="patch/outlet i" uuid="aae2176b26209e34e4fdeba5edb1ace82d178655" name="Seed" x="364" y="112">
       <params/>
       <attribs/>
    </obj>
    <obj type="ctrl/toggle" uuid="42b8134fa729d54bfc8d62d6ef3fa99498c1de99" name="Bit 2" x="42" y="140">
       <params>
-         <bool32.tgl name="b" value="0"/>
+         <bool32.tgl name="b" onParent="true" value="0"/>
       </params>
       <attribs/>
    </obj>
    <obj type="ctrl/toggle" uuid="42b8134fa729d54bfc8d62d6ef3fa99498c1de99" name="Bit 10" x="112" y="140">
       <params>
-         <bool32.tgl name="b" value="1"/>
+         <bool32.tgl name="b" onParent="true" value="1"/>
       </params>
-      <attribs/>
-   </obj>
-   <obj type="disp/hex" uuid="3ce415f2f0e09f5b3cf10e5d355274847fd063b2" name="hex_1" x="364" y="182">
-      <params/>
       <attribs/>
    </obj>
    <obj type="ctrl/toggle" uuid="42b8134fa729d54bfc8d62d6ef3fa99498c1de99" name="Bit 3" x="42" y="196">
       <params>
-         <bool32.tgl name="b" value="1"/>
+         <bool32.tgl name="b" onParent="true" value="1"/>
       </params>
       <attribs/>
    </obj>
    <obj type="ctrl/toggle" uuid="42b8134fa729d54bfc8d62d6ef3fa99498c1de99" name="Bit 11" x="112" y="196">
       <params>
-         <bool32.tgl name="b" value="0"/>
+         <bool32.tgl name="b" onParent="true" value="0"/>
       </params>
       <attribs/>
    </obj>
    <obj type="ctrl/toggle" uuid="42b8134fa729d54bfc8d62d6ef3fa99498c1de99" name="Bit 4" x="42" y="252">
       <params>
-         <bool32.tgl name="b" value="0"/>
+         <bool32.tgl name="b" onParent="true" value="0"/>
       </params>
       <attribs/>
    </obj>
    <obj type="ctrl/toggle" uuid="42b8134fa729d54bfc8d62d6ef3fa99498c1de99" name="Bit 12" x="112" y="252">
       <params>
-         <bool32.tgl name="b" value="0"/>
+         <bool32.tgl name="b" onParent="true" value="0"/>
       </params>
       <attribs/>
    </obj>
    <obj type="ctrl/toggle" uuid="42b8134fa729d54bfc8d62d6ef3fa99498c1de99" name="Bit 5" x="42" y="308">
       <params>
-         <bool32.tgl name="b" value="0"/>
+         <bool32.tgl name="b" onParent="true" value="0"/>
       </params>
       <attribs/>
    </obj>
    <obj type="ctrl/toggle" uuid="42b8134fa729d54bfc8d62d6ef3fa99498c1de99" name="Bit 13" x="112" y="308">
       <params>
-         <bool32.tgl name="b" value="0"/>
+         <bool32.tgl name="b" onParent="true" value="0"/>
       </params>
       <attribs/>
    </obj>
    <obj type="ctrl/toggle" uuid="42b8134fa729d54bfc8d62d6ef3fa99498c1de99" name="Bit 6" x="42" y="364">
       <params>
-         <bool32.tgl name="b" value="0"/>
+         <bool32.tgl name="b" onParent="true" value="0"/>
       </params>
       <attribs/>
    </obj>
    <obj type="ctrl/toggle" uuid="42b8134fa729d54bfc8d62d6ef3fa99498c1de99" name="Bit 14" x="112" y="364">
       <params>
-         <bool32.tgl name="b" value="0"/>
+         <bool32.tgl name="b" onParent="true" value="0"/>
       </params>
       <attribs/>
    </obj>
    <obj type="ctrl/toggle" uuid="42b8134fa729d54bfc8d62d6ef3fa99498c1de99" name="Bit 7" x="42" y="420">
       <params>
-         <bool32.tgl name="b" value="1"/>
+         <bool32.tgl name="b" onParent="true" value="1"/>
       </params>
       <attribs/>
    </obj>
    <obj type="ctrl/toggle" uuid="42b8134fa729d54bfc8d62d6ef3fa99498c1de99" name="Bit 15" x="112" y="420">
       <params>
-         <bool32.tgl name="b" value="0"/>
+         <bool32.tgl name="b" onParent="true" value="0"/>
       </params>
       <attribs/>
    </obj>
    <nets>
-      <net>
-         <source obj="Turing Seed" outlet="seed"/>
-         <dest obj="i_1" inlet="in"/>
-         <dest obj="hex_1" inlet="in"/>
-      </net>
       <net>
          <source obj="Bit 0" outlet="o"/>
          <dest obj="Turing Seed" inlet="bit0"/>
@@ -179,6 +170,10 @@
       <net>
          <source obj="Bit 15" outlet="o"/>
          <dest obj="Turing Seed" inlet="bit15"/>
+      </net>
+      <net>
+         <source obj="Turing Seed" outlet="seed"/>
+         <dest obj="Seed" inlet="outlet"/>
       </net>
    </nets>
    <settings>

@@ -1,6 +1,6 @@
 <objdefs appVersion="1.0.8">
    <obj.normal id="turing seed" uuid="f4ff3ab926415b6fc796e993dde554a273a022ac">
-      <sDescription>Generate 16-bit seed integer for Turing object</sDescription>
+      <sDescription>Generate Turing object seed from 16 bit toggles</sDescription>
       <author>toneburst</author>
       <license>BSD</license>
       <helpPatch>turing-seed.axh</helpPatch>
@@ -23,7 +23,7 @@
         <bool32 name="bit15" description="Bit 15"/>
       </inlets>
       <outlets>
-         <int32.positive name="seed" description="16-Bit Seed integer"/>
+         <int32.positive name="seed" description="16-Bit seed integer"/>>
       </outlets>
       <displays/>
       <params>
