@@ -25,6 +25,7 @@
       <code.declaration><![CDATA[
 
 uint16_t state = 0;
+int ctrig = 0;
 bool bit0 = false;
 bool bit1 = false;
 bool bit2 = false;
