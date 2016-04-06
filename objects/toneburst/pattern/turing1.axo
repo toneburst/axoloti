@@ -1,10 +1,11 @@
 <objdefs appVersion="1.0.8">
-   <obj.normal id="turing1" uuid="f4aa3eb926415b6fc796e576dde554a273a022ac">
+   <obj.normal id="toneburst/pattern/turing1" uuid="f4aa3eb926415b6fc796e576dde554a273a022ac">
       <sDescription>Shift-register pattern generator, based on Music Thing Turing machine Eurorack module</sDescription>
       <author>toneburst</author>
       <license>BSD</license>
       <helpPatch>nmpgen3.axh</helpPatch>
       <inlets>
+         <int32.positive name="seed" description="Seed Bits"/>
          <bool32.rising name="trig" description="Trigger Pulse"/>
          <bool32.rising name="r" description="Reset Pulse"/>
          <bool32.rising name="l" description="Load New Seed"/>
@@ -16,9 +17,7 @@
       </outlets>
       <displays/>
       <params>
-         <frac32.u.map name="seed" description="Seed Number"/>
-         <!--<frac32.u.map name="offset" description="Pattern Offset"/>-->
-         <frac32.s.map name="rand" description="Randomness"/>
+         <frac32.s.map name="rand" description="Randomness" noLabel="true"/>
       </params>
       <attribs/>
       <code.declaration><![CDATA[

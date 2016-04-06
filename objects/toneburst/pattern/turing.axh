@@ -1,92 +1,118 @@
 <patch-1.0 appVersion="1.0.8">
-   <obj type="env/ad" uuid="255cb0cd67470c7498f9c33b820facd26aa629ce" name="ad_1" x="700" y="98">
+   <obj type="const/i" uuid="e202f44b2df17ae0b3e663b98ea6b14c8ff00408" name="i_1" x="28" y="56">
+      <params/>
+      <attribs>
+         <spinner attributeName="value" value="5699"/>
+      </attribs>
+   </obj>
+   <obj type="env/ad" uuid="255cb0cd67470c7498f9c33b820facd26aa629ce" name="ad_1" x="882" y="70">
       <params>
          <frac32.s.map name="a" value="-64.0"/>
-         <frac32.s.map name="d" value="-17.0"/>
+         <frac32.s.map name="d" value="-22.0"/>
       </params>
       <attribs/>
    </obj>
-   <obj type="gain/vca" uuid="a9f2dcd18043e2f47364e45cb8814f63c2a37c0d" name="vca_1" x="812" y="210">
+   <obj type="rand/uniform f" uuid="8f20d4eee60d56a57c11111c7028f69d6039b658" name="Noise" x="28" y="126">
       <params/>
       <attribs/>
    </obj>
-   <obj type="math/*c" uuid="7a66f52a9594e7e9eb31328ea725cb3641a80b55" name="Master Volume" x="882" y="210">
-      <params>
-         <frac32.u.map name="amp" value="23.0"/>
-      </params>
-      <attribs/>
-   </obj>
-   <obj type="audio/out stereo" uuid="a1ca7a567f535acc21055669829101d3ee7f0189" name="out_2" x="994" y="210">
-      <params/>
-      <attribs/>
-   </obj>
-   <obj type="lfo/square" uuid="de6909eb64db13af5b43f979a4c130024b3a4793" name="square_1" x="98" y="224">
+   <obj type="lfo/square" uuid="de6909eb64db13af5b43f979a4c130024b3a4793" name="square_1" x="14" y="182">
       <params>
          <frac32.s.map name="pitch" value="0.0"/>
       </params>
       <attribs/>
    </obj>
-   <obj type="toneburst/pattern/turing" uuid="f4aa3eb926415b6fc796e993dde554a273a022ac" name="turing_1" x="210" y="224">
+   <obj type="gain/vca" uuid="a9f2dcd18043e2f47364e45cb8814f63c2a37c0d" name="vca_1" x="994" y="182">
+      <params/>
+      <attribs/>
+   </obj>
+   <obj type="math/*c" uuid="7a66f52a9594e7e9eb31328ea725cb3641a80b55" name="Master Volume" x="1064" y="182">
       <params>
-         <frac32.u.map name="seed" value="0.0"/>
-         <frac32.s.map name="rand" value="-40.0"/>
+         <frac32.u.map name="amp" value="63.0"/>
       </params>
       <attribs/>
    </obj>
-   <obj type="math/*c" uuid="7d5ef61c3bcd571ee6bbd8437ef3612125dfb225" name="*_2" x="350" y="224">
+   <obj type="audio/out stereo" uuid="a1ca7a567f535acc21055669829101d3ee7f0189" name="out_2" x="1176" y="182">
+      <params/>
+      <attribs/>
+   </obj>
+   <obj type="toneburst/pattern/turing" uuid="f4aa3eb926415b6fc796e993dde554a273a022ac" name="turing_1" x="210" y="196">
+      <params>
+         <frac32.s.map name="rand" value="-64.0"/>
+      </params>
+      <attribs/>
+   </obj>
+   <obj type="math/*c" uuid="7d5ef61c3bcd571ee6bbd8437ef3612125dfb225" name="*_2" x="448" y="196">
       <params>
          <frac32.u.map name="amp" value="13.0"/>
       </params>
       <attribs/>
    </obj>
-   <obj type="math/-c" uuid="bc70bed87e5405985ade03f4806b9450609a9093" name="-c_1" x="462" y="224">
+   <obj type="math/-c" uuid="bc70bed87e5405985ade03f4806b9450609a9093" name="-c_1" x="560" y="196">
       <params>
          <frac32.u.map name="c" value="37.0"/>
       </params>
       <attribs/>
    </obj>
-   <obj type="harmony/note quantizer" uuid="d5343a4fea87a3e4f4dae20287226084550ea8d3" name="note_1" x="532" y="224">
+   <obj type="harmony/note quantizer" uuid="d5343a4fea87a3e4f4dae20287226084550ea8d3" name="note_1" x="630" y="196">
       <params>
          <bin12 name="b12" value="2349"/>
       </params>
       <attribs/>
    </obj>
-   <obj type="osc/pwm" uuid="a6b40ff63f161d8bac8ea2eba5b0dbffcf49b472" name="saw_2" x="700" y="224">
+   <obj type="math/glide" uuid="cfa0324c7cc8ebfd6e03c6b92f41115e3172d0d9" name="glide_1" x="798" y="196">
+      <params>
+         <frac32.u.map name="time" value="16.5"/>
+      </params>
+      <attribs/>
+   </obj>
+   <obj type="osc/pwm" uuid="a6b40ff63f161d8bac8ea2eba5b0dbffcf49b472" name="saw_2" x="882" y="196">
       <params>
          <frac32.s.map name="pitch" value="0.0"/>
       </params>
       <attribs/>
    </obj>
-   <obj type="disp/chart b" uuid="d2bdf496f96ee521628490a038411210fbe29b15" name="dial_1" x="350" y="322">
+   <obj type="ctrl/button" uuid="ef3d13774349df85aa9bfecf30dbc91ab8488b3f" name="RST Count" x="42" y="294">
+      <params>
+         <bool32.mom name="b" value="0"/>
+      </params>
+      <attribs/>
+   </obj>
+   <obj type="disp/chart b" uuid="d2bdf496f96ee521628490a038411210fbe29b15" name="Pattern Scope" x="448" y="294">
       <params/>
       <attribs/>
    </obj>
-   <obj type="disp/bool" uuid="a0ee71d48208b71752cbb8c05e55145106ef3946" name="Pulse Scope" x="434" y="322">
+   <obj type="ctrl/toggle" uuid="42b8134fa729d54bfc8d62d6ef3fa99498c1de99" name="toggle_1" x="714" y="308">
+      <params>
+         <bool32.tgl name="b" value="1"/>
+      </params>
+      <attribs/>
+   </obj>
+   <obj type="ctrl/button" uuid="ef3d13774349df85aa9bfecf30dbc91ab8488b3f" name="Seed" x="42" y="364">
+      <params>
+         <bool32.mom name="b" value="0"/>
+      </params>
+      <attribs/>
+   </obj>
+   <obj type="disp/i" uuid="5e35fd0c62d81e70017289250cf28edd26e19e4a" name="hex_1" x="448" y="420">
       <params/>
       <attribs/>
    </obj>
-   <obj type="rand/uniform f" uuid="8f20d4eee60d56a57c11111c7028f69d6039b658" name="uniform_1" x="112" y="336">
+   <obj type="ctrl/button" uuid="ef3d13774349df85aa9bfecf30dbc91ab8488b3f" name="Flip" x="56" y="434">
+      <params>
+         <bool32.mom name="b" value="0"/>
+      </params>
+      <attribs/>
+   </obj>
+   <obj type="disp/bool" uuid="a0ee71d48208b71752cbb8c05e55145106ef3946" name="Bit-Flip Scope" x="448" y="490">
       <params/>
       <attribs/>
    </obj>
    <nets>
       <net>
          <source obj="square_1" outlet="wave"/>
-         <dest obj="turing_1" inlet="trig"/>
          <dest obj="ad_1" inlet="trig"/>
-      </net>
-      <net>
-         <source obj="uniform_1" outlet="wave"/>
-         <dest obj="turing_1" inlet="n"/>
-      </net>
-      <net>
-         <source obj="turing_1" outlet="pattern"/>
-         <dest obj="dial_1" inlet="in"/>
-         <dest obj="*_2" inlet="in"/>
-      </net>
-      <net>
-         <source obj="turing_1" outlet="pulse0"/>
-         <dest obj="Pulse Scope" inlet="in"/>
+         <dest obj="turing_1" inlet="clock"/>
       </net>
       <net>
          <source obj="saw_2" outlet="wave"/>
@@ -97,12 +123,25 @@
          <dest obj="vca_1" inlet="v"/>
       </net>
       <net>
+         <source obj="vca_1" outlet="o"/>
+         <dest obj="Master Volume" inlet="in"/>
+      </net>
+      <net>
          <source obj="note_1" outlet="note"/>
+         <dest obj="glide_1" inlet="in"/>
+      </net>
+      <net>
+         <source obj="glide_1" outlet="out"/>
          <dest obj="saw_2" inlet="pitch"/>
       </net>
       <net>
-         <source obj="vca_1" outlet="o"/>
-         <dest obj="Master Volume" inlet="in"/>
+         <source obj="toggle_1" outlet="o"/>
+         <dest obj="glide_1" inlet="en"/>
+      </net>
+      <net>
+         <source obj="turing_1" outlet="pattern"/>
+         <dest obj="Pattern Scope" inlet="in"/>
+         <dest obj="*_2" inlet="in"/>
       </net>
       <net>
          <source obj="Master Volume" outlet="out"/>
@@ -117,14 +156,42 @@
          <source obj="-c_1" outlet="out"/>
          <dest obj="note_1" inlet="note"/>
       </net>
+      <net>
+         <source obj="turing_1" outlet="flip"/>
+         <dest obj="Bit-Flip Scope" inlet="in"/>
+      </net>
+      <net>
+         <source obj="i_1" outlet="out"/>
+         <dest obj="turing_1" inlet="seed"/>
+      </net>
+      <net>
+         <source obj="Noise" outlet="wave"/>
+         <dest obj="turing_1" inlet="noise"/>
+      </net>
+      <net>
+         <source obj="RST Count" outlet="o"/>
+         <dest obj="turing_1" inlet="reset"/>
+      </net>
+      <net>
+         <source obj="Seed" outlet="o"/>
+         <dest obj="turing_1" inlet="load"/>
+      </net>
+      <net>
+         <source obj="Flip" outlet="o"/>
+         <dest obj="turing_1" inlet="flip"/>
+      </net>
+      <net>
+         <source obj="turing_1" outlet="state"/>
+         <dest obj="hex_1" inlet="in"/>
+      </net>
    </nets>
    <settings>
       <subpatchmode>no</subpatchmode>
    </settings>
    <notes><![CDATA[]]></notes>
    <windowPos>
-      <x>79</x>
-      <y>36</y>
+      <x>163</x>
+      <y>23</y>
       <width>1275</width>
       <height>852</height>
    </windowPos>

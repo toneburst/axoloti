@@ -1,0 +1,94 @@
+<objdefs appVersion="1.0.8">
+   <obj.normal id="turing pulses" uuid="f4bb3eb926415b6fc796e993dde554a273a022ac">
+      <sDescription>Shift-register pattern generator, based on Music Thing Turing machine Eurorack module</sDescription>
+      <author>toneburst</author>
+      <license>BSD</license>
+      <helpPatch>turingpulses.axh</helpPatch>
+      <inlets>
+         <int32.positive name="state" description="Input For Turing Machine Object State)"/>
+         <bool32.rising name="clock" description="Clock Pulse"/>
+      </inlets>
+      <outlets>
+         <bool32 name="bit0" description="Bit 0 Pulse"/>
+         <bool32 name="bit1" description="Bit 1 Pulse"/>
+         <bool32 name="bit2" description="Bit 2 Pulse"/>
+         <bool32 name="bit3" description="Bit 3 Pulse"/>
+         <bool32 name="bit4" description="Bit 4 Pulse"/>
+         <bool32 name="bit5" description="Bit 5 Pulse"/>
+         <bool32 name="bit6" description="Bit 6 Pulse"/>
+         <bool32 name="bit7" description="Bit 7 Pulse"/>
+      </outlets>
+      <displays/>
+      <params>
+      </params>
+      <attribs/>
+      <code.declaration><![CDATA[
+
+uint16_t state = 0;
+bool bit0 = false;
+bool bit1 = false;
+bool bit2 = false;
+bool bit3 = false;
+bool bit4 = false;
+bool bit5 = false;
+bool bit6 = false;
+bool bit7 = false;
+
+///////////////////////
+// Utility Functions //
+///////////////////////
+
+// http://stackoverflow.com/questions/47981/how-do-you-set-clear-and-toggle-a-single-bit-in-c-c
+
+bool getbitx(uint16_t word, uint8_t x) {
+    return (((word >> x) & 1) == 1) ? true : false;
+}
+
+
+           ]]></code.declaration>
+      <code.krate><![CDATA[
+
+/////////////////////////////
+// Clock Input Rising Edge //
+/////////////////////////////
+
+if ((inlet_clock > 0) && !ctrig) {
+    state = inlet_state;
+    bit0 = getbitx(state, 0);
+    bit1 = getbitx(state, 1);
+    bit2 = getbitx(state, 2);
+    bit3 = getbitx(state, 3);
+    bit4 = getbitx(state, 4);
+    bit5 = getbitx(state, 5);
+    bit6 = getbitx(state, 6);
+    bit7 = getbitx(state, 7);
+    ctrig = 1;
+} else if (inlet_clock == 0) {
+    bit0 = false;
+    bit1 = false;
+    bit2 = false;
+    bit3 = false;
+    bit4 = false;
+    bit5 = false;
+    bit6 = false;
+    bit7 = false;
+    ctrig = 0;
+}
+
+///////////////////
+// Pulse Outputs //
+///////////////////
+
+outlet_bit0 = bit0;
+outlet_bit1 = bit1;
+outlet_bit2 = bit2;
+outlet_bit3 = bit3;
+outlet_bit4 = bit4;
+outlet_bit5 = bit5;
+outlet_bit6 = bit6;
+outlet_bit7 = bit7;
+
+
+    ]]></code.krate>
+   </obj.normal>
+</objdefs>
