@@ -1,6 +1,6 @@
 <objdefs appVersion="1.0.8">
    <obj.normal id="turing pulses" uuid="f4bb3eb926415b6fc796e993dde554a273a022ac">
-      <sDescription>Shift-register pattern generator, based on Music Thing Turing machine Eurorack module</sDescription>
+      <sDescription>8 Triggers from Turing object state (based on Turing Machine Pulses expander)</sDescription>
       <author>toneburst</author>
       <license>BSD</license>
       <helpPatch>turingpulses.axh</helpPatch>

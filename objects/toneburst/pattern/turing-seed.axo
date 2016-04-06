@@ -1,0 +1,71 @@
+<objdefs appVersion="1.0.8">
+   <obj.normal id="turing pulses" uuid="f4ff3eb926415b6fc796e993dde554a273a022ac">
+      <sDescription>Generate 16-bit seed integer for Turing object</sDescription>
+      <author>toneburst</author>
+      <license>BSD</license>
+      <helpPatch>turingpulses.axh</helpPatch>
+      <inlets>
+        <bool32 name="bit0" description="Bit 0"/>
+        <bool32 name="bit1" description="Bit 1"/>
+        <bool32 name="bit2" description="Bit 2"/>
+        <bool32 name="bit3" description="Bit 3"/>
+        <bool32 name="bit4" description="Bit 4"/>
+        <bool32 name="bit5" description="Bit 5"/>
+        <bool32 name="bit6" description="Bit 6"/>
+        <bool32 name="bit7" description="Bit 7"/>
+        <bool32 name="bit8" description="Bit 8"/>
+        <bool32 name="bit9" description="Bit 9"/>
+        <bool32 name="bit10" description="Bit 10"/>
+        <bool32 name="bit11" description="Bit 11"/>
+        <bool32 name="bit12" description="Bit 12"/>
+        <bool32 name="bit13" description="Bit 13"/>
+        <bool32 name="bit14" description="Bit 14"/>
+        <bool32 name="bit15" description="Bit 15"/>
+      </inlets>
+      <outlets>
+         <int32.positive name="seed" description="16-Bit Seed integer"/>
+      </outlets>
+      <displays/>
+      <params>
+      </params>
+      <attribs/>
+      <code.declaration><![CDATA[
+
+uint16_t seed = 0;
+
+///////////////////////
+// Utility Functions //
+///////////////////////
+
+// http://stackoverflow.com/questions/47981/how-do-you-set-clear-and-toggle-a-single-bit-in-c-c
+
+uint16_t setbitx(uint16_t word, uint8_t x, bool val) {
+    uint16_t result = word;
+    result ^= (-val ^ result) & (1 << x);
+    return result;
+}
+
+           ]]></code.declaration>
+      <code.krate><![CDATA[
+
+      seed = setbitx(seed, 0, inlet_bit0);
+      seed = setbitx(seed, 1, inlet_bit1);
+      seed = setbitx(seed, 2, inlet_bit2);
+      seed = setbitx(seed, 3, inlet_bit3);
+      seed = setbitx(seed, 4, inlet_bit4);
+      seed = setbitx(seed, 5, inlet_bit5);
+      seed = setbitx(seed, 6, inlet_bit6);
+      seed = setbitx(seed, 7, inlet_bit7);
+      seed = setbitx(seed, 8, inlet_bit8);
+      seed = setbitx(seed, 9, inlet_bit9);
+      seed = setbitx(seed, 10, inlet_bit10);
+      seed = setbitx(seed, 11, inlet_bit11);
+      seed = setbitx(seed, 12, inlet_bit12);
+      seed = setbitx(seed, 13, inlet_bit13);
+      seed = setbitx(seed, 14, inlet_bit14);
+      seed = setbitx(seed, 15, inlet_bit15);
+      outlet_seed = seed;
+
+    ]]></code.krate>
+   </obj.normal>
+</objdefs>
