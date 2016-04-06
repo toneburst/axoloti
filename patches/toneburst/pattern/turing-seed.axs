@@ -26,7 +26,7 @@
       <attribs/>
    </obj>
    <comment type="patch/comment" x="196" y="84" text="Generate Turing object seed from 16 bit toggles"/>
-   <obj type="toneburst/pattern/turing seed" uuid="f4ff3ab926415b6fc796e993dde554a273a022ac" name="Turing Seed" x="196" y="112">
+   <obj type="toneburst/pattern/turing seed" uuid="f4ff3ab926415b6fc796e993dde554a273a022ac" name="turing_1" x="196" y="112">
       <params/>
       <attribs/>
    </obj>
@@ -109,71 +109,71 @@
    <nets>
       <net>
          <source obj="Bit 0" outlet="o"/>
-         <dest obj="Turing Seed" inlet="bit0"/>
+         <dest obj="turing_1" inlet="bit0"/>
+      </net>
+      <net>
+         <source obj="turing_1" outlet="seed"/>
+         <dest obj="Seed" inlet="outlet"/>
       </net>
       <net>
          <source obj="Bit 1" outlet="o"/>
-         <dest obj="Turing Seed" inlet="bit1"/>
+         <dest obj="turing_1" inlet="bit1"/>
       </net>
       <net>
          <source obj="Bit 2" outlet="o"/>
-         <dest obj="Turing Seed" inlet="bit2"/>
+         <dest obj="turing_1" inlet="bit2"/>
       </net>
       <net>
          <source obj="Bit 3" outlet="o"/>
-         <dest obj="Turing Seed" inlet="bit3"/>
+         <dest obj="turing_1" inlet="bit3"/>
       </net>
       <net>
          <source obj="Bit 4" outlet="o"/>
-         <dest obj="Turing Seed" inlet="bit4"/>
+         <dest obj="turing_1" inlet="bit4"/>
       </net>
       <net>
          <source obj="Bit 5" outlet="o"/>
-         <dest obj="Turing Seed" inlet="bit5"/>
+         <dest obj="turing_1" inlet="bit5"/>
       </net>
       <net>
          <source obj="Bit 6" outlet="o"/>
-         <dest obj="Turing Seed" inlet="bit6"/>
+         <dest obj="turing_1" inlet="bit6"/>
       </net>
       <net>
          <source obj="Bit 7" outlet="o"/>
-         <dest obj="Turing Seed" inlet="bit7"/>
+         <dest obj="turing_1" inlet="bit7"/>
       </net>
       <net>
          <source obj="Bit 8" outlet="o"/>
-         <dest obj="Turing Seed" inlet="bit8"/>
+         <dest obj="turing_1" inlet="bit8"/>
       </net>
       <net>
          <source obj="Bit 9" outlet="o"/>
-         <dest obj="Turing Seed" inlet="bit9"/>
+         <dest obj="turing_1" inlet="bit9"/>
       </net>
       <net>
          <source obj="Bit 10" outlet="o"/>
-         <dest obj="Turing Seed" inlet="bit10"/>
+         <dest obj="turing_1" inlet="bit10"/>
       </net>
       <net>
          <source obj="Bit 11" outlet="o"/>
-         <dest obj="Turing Seed" inlet="bit11"/>
+         <dest obj="turing_1" inlet="bit11"/>
       </net>
       <net>
          <source obj="Bit 12" outlet="o"/>
-         <dest obj="Turing Seed" inlet="bit12"/>
+         <dest obj="turing_1" inlet="bit12"/>
       </net>
       <net>
          <source obj="Bit 13" outlet="o"/>
-         <dest obj="Turing Seed" inlet="bit13"/>
+         <dest obj="turing_1" inlet="bit13"/>
       </net>
       <net>
          <source obj="Bit 14" outlet="o"/>
-         <dest obj="Turing Seed" inlet="bit14"/>
+         <dest obj="turing_1" inlet="bit14"/>
       </net>
       <net>
          <source obj="Bit 15" outlet="o"/>
-         <dest obj="Turing Seed" inlet="bit15"/>
-      </net>
-      <net>
-         <source obj="Turing Seed" outlet="seed"/>
-         <dest obj="Seed" inlet="outlet"/>
+         <dest obj="turing_1" inlet="bit15"/>
       </net>
    </nets>
    <settings>

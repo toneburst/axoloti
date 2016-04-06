@@ -23,7 +23,7 @@
         <bool32 name="bit15" description="Bit 15"/>
       </inlets>
       <outlets>
-         <int32.positive name="seed" description="16-Bit seed integer"/>>
+         <int32.positive name="seed" description="16-Bit seed integer"/>
       </outlets>
       <displays/>
       <params>

@@ -7,6 +7,7 @@
       <inlets>
          <int32.positive name="seed" description="Seed value (16 bit integer)"/>
          <frac32.bipolar name="noise" description="Noise Input"/>
+         <bool32 name="direction" description="Shift-Register Read-Direction"/>
          <bool32.rising name="clock" description="Clock Pulse"/>
          <bool32.rising name="reset" description="Reset Pulse"/>
          <bool32.rising name="load" description="Load Seed Bits"/>
@@ -25,18 +26,16 @@
       <code.declaration><![CDATA[
 
 // Flip-flop triggers for pulse inputs
-int init = 1;
-int ctrig = 0;
-int rtrig = 0;
-int ltrig = 0;
-int ftrig = 0;
+int init    = 1;
+int ctrig   = 0;
+int rtrig   = 0;
+int ltrig   = 0;
+int ftrig   = 0;
 
-uint8_t counter = 0;
-//int32_t length = 8;
-//int32_t offset = 0;
-uint16_t baseval = 0;
+uint8_t counter     = 0;
+uint16_t baseval    = 0;
 uint16_t workingval = 0;
-uint16_t state = 0;
+uint16_t state      = 0;
 
 int32_t outval = 0;
 bool flippulse = false;
@@ -53,23 +52,32 @@ uint16_t rotate_right(uint16_t val, uint8_t shift) {
 	return (val << (16 - shift)) | (val >> shift);
 }*/
 
+// Toggle bit X
 // http://stackoverflow.com/questions/47981/how-do-you-set-clear-and-toggle-a-single-bit-in-c-c
 
-// Toggle bit X
 uint16_t togglebitx(uint16_t val, uint8_t x) {
 	return val ^= 1 << x;
 }
 
 // Get values of left-hand 8 bytes of 16bit int (other bits zeroed)
-uint16_t getleftbyte(uint16_t word) {
+/*uint16_t getleftbyte(uint16_t word) {
     return word >> 8;
 }
 
 // Get values of right-hand 8 bytes of 16bit int (other bits zeroed)
 uint16_t getrightbyte(uint16_t word) {
     return (word << 8) >> 8;
-}
+}*/
 
+// Reverse bit-order of 16-bit word
+// http://stackoverflow.com/questions/2602823/in-c-c-whats-the-simplest-way-to-reverse-the-order-of-bits-in-a-byte
+
+uint16_t reversebits16(uint16_t val) {
+    uint16_t reversed = val;
+    for(uint8_t i = 0; i < 16; i++)
+        reversed |= ((val >> i) & 1) << (15 - i);
+    return reversed;
+}
 
            ]]></code.declaration>
       <code.krate><![CDATA[
@@ -124,12 +132,21 @@ if ((inlet_flip > 0) && !ftrig) {
 
 if ((inlet_clock > 0) && !ctrig) {
 
+    // Toggle wrapped bits if noise inlet value lower than noise threshold value
     if (inlet_noise < param_rand) {
         workingval = togglebitx(workingval, counter);
+        // Send out flip pulse (not sure what this will be useful for, yet)
         flippulse = true;
     }
 
+    // State output value
     state = rotate_right(workingval, counter);
+
+    // Reverse bits if 'direction' input true
+    if (inlet_direction)
+        state = reversebits16(state);
+
+    // Output value (-128 to +128 range)
     outval = (state >> 8) - 128;
 
 	// Update counter

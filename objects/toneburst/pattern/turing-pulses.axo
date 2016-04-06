@@ -45,7 +45,6 @@ bool getbitx(uint16_t word, uint8_t x) {
     return (((word >> x) & 1) == 1) ? true : false;
 }
 
-
            ]]></code.declaration>
       <code.krate><![CDATA[
 

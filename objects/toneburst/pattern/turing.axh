@@ -1,125 +1,151 @@
 <patch-1.0 appVersion="1.0.8">
-   <obj type="env/ad" uuid="255cb0cd67470c7498f9c33b820facd26aa629ce" name="ad_1" x="924" y="28">
+   <obj type="turing-seed" uuid="4adb560c-89fa-4941-8337-aaf0a0c0398a" name="Seed Subpatch" x="56" y="28">
+      <params>
+         <bool32.tgl name="Bit 0" value="1"/>
+         <bool32.tgl name="Bit 8" value="0"/>
+         <bool32.tgl name="Bit 1" value="0"/>
+         <bool32.tgl name="Bit 9" value="0"/>
+         <bool32.tgl name="Bit 2" value="0"/>
+         <bool32.tgl name="Bit 10" value="0"/>
+         <bool32.tgl name="Bit 3" value="0"/>
+         <bool32.tgl name="Bit 11" value="1"/>
+         <bool32.tgl name="Bit 4" value="0"/>
+         <bool32.tgl name="Bit 12" value="0"/>
+         <bool32.tgl name="Bit 5" value="1"/>
+         <bool32.tgl name="Bit 13" value="0"/>
+         <bool32.tgl name="Bit 6" value="1"/>
+         <bool32.tgl name="Bit 14" value="0"/>
+         <bool32.tgl name="Bit 7" value="0"/>
+         <bool32.tgl name="Bit 15" value="1"/>
+      </params>
+      <attribs/>
+   </obj>
+   <obj type="disp/i" uuid="5e35fd0c62d81e70017289250cf28edd26e19e4a" name="i_1" x="154" y="28">
+      <params/>
+      <attribs/>
+   </obj>
+   <obj type="ctrl/button" uuid="ef3d13774349df85aa9bfecf30dbc91ab8488b3f" name="Load Seed" x="154" y="98">
+      <params>
+         <bool32.mom name="b" value="0"/>
+      </params>
+      <attribs/>
+   </obj>
+   <obj type="env/ad" uuid="255cb0cd67470c7498f9c33b820facd26aa629ce" name="ad_1" x="938" y="98">
       <params>
          <frac32.s.map name="a" value="-64.0"/>
          <frac32.s.map name="d" value="-22.0"/>
       </params>
       <attribs/>
    </obj>
-   <obj type="const/i" uuid="e202f44b2df17ae0b3e663b98ea6b14c8ff00408" name="i_1" x="28" y="56">
-      <params/>
-      <attribs>
-         <spinner attributeName="value" value="5699"/>
-      </attribs>
+   <obj type="ctrl/toggle" uuid="42b8134fa729d54bfc8d62d6ef3fa99498c1de99" name="Direction" x="154" y="168">
+      <params>
+         <bool32.tgl name="b" value="0"/>
+      </params>
+      <attribs/>
    </obj>
-   <obj type="rand/uniform f" uuid="8f20d4eee60d56a57c11111c7028f69d6039b658" name="Noise" x="28" y="126">
+   <obj type="gain/vca" uuid="a9f2dcd18043e2f47364e45cb8814f63c2a37c0d" name="vca_1" x="1050" y="210">
       <params/>
       <attribs/>
    </obj>
-   <obj type="gain/vca" uuid="a9f2dcd18043e2f47364e45cb8814f63c2a37c0d" name="vca_1" x="1036" y="140">
-      <params/>
-      <attribs/>
-   </obj>
-   <obj type="math/*c" uuid="7a66f52a9594e7e9eb31328ea725cb3641a80b55" name="Master Volume" x="1106" y="140">
+   <obj type="math/*c" uuid="7a66f52a9594e7e9eb31328ea725cb3641a80b55" name="Master Volume" x="1120" y="210">
       <params>
          <frac32.u.map name="amp" value="63.0"/>
       </params>
       <attribs/>
    </obj>
-   <obj type="audio/out stereo" uuid="a1ca7a567f535acc21055669829101d3ee7f0189" name="out_2" x="1218" y="140">
+   <obj type="audio/out stereo" uuid="a1ca7a567f535acc21055669829101d3ee7f0189" name="out_2" x="1232" y="210">
       <params/>
       <attribs/>
    </obj>
-   <obj type="math/*c" uuid="7d5ef61c3bcd571ee6bbd8437ef3612125dfb225" name="*_2" x="490" y="154">
+   <obj type="math/*c" uuid="7d5ef61c3bcd571ee6bbd8437ef3612125dfb225" name="*_2" x="504" y="224">
       <params>
          <frac32.u.map name="amp" value="13.0"/>
       </params>
       <attribs/>
    </obj>
-   <obj type="math/-c" uuid="bc70bed87e5405985ade03f4806b9450609a9093" name="-c_1" x="602" y="154">
+   <obj type="math/-c" uuid="bc70bed87e5405985ade03f4806b9450609a9093" name="-c_1" x="616" y="224">
       <params>
          <frac32.u.map name="c" value="37.0"/>
       </params>
       <attribs/>
    </obj>
-   <obj type="harmony/note quantizer" uuid="d5343a4fea87a3e4f4dae20287226084550ea8d3" name="note_1" x="672" y="154">
+   <obj type="harmony/note quantizer" uuid="d5343a4fea87a3e4f4dae20287226084550ea8d3" name="note_1" x="686" y="224">
       <params>
          <bin12 name="b12" value="2349"/>
       </params>
       <attribs/>
    </obj>
-   <obj type="math/glide" uuid="cfa0324c7cc8ebfd6e03c6b92f41115e3172d0d9" name="glide_1" x="840" y="154">
+   <obj type="math/glide" uuid="cfa0324c7cc8ebfd6e03c6b92f41115e3172d0d9" name="glide_1" x="854" y="224">
       <params>
          <frac32.u.map name="time" value="16.5"/>
       </params>
       <attribs/>
    </obj>
-   <obj type="osc/pwm" uuid="a6b40ff63f161d8bac8ea2eba5b0dbffcf49b472" name="saw_2" x="924" y="154">
+   <obj type="osc/pwm" uuid="a6b40ff63f161d8bac8ea2eba5b0dbffcf49b472" name="saw_2" x="938" y="224">
       <params>
          <frac32.s.map name="pitch" value="0.0"/>
       </params>
       <attribs/>
    </obj>
-   <obj type="lfo/square" uuid="de6909eb64db13af5b43f979a4c130024b3a4793" name="square_1" x="14" y="182">
-      <params>
-         <frac32.s.map name="pitch" value="0.0"/>
-      </params>
-      <attribs/>
-   </obj>
-   <obj type="toneburst/pattern/turing" uuid="f4aa3eb926415b6fc796e993dde554a273a022ac" name="turing_1" x="224" y="196">
+   <obj type="toneburst/pattern/turing" uuid="f4aa3eb926415b6fc796e993dde554a273a022ac" name="turing_1" x="238" y="252">
       <params>
          <frac32.s.map name="rand" value="-64.0"/>
       </params>
       <attribs/>
    </obj>
-   <comment type="patch/comment" x="140" y="224" text="Seed Number"/>
-   <comment type="patch/comment" x="364" y="224" text="Pattern Out (-64 to 64)"/>
-   <comment type="patch/comment" x="140" y="238" text="Noise Input"/>
-   <comment type="patch/comment" x="364" y="238" text="Shift-Reg State"/>
-   <comment type="patch/comment" x="140" y="252" text="Clock Input"/>
-   <comment type="patch/comment" x="364" y="252" text="Pulse On Bit-Flip"/>
-   <obj type="disp/chart b" uuid="d2bdf496f96ee521628490a038411210fbe29b15" name="Pattern Scope" x="490" y="252">
+   <comment type="patch/comment" x="154" y="280" text="Seed Number"/>
+   <comment type="patch/comment" x="378" y="280" text="Pattern Out (-64 to 64)"/>
+   <comment type="patch/comment" x="154" y="294" text="Noise Input"/>
+   <comment type="patch/comment" x="378" y="294" text="Shift-Reg State"/>
+   <obj type="rand/uniform f" uuid="8f20d4eee60d56a57c11111c7028f69d6039b658" name="Noise" x="42" y="308">
       <params/>
       <attribs/>
    </obj>
-   <comment type="patch/comment" x="140" y="266" text="Reset Counter"/>
-   <obj type="ctrl/toggle" uuid="42b8134fa729d54bfc8d62d6ef3fa99498c1de99" name="toggle_1" x="756" y="266">
+   <comment type="patch/comment" x="140" y="308" text="Toggle Direction"/>
+   <comment type="patch/comment" x="378" y="308" text="Pulse On Bit-Flip"/>
+   <comment type="patch/comment" x="154" y="322" text="Clock Input"/>
+   <obj type="disp/chart b" uuid="d2bdf496f96ee521628490a038411210fbe29b15" name="Pattern Scope" x="504" y="322">
+      <params/>
+      <attribs/>
+   </obj>
+   <comment type="patch/comment" x="154" y="336" text="Reset Counter"/>
+   <obj type="ctrl/toggle" uuid="42b8134fa729d54bfc8d62d6ef3fa99498c1de99" name="toggle_1" x="770" y="336">
       <params>
          <bool32.tgl name="b" value="1"/>
       </params>
       <attribs/>
    </obj>
-   <comment type="patch/comment" x="154" y="280" text="Load Seed"/>
-   <obj type="ctrl/button" uuid="ef3d13774349df85aa9bfecf30dbc91ab8488b3f" name="Reset Count" x="42" y="294">
+   <comment type="patch/comment" x="168" y="350" text="Load Seed"/>
+   <obj type="lfo/square" uuid="de6909eb64db13af5b43f979a4c130024b3a4793" name="Clock" x="28" y="364">
       <params>
-         <bool32.mom name="b" value="0"/>
+         <frac32.s.map name="pitch" value="0.0"/>
       </params>
       <attribs/>
    </obj>
-   <comment type="patch/comment" x="140" y="294" text="Flip First Bit"/>
-   <obj type="ctrl/button" uuid="ef3d13774349df85aa9bfecf30dbc91ab8488b3f" name="Load Seed" x="42" y="364">
-      <params>
-         <bool32.mom name="b" value="0"/>
-      </params>
-      <attribs/>
-   </obj>
-   <obj type="disp/i" uuid="5e35fd0c62d81e70017289250cf28edd26e19e4a" name="hex_1" x="490" y="378">
+   <comment type="patch/comment" x="154" y="364" text="Flip First Bit"/>
+   <obj type="disp/i" uuid="5e35fd0c62d81e70017289250cf28edd26e19e4a" name="hex_1" x="504" y="448">
       <params/>
       <attribs/>
    </obj>
-   <obj type="ctrl/button" uuid="ef3d13774349df85aa9bfecf30dbc91ab8488b3f" name="Flip Bit 0" x="42" y="434">
+   <obj type="ctrl/button" uuid="ef3d13774349df85aa9bfecf30dbc91ab8488b3f" name="Reset Count" x="56" y="476">
       <params>
          <bool32.mom name="b" value="0"/>
       </params>
       <attribs/>
    </obj>
-   <obj type="disp/bool" uuid="a0ee71d48208b71752cbb8c05e55145106ef3946" name="Bit-Flip Scope" x="490" y="448">
+   <obj type="disp/bool" uuid="a0ee71d48208b71752cbb8c05e55145106ef3946" name="Bit-Flip Scope" x="504" y="518">
       <params/>
+      <attribs/>
+   </obj>
+   <obj type="ctrl/button" uuid="ef3d13774349df85aa9bfecf30dbc91ab8488b3f" name="Flip Bit 0" x="56" y="546">
+      <params>
+         <bool32.mom name="b" value="0"/>
+      </params>
       <attribs/>
    </obj>
    <nets>
       <net>
-         <source obj="square_1" outlet="wave"/>
+         <source obj="Clock" outlet="wave"/>
          <dest obj="ad_1" inlet="trig"/>
          <dest obj="turing_1" inlet="clock"/>
       </net>
@@ -148,6 +174,11 @@
          <dest obj="glide_1" inlet="en"/>
       </net>
       <net>
+         <source obj="Seed Subpatch" outlet="Seed"/>
+         <dest obj="i_1" inlet="in"/>
+         <dest obj="turing_1" inlet="seed"/>
+      </net>
+      <net>
          <source obj="turing_1" outlet="pattern"/>
          <dest obj="Pattern Scope" inlet="in"/>
          <dest obj="*_2" inlet="in"/>
@@ -166,12 +197,12 @@
          <dest obj="note_1" inlet="note"/>
       </net>
       <net>
-         <source obj="turing_1" outlet="flip"/>
-         <dest obj="Bit-Flip Scope" inlet="in"/>
+         <source obj="turing_1" outlet="state"/>
+         <dest obj="hex_1" inlet="in"/>
       </net>
       <net>
-         <source obj="i_1" outlet="out"/>
-         <dest obj="turing_1" inlet="seed"/>
+         <source obj="turing_1" outlet="flip"/>
+         <dest obj="Bit-Flip Scope" inlet="in"/>
       </net>
       <net>
          <source obj="Noise" outlet="wave"/>
@@ -182,16 +213,16 @@
          <dest obj="turing_1" inlet="reset"/>
       </net>
       <net>
-         <source obj="Load Seed" outlet="o"/>
-         <dest obj="turing_1" inlet="load"/>
-      </net>
-      <net>
          <source obj="Flip Bit 0" outlet="o"/>
          <dest obj="turing_1" inlet="flip"/>
       </net>
       <net>
-         <source obj="turing_1" outlet="state"/>
-         <dest obj="hex_1" inlet="in"/>
+         <source obj="Load Seed" outlet="o"/>
+         <dest obj="turing_1" inlet="load"/>
+      </net>
+      <net>
+         <source obj="Direction" outlet="o"/>
+         <dest obj="turing_1" inlet="direction"/>
       </net>
    </nets>
    <settings>
