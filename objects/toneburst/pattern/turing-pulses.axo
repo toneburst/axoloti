@@ -3,7 +3,7 @@
       <sDescription>8 Triggers from Turing object state (based on Turing Machine Pulses expander)</sDescription>
       <author>toneburst</author>
       <license>BSD</license>
-      <helpPatch>turingpulses.axh</helpPatch>
+      <helpPatch>turing-pulses.axh</helpPatch>
       <inlets>
          <int32.positive name="state" description="Input For Turing Machine Object State)"/>
          <bool32.rising name="clock" description="Clock Pulse"/>

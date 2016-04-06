@@ -1,9 +1,9 @@
 <objdefs appVersion="1.0.8">
-   <obj.normal id="turing pulses" uuid="f4ff3eb926415b6fc796e993dde554a273a022ac">
+   <obj.normal id="turing seed" uuid="f4ff3ab926415b6fc796e993dde554a273a022ac">
       <sDescription>Generate 16-bit seed integer for Turing object</sDescription>
       <author>toneburst</author>
       <license>BSD</license>
-      <helpPatch>turingpulses.axh</helpPatch>
+      <helpPatch>turing-seed.axh</helpPatch>
       <inlets>
         <bool32 name="bit0" description="Bit 0"/>
         <bool32 name="bit1" description="Bit 1"/>
