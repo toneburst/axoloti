@@ -26,16 +26,16 @@
       <code.declaration><![CDATA[
 
 // Flip-flop triggers for pulse inputs
-int init    = 1;
-int ctrig   = 0;
-int rtrig   = 0;
-int ltrig   = 0;
-int ftrig   = 0;
+int init = 1;
+int ctrig = 0;
+int rtrig = 0;
+int ltrig = 0;
+int ftrig = 0;
 
-uint8_t counter     = 0;
-uint16_t baseval    = 0;
+uint8_t counter = 0;
+uint16_t baseval = 0;
 uint16_t workingval = 0;
-uint16_t state      = 0;
+uint16_t state = 0;
 
 int32_t outval = 0;
 bool flippulse = false;

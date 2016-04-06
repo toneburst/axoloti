@@ -1,29 +1,4 @@
 <patch-1.0 appVersion="1.0.8">
-   <obj type="turing-seed" uuid="4adb560c-89fa-4941-8337-aaf0a0c0398a" name="Seed Subpatch" x="56" y="28">
-      <params>
-         <bool32.tgl name="Bit 0" value="1"/>
-         <bool32.tgl name="Bit 8" value="0"/>
-         <bool32.tgl name="Bit 1" value="0"/>
-         <bool32.tgl name="Bit 9" value="0"/>
-         <bool32.tgl name="Bit 2" value="0"/>
-         <bool32.tgl name="Bit 10" value="0"/>
-         <bool32.tgl name="Bit 3" value="0"/>
-         <bool32.tgl name="Bit 11" value="1"/>
-         <bool32.tgl name="Bit 4" value="0"/>
-         <bool32.tgl name="Bit 12" value="0"/>
-         <bool32.tgl name="Bit 5" value="1"/>
-         <bool32.tgl name="Bit 13" value="0"/>
-         <bool32.tgl name="Bit 6" value="1"/>
-         <bool32.tgl name="Bit 14" value="0"/>
-         <bool32.tgl name="Bit 7" value="0"/>
-         <bool32.tgl name="Bit 15" value="1"/>
-      </params>
-      <attribs/>
-   </obj>
-   <obj type="disp/i" uuid="5e35fd0c62d81e70017289250cf28edd26e19e4a" name="i_1" x="154" y="28">
-      <params/>
-      <attribs/>
-   </obj>
    <obj type="ctrl/button" uuid="ef3d13774349df85aa9bfecf30dbc91ab8488b3f" name="Load Seed" x="154" y="98">
       <params>
          <bool32.mom name="b" value="0"/>
@@ -36,6 +11,12 @@
          <frac32.s.map name="d" value="-22.0"/>
       </params>
       <attribs/>
+   </obj>
+   <obj type="const/i" uuid="e202f44b2df17ae0b3e663b98ea6b14c8ff00408" name="i_1" x="42" y="140">
+      <params/>
+      <attribs>
+         <spinner attributeName="value" value="292"/>
+      </attribs>
    </obj>
    <obj type="ctrl/toggle" uuid="42b8134fa729d54bfc8d62d6ef3fa99498c1de99" name="Direction" x="154" y="168">
       <params>
@@ -87,7 +68,7 @@
       </params>
       <attribs/>
    </obj>
-   <obj type="toneburst/pattern/turing" uuid="f4aa3eb926415b6fc796e993dde554a273a022ac" name="turing_1" x="238" y="252">
+   <obj type="toneburst/pattern/turing" uuid="f4aa3eb926415b6fc796e993dde554a273a022ac" name="Turing" x="238" y="252">
       <params>
          <frac32.s.map name="rand" value="-64.0"/>
       </params>
@@ -147,7 +128,7 @@
       <net>
          <source obj="Clock" outlet="wave"/>
          <dest obj="ad_1" inlet="trig"/>
-         <dest obj="turing_1" inlet="clock"/>
+         <dest obj="Turing" inlet="clock"/>
       </net>
       <net>
          <source obj="saw_2" outlet="wave"/>
@@ -174,12 +155,7 @@
          <dest obj="glide_1" inlet="en"/>
       </net>
       <net>
-         <source obj="Seed Subpatch" outlet="Seed"/>
-         <dest obj="i_1" inlet="in"/>
-         <dest obj="turing_1" inlet="seed"/>
-      </net>
-      <net>
-         <source obj="turing_1" outlet="pattern"/>
+         <source obj="Turing" outlet="pattern"/>
          <dest obj="Pattern Scope" inlet="in"/>
          <dest obj="*_2" inlet="in"/>
       </net>
@@ -197,32 +173,36 @@
          <dest obj="note_1" inlet="note"/>
       </net>
       <net>
-         <source obj="turing_1" outlet="state"/>
+         <source obj="Turing" outlet="state"/>
          <dest obj="hex_1" inlet="in"/>
       </net>
       <net>
-         <source obj="turing_1" outlet="flip"/>
+         <source obj="Turing" outlet="flip"/>
          <dest obj="Bit-Flip Scope" inlet="in"/>
       </net>
       <net>
          <source obj="Noise" outlet="wave"/>
-         <dest obj="turing_1" inlet="noise"/>
+         <dest obj="Turing" inlet="noise"/>
       </net>
       <net>
          <source obj="Reset Count" outlet="o"/>
-         <dest obj="turing_1" inlet="reset"/>
+         <dest obj="Turing" inlet="reset"/>
       </net>
       <net>
          <source obj="Flip Bit 0" outlet="o"/>
-         <dest obj="turing_1" inlet="flip"/>
+         <dest obj="Turing" inlet="flip"/>
       </net>
       <net>
          <source obj="Load Seed" outlet="o"/>
-         <dest obj="turing_1" inlet="load"/>
+         <dest obj="Turing" inlet="load"/>
       </net>
       <net>
          <source obj="Direction" outlet="o"/>
-         <dest obj="turing_1" inlet="direction"/>
+         <dest obj="Turing" inlet="direction"/>
+      </net>
+      <net>
+         <source obj="i_1" outlet="out"/>
+         <dest obj="Turing" inlet="seed"/>
       </net>
    </nets>
    <settings>
