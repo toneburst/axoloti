@@ -7,19 +7,7 @@
       </params>
       <attribs/>
    </obj>
-   <obj type="ctrl/toggle" uuid="42b8134fa729d54bfc8d62d6ef3fa99498c1de99" name="Bit 8" x="112" y="28">
-      <params>
-         <bool32.tgl name="b" onParent="true" value="1"/>
-      </params>
-      <attribs/>
-   </obj>
    <obj type="ctrl/toggle" uuid="42b8134fa729d54bfc8d62d6ef3fa99498c1de99" name="Bit 1" x="42" y="84">
-      <params>
-         <bool32.tgl name="b" onParent="true" value="0"/>
-      </params>
-      <attribs/>
-   </obj>
-   <obj type="ctrl/toggle" uuid="42b8134fa729d54bfc8d62d6ef3fa99498c1de99" name="Bit 9" x="112" y="84">
       <params>
          <bool32.tgl name="b" onParent="true" value="0"/>
       </params>
@@ -40,31 +28,13 @@
       </params>
       <attribs/>
    </obj>
-   <obj type="ctrl/toggle" uuid="42b8134fa729d54bfc8d62d6ef3fa99498c1de99" name="Bit 10" x="112" y="140">
-      <params>
-         <bool32.tgl name="b" onParent="true" value="1"/>
-      </params>
-      <attribs/>
-   </obj>
    <obj type="ctrl/toggle" uuid="42b8134fa729d54bfc8d62d6ef3fa99498c1de99" name="Bit 3" x="42" y="196">
       <params>
          <bool32.tgl name="b" onParent="true" value="1"/>
       </params>
       <attribs/>
    </obj>
-   <obj type="ctrl/toggle" uuid="42b8134fa729d54bfc8d62d6ef3fa99498c1de99" name="Bit 11" x="112" y="196">
-      <params>
-         <bool32.tgl name="b" onParent="true" value="0"/>
-      </params>
-      <attribs/>
-   </obj>
    <obj type="ctrl/toggle" uuid="42b8134fa729d54bfc8d62d6ef3fa99498c1de99" name="Bit 4" x="42" y="252">
-      <params>
-         <bool32.tgl name="b" onParent="true" value="0"/>
-      </params>
-      <attribs/>
-   </obj>
-   <obj type="ctrl/toggle" uuid="42b8134fa729d54bfc8d62d6ef3fa99498c1de99" name="Bit 12" x="112" y="252">
       <params>
          <bool32.tgl name="b" onParent="true" value="0"/>
       </params>
@@ -76,19 +46,7 @@
       </params>
       <attribs/>
    </obj>
-   <obj type="ctrl/toggle" uuid="42b8134fa729d54bfc8d62d6ef3fa99498c1de99" name="Bit 13" x="112" y="308">
-      <params>
-         <bool32.tgl name="b" onParent="true" value="0"/>
-      </params>
-      <attribs/>
-   </obj>
    <obj type="ctrl/toggle" uuid="42b8134fa729d54bfc8d62d6ef3fa99498c1de99" name="Bit 6" x="42" y="364">
-      <params>
-         <bool32.tgl name="b" onParent="true" value="0"/>
-      </params>
-      <attribs/>
-   </obj>
-   <obj type="ctrl/toggle" uuid="42b8134fa729d54bfc8d62d6ef3fa99498c1de99" name="Bit 14" x="112" y="364">
       <params>
          <bool32.tgl name="b" onParent="true" value="0"/>
       </params>
@@ -100,7 +58,49 @@
       </params>
       <attribs/>
    </obj>
-   <obj type="ctrl/toggle" uuid="42b8134fa729d54bfc8d62d6ef3fa99498c1de99" name="Bit 15" x="112" y="420">
+   <obj type="ctrl/toggle" uuid="42b8134fa729d54bfc8d62d6ef3fa99498c1de99" name="Bit 8" x="42" y="476">
+      <params>
+         <bool32.tgl name="b" onParent="true" value="1"/>
+      </params>
+      <attribs/>
+   </obj>
+   <obj type="ctrl/toggle" uuid="42b8134fa729d54bfc8d62d6ef3fa99498c1de99" name="Bit 9" x="42" y="532">
+      <params>
+         <bool32.tgl name="b" onParent="true" value="0"/>
+      </params>
+      <attribs/>
+   </obj>
+   <obj type="ctrl/toggle" uuid="42b8134fa729d54bfc8d62d6ef3fa99498c1de99" name="Bit 10" x="42" y="588">
+      <params>
+         <bool32.tgl name="b" onParent="true" value="1"/>
+      </params>
+      <attribs/>
+   </obj>
+   <obj type="ctrl/toggle" uuid="42b8134fa729d54bfc8d62d6ef3fa99498c1de99" name="Bit 11" x="42" y="644">
+      <params>
+         <bool32.tgl name="b" onParent="true" value="0"/>
+      </params>
+      <attribs/>
+   </obj>
+   <obj type="ctrl/toggle" uuid="42b8134fa729d54bfc8d62d6ef3fa99498c1de99" name="Bit 12" x="42" y="700">
+      <params>
+         <bool32.tgl name="b" onParent="true" value="0"/>
+      </params>
+      <attribs/>
+   </obj>
+   <obj type="ctrl/toggle" uuid="42b8134fa729d54bfc8d62d6ef3fa99498c1de99" name="Bit 13" x="42" y="756">
+      <params>
+         <bool32.tgl name="b" onParent="true" value="0"/>
+      </params>
+      <attribs/>
+   </obj>
+   <obj type="ctrl/toggle" uuid="42b8134fa729d54bfc8d62d6ef3fa99498c1de99" name="Bit 14" x="42" y="812">
+      <params>
+         <bool32.tgl name="b" onParent="true" value="0"/>
+      </params>
+      <attribs/>
+   </obj>
+   <obj type="ctrl/toggle" uuid="42b8134fa729d54bfc8d62d6ef3fa99498c1de99" name="Bit 15" x="42" y="868">
       <params>
          <bool32.tgl name="b" onParent="true" value="0"/>
       </params>
