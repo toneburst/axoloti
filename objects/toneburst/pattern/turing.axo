@@ -1,5 +1,5 @@
 <objdefs appVersion="1.0.8">
-   <obj.normal id="toneburst/pattern/turing" uuid="f4aa3eb926415b6fc796e993dde554a273a022ac">
+   <obj.normal id="turing" uuid="f4aa3eb926415b6fc796e993dde554a273a022ac">
       <sDescription>16-Bit Shift-register pattern generator, based on Music Thing Turing machine Eurorack module, with extras</sDescription>
       <author>toneburst</author>
       <license>BSD</license>
