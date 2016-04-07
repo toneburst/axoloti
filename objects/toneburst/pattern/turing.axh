@@ -20,7 +20,7 @@
       </params>
       <attribs/>
       <object class="axoloti.object.AxoObjectFromPatch" id="patch/object" uuid="3690935b-f648-48be-9c3e-39bceae3cd2d">
-         <sDescription></sDescription>
+         <sDescription>Make Turing seed</sDescription>
          <inlets/>
          <outlets>
             <int32 name="Seed" description="Seed"/>
@@ -166,7 +166,7 @@ uint16_t setbitx(uint16_t word, uint8_t x, bool val) {
     return result;
 }
 
-           
+
   public: void Init(attr_parent * _parent) {
 parent = _parent;
 }
@@ -209,7 +209,7 @@ int32_t & outlet_seed  ){
       seed = setbitx(seed, 15, inlet_bit15);
       outlet_seed = seed;
 
-    
+
 }
 }
 ;class instanceSeed{
@@ -796,7 +796,7 @@ void ApplyPreset(int index){
    }
 }
    static PExModulationTarget_t * GetModulationTable(void){
-    static const PExModulationTarget_t PExModulationSources[NMODULATIONSOURCES][NMODULATIONTARGETS] = 
+    static const PExModulationTarget_t PExModulationSources[NMODULATIONSOURCES][NMODULATIONTARGETS] =
 {{{-1,0},{-1,0},{-1,0},{-1,0},{-1,0},{-1,0},{-1,0},{-1,0}},
 {{-1,0},{-1,0},{-1,0},{-1,0},{-1,0},{-1,0},{-1,0},{-1,0}},
 {{-1,0},{-1,0},{-1,0},{-1,0},{-1,0},{-1,0},{-1,0},{-1,0}},
