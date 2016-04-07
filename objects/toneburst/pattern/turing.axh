@@ -1,1058 +1,124 @@
 <patch-1.0 appVersion="1.0.8">
-   <patchobj type="patch/object" uuid="d9f44795bfd6115f91bc84d9b38087afd0709f6e" name="object_1" x="42" y="14">
-      <params>
-         <bool32.tgl name="Bit 0" value="0"/>
-         <bool32.tgl name="Bit 1" value="0"/>
-         <bool32.tgl name="Bit 2" value="0"/>
-         <bool32.tgl name="Bit 3" value="0"/>
-         <bool32.tgl name="Bit 4" value="0"/>
-         <bool32.tgl name="Bit 5" value="0"/>
-         <bool32.tgl name="Bit 6" value="0"/>
-         <bool32.tgl name="Bit 8" value="0"/>
-         <bool32.tgl name="Bit 7" value="0"/>
-         <bool32.tgl name="Bit 9" value="0"/>
-         <bool32.tgl name="Bit 10" value="0"/>
-         <bool32.tgl name="Bit 11" value="0"/>
-         <bool32.tgl name="Bit 12" value="0"/>
-         <bool32.tgl name="Bit 13" value="0"/>
-         <bool32.tgl name="Bit 14" value="0"/>
-         <bool32.tgl name="Bit 15" value="0"/>
-      </params>
-      <attribs/>
-      <object class="axoloti.object.AxoObjectFromPatch" id="patch/object" uuid="be7cfa2e-c377-4259-9a3c-9f8a17b25c3e">
-         <sDescription></sDescription>
-         <inlets/>
-         <outlets>
-            <int32 name="Seed" description="Seed"/>
-         </outlets>
-         <displays/>
-         <params>
-            <bool32.tgl name="Bit 0"/>
-            <bool32.tgl name="Bit 1"/>
-            <bool32.tgl name="Bit 2"/>
-            <bool32.tgl name="Bit 3"/>
-            <bool32.tgl name="Bit 4"/>
-            <bool32.tgl name="Bit 5"/>
-            <bool32.tgl name="Bit 6"/>
-            <bool32.tgl name="Bit 8"/>
-            <bool32.tgl name="Bit 7"/>
-            <bool32.tgl name="Bit 9"/>
-            <bool32.tgl name="Bit 10"/>
-            <bool32.tgl name="Bit 11"/>
-            <bool32.tgl name="Bit 12"/>
-            <bool32.tgl name="Bit 13"/>
-            <bool32.tgl name="Bit 14"/>
-            <bool32.tgl name="Bit 15"/>
-         </params>
-         <attribs/>
-         <includes/>
-         <depends/>
-         <code.declaration><![CDATA[    static const uint32_t NPEXCH = 16;
-    ParameterExchange_t PExch[NPEXCH];
-    int32_t displayVector[3];
-    static const uint32_t NPRESETS = 8;
-    static const uint32_t NPRESET_ENTRIES = 32;
-    static const uint32_t NMODULATIONSOURCES = 8;
-    static const uint32_t NMODULATIONTARGETS = 8;
-    int32_t PExModulationPrevVal[1][NMODULATIONSOURCES];
-/* modsource defines */
-/* parameter instance indices */
-static const int PARAM_INDEX_Bit_space_0_b = 0;
-static const int PARAM_INDEX_Bit_space_8_b = 1;
-static const int PARAM_INDEX_Bit_space_1_b = 2;
-static const int PARAM_INDEX_Bit_space_9_b = 3;
-static const int PARAM_INDEX_Bit_space_2_b = 4;
-static const int PARAM_INDEX_Bit_space_10_b = 5;
-static const int PARAM_INDEX_Bit_space_3_b = 6;
-static const int PARAM_INDEX_Bit_space_11_b = 7;
-static const int PARAM_INDEX_Bit_space_4_b = 8;
-static const int PARAM_INDEX_Bit_space_12_b = 9;
-static const int PARAM_INDEX_Bit_space_5_b = 10;
-static const int PARAM_INDEX_Bit_space_13_b = 11;
-static const int PARAM_INDEX_Bit_space_6_b = 12;
-static const int PARAM_INDEX_Bit_space_14_b = 13;
-static const int PARAM_INDEX_Bit_space_7_b = 14;
-static const int PARAM_INDEX_Bit_space_15_b = 15;
-/* controller classes */
-/* object classes */
-class instanceBit_space_0{
-  public: // v1
-  attr_parent *parent;
-KeyValuePair KVP_instanceBit_space_0_b;
-  public: void Init(attr_parent * _parent) {
-parent = _parent;
-    parent->PExch[PARAM_INDEX_Bit_space_0_b].signals = 0;
-    SetKVP_IPVP(&KVP_instanceBit_space_0_b,ObjectKvpRoot, "KVP_instanceBit_space_0_b" ,&parent->PExch[PARAM_INDEX_Bit_space_0_b],0,65535);
-  KVP_RegisterObject(&KVP_instanceBit_space_0_b);
-}
-  public: void Dispose() {
-}
-  public: void dsp (int32_t  & outlet_o,
-int param_b  ){
-outlet_o=param_b;
-
-}
-}
-;class instanceBit_space_8{
-  public: // v1
-  attr_parent *parent;
-KeyValuePair KVP_instanceBit_space_8_b;
-  public: void Init(attr_parent * _parent) {
-parent = _parent;
-    parent->PExch[PARAM_INDEX_Bit_space_8_b].signals = 0;
-    SetKVP_IPVP(&KVP_instanceBit_space_8_b,ObjectKvpRoot, "KVP_instanceBit_space_8_b" ,&parent->PExch[PARAM_INDEX_Bit_space_8_b],0,65535);
-  KVP_RegisterObject(&KVP_instanceBit_space_8_b);
-}
-  public: void Dispose() {
-}
-  public: void dsp (int32_t  & outlet_o,
-int param_b  ){
-outlet_o=param_b;
-
-}
-}
-;class instanceBit_space_1{
-  public: // v1
-  attr_parent *parent;
-KeyValuePair KVP_instanceBit_space_1_b;
-  public: void Init(attr_parent * _parent) {
-parent = _parent;
-    parent->PExch[PARAM_INDEX_Bit_space_1_b].signals = 0;
-    SetKVP_IPVP(&KVP_instanceBit_space_1_b,ObjectKvpRoot, "KVP_instanceBit_space_1_b" ,&parent->PExch[PARAM_INDEX_Bit_space_1_b],0,65535);
-  KVP_RegisterObject(&KVP_instanceBit_space_1_b);
-}
-  public: void Dispose() {
-}
-  public: void dsp (int32_t  & outlet_o,
-int param_b  ){
-outlet_o=param_b;
-
-}
-}
-;class instanceBit_space_9{
-  public: // v1
-  attr_parent *parent;
-KeyValuePair KVP_instanceBit_space_9_b;
-  public: void Init(attr_parent * _parent) {
-parent = _parent;
-    parent->PExch[PARAM_INDEX_Bit_space_9_b].signals = 0;
-    SetKVP_IPVP(&KVP_instanceBit_space_9_b,ObjectKvpRoot, "KVP_instanceBit_space_9_b" ,&parent->PExch[PARAM_INDEX_Bit_space_9_b],0,65535);
-  KVP_RegisterObject(&KVP_instanceBit_space_9_b);
-}
-  public: void Dispose() {
-}
-  public: void dsp (int32_t  & outlet_o,
-int param_b  ){
-outlet_o=param_b;
-
-}
-}
-;class instanceturing__1{
-  public: // v1
-  attr_parent *parent;
-
-
-uint16_t seed = 0;
-
-///////////////////////
-// Utility Functions //
-///////////////////////
-
-// http://stackoverflow.com/questions/47981/how-do-you-set-clear-and-toggle-a-single-bit-in-c-c
-
-uint16_t setbitx(uint16_t word, uint8_t x, bool val) {
-    uint16_t result = word;
-    result ^= (-val ^ result) & (1 << x);
-    return result;
-}
-
-           
-  public: void Init(attr_parent * _parent) {
-parent = _parent;
-}
-  public: void Dispose() {
-}
-  public: void dsp (const int32_t  inlet_bit0,
-const int32_t  inlet_bit1,
-const int32_t  inlet_bit2,
-const int32_t  inlet_bit3,
-const int32_t  inlet_bit4,
-const int32_t  inlet_bit5,
-const int32_t  inlet_bit6,
-const int32_t  inlet_bit7,
-const int32_t  inlet_bit8,
-const int32_t  inlet_bit9,
-const int32_t  inlet_bit10,
-const int32_t  inlet_bit11,
-const int32_t  inlet_bit12,
-const int32_t  inlet_bit13,
-const int32_t  inlet_bit14,
-const int32_t  inlet_bit15,
-int32_t & outlet_seed  ){
-
-
-      seed = setbitx(seed, 0, inlet_bit0);
-      seed = setbitx(seed, 1, inlet_bit1);
-      seed = setbitx(seed, 2, inlet_bit2);
-      seed = setbitx(seed, 3, inlet_bit3);
-      seed = setbitx(seed, 4, inlet_bit4);
-      seed = setbitx(seed, 5, inlet_bit5);
-      seed = setbitx(seed, 6, inlet_bit6);
-      seed = setbitx(seed, 7, inlet_bit7);
-      seed = setbitx(seed, 8, inlet_bit8);
-      seed = setbitx(seed, 9, inlet_bit9);
-      seed = setbitx(seed, 10, inlet_bit10);
-      seed = setbitx(seed, 11, inlet_bit11);
-      seed = setbitx(seed, 12, inlet_bit12);
-      seed = setbitx(seed, 13, inlet_bit13);
-      seed = setbitx(seed, 14, inlet_bit14);
-      seed = setbitx(seed, 15, inlet_bit15);
-      outlet_seed = seed;
-
-    
-}
-}
-;class instanceSeed{
-  public: // v1
-  attr_parent *parent;
-int32_t _outlet;
-
-  public: void Init(attr_parent * _parent) {
-parent = _parent;
-}
-  public: void Dispose() {
-}
-  public: void dsp (const int32_t inlet_outlet  ){
-  _outlet = inlet_outlet;
-
-}
-}
-;class instanceBit_space_2{
-  public: // v1
-  attr_parent *parent;
-KeyValuePair KVP_instanceBit_space_2_b;
-  public: void Init(attr_parent * _parent) {
-parent = _parent;
-    parent->PExch[PARAM_INDEX_Bit_space_2_b].signals = 0;
-    SetKVP_IPVP(&KVP_instanceBit_space_2_b,ObjectKvpRoot, "KVP_instanceBit_space_2_b" ,&parent->PExch[PARAM_INDEX_Bit_space_2_b],0,65535);
-  KVP_RegisterObject(&KVP_instanceBit_space_2_b);
-}
-  public: void Dispose() {
-}
-  public: void dsp (int32_t  & outlet_o,
-int param_b  ){
-outlet_o=param_b;
-
-}
-}
-;class instanceBit_space_10{
-  public: // v1
-  attr_parent *parent;
-KeyValuePair KVP_instanceBit_space_10_b;
-  public: void Init(attr_parent * _parent) {
-parent = _parent;
-    parent->PExch[PARAM_INDEX_Bit_space_10_b].signals = 0;
-    SetKVP_IPVP(&KVP_instanceBit_space_10_b,ObjectKvpRoot, "KVP_instanceBit_space_10_b" ,&parent->PExch[PARAM_INDEX_Bit_space_10_b],0,65535);
-  KVP_RegisterObject(&KVP_instanceBit_space_10_b);
-}
-  public: void Dispose() {
-}
-  public: void dsp (int32_t  & outlet_o,
-int param_b  ){
-outlet_o=param_b;
-
-}
-}
-;class instanceBit_space_3{
-  public: // v1
-  attr_parent *parent;
-KeyValuePair KVP_instanceBit_space_3_b;
-  public: void Init(attr_parent * _parent) {
-parent = _parent;
-    parent->PExch[PARAM_INDEX_Bit_space_3_b].signals = 0;
-    SetKVP_IPVP(&KVP_instanceBit_space_3_b,ObjectKvpRoot, "KVP_instanceBit_space_3_b" ,&parent->PExch[PARAM_INDEX_Bit_space_3_b],0,65535);
-  KVP_RegisterObject(&KVP_instanceBit_space_3_b);
-}
-  public: void Dispose() {
-}
-  public: void dsp (int32_t  & outlet_o,
-int param_b  ){
-outlet_o=param_b;
-
-}
-}
-;class instanceBit_space_11{
-  public: // v1
-  attr_parent *parent;
-KeyValuePair KVP_instanceBit_space_11_b;
-  public: void Init(attr_parent * _parent) {
-parent = _parent;
-    parent->PExch[PARAM_INDEX_Bit_space_11_b].signals = 0;
-    SetKVP_IPVP(&KVP_instanceBit_space_11_b,ObjectKvpRoot, "KVP_instanceBit_space_11_b" ,&parent->PExch[PARAM_INDEX_Bit_space_11_b],0,65535);
-  KVP_RegisterObject(&KVP_instanceBit_space_11_b);
-}
-  public: void Dispose() {
-}
-  public: void dsp (int32_t  & outlet_o,
-int param_b  ){
-outlet_o=param_b;
-
-}
-}
-;class instanceBit_space_4{
-  public: // v1
-  attr_parent *parent;
-KeyValuePair KVP_instanceBit_space_4_b;
-  public: void Init(attr_parent * _parent) {
-parent = _parent;
-    parent->PExch[PARAM_INDEX_Bit_space_4_b].signals = 0;
-    SetKVP_IPVP(&KVP_instanceBit_space_4_b,ObjectKvpRoot, "KVP_instanceBit_space_4_b" ,&parent->PExch[PARAM_INDEX_Bit_space_4_b],0,65535);
-  KVP_RegisterObject(&KVP_instanceBit_space_4_b);
-}
-  public: void Dispose() {
-}
-  public: void dsp (int32_t  & outlet_o,
-int param_b  ){
-outlet_o=param_b;
-
-}
-}
-;class instanceBit_space_12{
-  public: // v1
-  attr_parent *parent;
-KeyValuePair KVP_instanceBit_space_12_b;
-  public: void Init(attr_parent * _parent) {
-parent = _parent;
-    parent->PExch[PARAM_INDEX_Bit_space_12_b].signals = 0;
-    SetKVP_IPVP(&KVP_instanceBit_space_12_b,ObjectKvpRoot, "KVP_instanceBit_space_12_b" ,&parent->PExch[PARAM_INDEX_Bit_space_12_b],0,65535);
-  KVP_RegisterObject(&KVP_instanceBit_space_12_b);
-}
-  public: void Dispose() {
-}
-  public: void dsp (int32_t  & outlet_o,
-int param_b  ){
-outlet_o=param_b;
-
-}
-}
-;class instanceBit_space_5{
-  public: // v1
-  attr_parent *parent;
-KeyValuePair KVP_instanceBit_space_5_b;
-  public: void Init(attr_parent * _parent) {
-parent = _parent;
-    parent->PExch[PARAM_INDEX_Bit_space_5_b].signals = 0;
-    SetKVP_IPVP(&KVP_instanceBit_space_5_b,ObjectKvpRoot, "KVP_instanceBit_space_5_b" ,&parent->PExch[PARAM_INDEX_Bit_space_5_b],0,65535);
-  KVP_RegisterObject(&KVP_instanceBit_space_5_b);
-}
-  public: void Dispose() {
-}
-  public: void dsp (int32_t  & outlet_o,
-int param_b  ){
-outlet_o=param_b;
-
-}
-}
-;class instanceBit_space_13{
-  public: // v1
-  attr_parent *parent;
-KeyValuePair KVP_instanceBit_space_13_b;
-  public: void Init(attr_parent * _parent) {
-parent = _parent;
-    parent->PExch[PARAM_INDEX_Bit_space_13_b].signals = 0;
-    SetKVP_IPVP(&KVP_instanceBit_space_13_b,ObjectKvpRoot, "KVP_instanceBit_space_13_b" ,&parent->PExch[PARAM_INDEX_Bit_space_13_b],0,65535);
-  KVP_RegisterObject(&KVP_instanceBit_space_13_b);
-}
-  public: void Dispose() {
-}
-  public: void dsp (int32_t  & outlet_o,
-int param_b  ){
-outlet_o=param_b;
-
-}
-}
-;class instanceBit_space_6{
-  public: // v1
-  attr_parent *parent;
-KeyValuePair KVP_instanceBit_space_6_b;
-  public: void Init(attr_parent * _parent) {
-parent = _parent;
-    parent->PExch[PARAM_INDEX_Bit_space_6_b].signals = 0;
-    SetKVP_IPVP(&KVP_instanceBit_space_6_b,ObjectKvpRoot, "KVP_instanceBit_space_6_b" ,&parent->PExch[PARAM_INDEX_Bit_space_6_b],0,65535);
-  KVP_RegisterObject(&KVP_instanceBit_space_6_b);
-}
-  public: void Dispose() {
-}
-  public: void dsp (int32_t  & outlet_o,
-int param_b  ){
-outlet_o=param_b;
-
-}
-}
-;class instanceBit_space_14{
-  public: // v1
-  attr_parent *parent;
-KeyValuePair KVP_instanceBit_space_14_b;
-  public: void Init(attr_parent * _parent) {
-parent = _parent;
-    parent->PExch[PARAM_INDEX_Bit_space_14_b].signals = 0;
-    SetKVP_IPVP(&KVP_instanceBit_space_14_b,ObjectKvpRoot, "KVP_instanceBit_space_14_b" ,&parent->PExch[PARAM_INDEX_Bit_space_14_b],0,65535);
-  KVP_RegisterObject(&KVP_instanceBit_space_14_b);
-}
-  public: void Dispose() {
-}
-  public: void dsp (int32_t  & outlet_o,
-int param_b  ){
-outlet_o=param_b;
-
-}
-}
-;class instanceBit_space_7{
-  public: // v1
-  attr_parent *parent;
-KeyValuePair KVP_instanceBit_space_7_b;
-  public: void Init(attr_parent * _parent) {
-parent = _parent;
-    parent->PExch[PARAM_INDEX_Bit_space_7_b].signals = 0;
-    SetKVP_IPVP(&KVP_instanceBit_space_7_b,ObjectKvpRoot, "KVP_instanceBit_space_7_b" ,&parent->PExch[PARAM_INDEX_Bit_space_7_b],0,65535);
-  KVP_RegisterObject(&KVP_instanceBit_space_7_b);
-}
-  public: void Dispose() {
-}
-  public: void dsp (int32_t  & outlet_o,
-int param_b  ){
-outlet_o=param_b;
-
-}
-}
-;class instanceBit_space_15{
-  public: // v1
-  attr_parent *parent;
-KeyValuePair KVP_instanceBit_space_15_b;
-  public: void Init(attr_parent * _parent) {
-parent = _parent;
-    parent->PExch[PARAM_INDEX_Bit_space_15_b].signals = 0;
-    SetKVP_IPVP(&KVP_instanceBit_space_15_b,ObjectKvpRoot, "KVP_instanceBit_space_15_b" ,&parent->PExch[PARAM_INDEX_Bit_space_15_b],0,65535);
-  KVP_RegisterObject(&KVP_instanceBit_space_15_b);
-}
-  public: void Dispose() {
-}
-  public: void dsp (int32_t  & outlet_o,
-int param_b  ){
-outlet_o=param_b;
-
-}
-}
-;/* controller instances */
-/* object instances */
-     instanceBit_space_0 instanceBit_space_0_i;
-     instanceBit_space_8 instanceBit_space_8_i;
-     instanceBit_space_1 instanceBit_space_1_i;
-     instanceBit_space_9 instanceBit_space_9_i;
-     instanceturing__1 instanceturing__1_i;
-     instanceSeed instanceSeed_i;
-     instanceBit_space_2 instanceBit_space_2_i;
-     instanceBit_space_10 instanceBit_space_10_i;
-     instanceBit_space_3 instanceBit_space_3_i;
-     instanceBit_space_11 instanceBit_space_11_i;
-     instanceBit_space_4 instanceBit_space_4_i;
-     instanceBit_space_12 instanceBit_space_12_i;
-     instanceBit_space_5 instanceBit_space_5_i;
-     instanceBit_space_13 instanceBit_space_13_i;
-     instanceBit_space_6 instanceBit_space_6_i;
-     instanceBit_space_14 instanceBit_space_14_i;
-     instanceBit_space_7 instanceBit_space_7_i;
-     instanceBit_space_15 instanceBit_space_15_i;
-/* net latches */
-    int32_t  net3Latch;
-    int32_t  net4Latch;
-    int32_t  net5Latch;
-    int32_t  net6Latch;
-    int32_t  net7Latch;
-    int32_t  net8Latch;
-    int32_t  net11Latch;
-    int32_t  net12Latch;
-    int32_t  net13Latch;
-    int32_t  net14Latch;
-    int32_t  net15Latch;
-    int32_t  net16Latch;
-static const int polyIndex = 0;
-   static int32_t * GetInitParams(void){
-      static const int32_t p[16]= {
-      1,
-      1,
-      0,
-      0,
-      0,
-      1,
-      1,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      1,
-      0
-      };
-      return (int32_t *)&p[0];
-   }   static const int32_t * GetPresets(void){
-      static const int32_t p[NPRESETS][NPRESET_ENTRIES][2] = {
-         {
-           {-1,0},
-           {-1,0},
-           {-1,0},
-           {-1,0},
-           {-1,0},
-           {-1,0},
-           {-1,0},
-           {-1,0},
-           {-1,0},
-           {-1,0},
-           {-1,0},
-           {-1,0},
-           {-1,0},
-           {-1,0},
-           {-1,0},
-           {-1,0},
-           {-1,0},
-           {-1,0},
-           {-1,0},
-           {-1,0},
-           {-1,0},
-           {-1,0},
-           {-1,0},
-           {-1,0},
-           {-1,0},
-           {-1,0},
-           {-1,0},
-           {-1,0},
-           {-1,0},
-           {-1,0},
-           {-1,0},
-           {-1,0}
-         },
-         {
-           {-1,0},
-           {-1,0},
-           {-1,0},
-           {-1,0},
-           {-1,0},
-           {-1,0},
-           {-1,0},
-           {-1,0},
-           {-1,0},
-           {-1,0},
-           {-1,0},
-           {-1,0},
-           {-1,0},
-           {-1,0},
-           {-1,0},
-           {-1,0},
-           {-1,0},
-           {-1,0},
-           {-1,0},
-           {-1,0},
-           {-1,0},
-           {-1,0},
-           {-1,0},
-           {-1,0},
-           {-1,0},
-           {-1,0},
-           {-1,0},
-           {-1,0},
-           {-1,0},
-           {-1,0},
-           {-1,0},
-           {-1,0}
-         },
-         {
-           {-1,0},
-           {-1,0},
-           {-1,0},
-           {-1,0},
-           {-1,0},
-           {-1,0},
-           {-1,0},
-           {-1,0},
-           {-1,0},
-           {-1,0},
-           {-1,0},
-           {-1,0},
-           {-1,0},
-           {-1,0},
-           {-1,0},
-           {-1,0},
-           {-1,0},
-           {-1,0},
-           {-1,0},
-           {-1,0},
-           {-1,0},
-           {-1,0},
-           {-1,0},
-           {-1,0},
-           {-1,0},
-           {-1,0},
-           {-1,0},
-           {-1,0},
-           {-1,0},
-           {-1,0},
-           {-1,0},
-           {-1,0}
-         },
-         {
-           {-1,0},
-           {-1,0},
-           {-1,0},
-           {-1,0},
-           {-1,0},
-           {-1,0},
-           {-1,0},
-           {-1,0},
-           {-1,0},
-           {-1,0},
-           {-1,0},
-           {-1,0},
-           {-1,0},
-           {-1,0},
-           {-1,0},
-           {-1,0},
-           {-1,0},
-           {-1,0},
-           {-1,0},
-           {-1,0},
-           {-1,0},
-           {-1,0},
-           {-1,0},
-           {-1,0},
-           {-1,0},
-           {-1,0},
-           {-1,0},
-           {-1,0},
-           {-1,0},
-           {-1,0},
-           {-1,0},
-           {-1,0}
-         },
-         {
-           {-1,0},
-           {-1,0},
-           {-1,0},
-           {-1,0},
-           {-1,0},
-           {-1,0},
-           {-1,0},
-           {-1,0},
-           {-1,0},
-           {-1,0},
-           {-1,0},
-           {-1,0},
-           {-1,0},
-           {-1,0},
-           {-1,0},
-           {-1,0},
-           {-1,0},
-           {-1,0},
-           {-1,0},
-           {-1,0},
-           {-1,0},
-           {-1,0},
-           {-1,0},
-           {-1,0},
-           {-1,0},
-           {-1,0},
-           {-1,0},
-           {-1,0},
-           {-1,0},
-           {-1,0},
-           {-1,0},
-           {-1,0}
-         },
-         {
-           {-1,0},
-           {-1,0},
-           {-1,0},
-           {-1,0},
-           {-1,0},
-           {-1,0},
-           {-1,0},
-           {-1,0},
-           {-1,0},
-           {-1,0},
-           {-1,0},
-           {-1,0},
-           {-1,0},
-           {-1,0},
-           {-1,0},
-           {-1,0},
-           {-1,0},
-           {-1,0},
-           {-1,0},
-           {-1,0},
-           {-1,0},
-           {-1,0},
-           {-1,0},
-           {-1,0},
-           {-1,0},
-           {-1,0},
-           {-1,0},
-           {-1,0},
-           {-1,0},
-           {-1,0},
-           {-1,0},
-           {-1,0}
-         },
-         {
-           {-1,0},
-           {-1,0},
-           {-1,0},
-           {-1,0},
-           {-1,0},
-           {-1,0},
-           {-1,0},
-           {-1,0},
-           {-1,0},
-           {-1,0},
-           {-1,0},
-           {-1,0},
-           {-1,0},
-           {-1,0},
-           {-1,0},
-           {-1,0},
-           {-1,0},
-           {-1,0},
-           {-1,0},
-           {-1,0},
-           {-1,0},
-           {-1,0},
-           {-1,0},
-           {-1,0},
-           {-1,0},
-           {-1,0},
-           {-1,0},
-           {-1,0},
-           {-1,0},
-           {-1,0},
-           {-1,0},
-           {-1,0}
-         },
-         {
-           {-1,0},
-           {-1,0},
-           {-1,0},
-           {-1,0},
-           {-1,0},
-           {-1,0},
-           {-1,0},
-           {-1,0},
-           {-1,0},
-           {-1,0},
-           {-1,0},
-           {-1,0},
-           {-1,0},
-           {-1,0},
-           {-1,0},
-           {-1,0},
-           {-1,0},
-           {-1,0},
-           {-1,0},
-           {-1,0},
-           {-1,0},
-           {-1,0},
-           {-1,0},
-           {-1,0},
-           {-1,0},
-           {-1,0},
-           {-1,0},
-           {-1,0},
-           {-1,0},
-           {-1,0},
-           {-1,0},
-           {-1,0}
-         }
-      };
-   return &p[0][0][0];
-   };
-void ApplyPreset(int index){
-   if (!index) {
-     int i;
-     int32_t *p = GetInitParams();
-     for(i=0;i<NPEXCH;i++){
-        PExParameterChange(&PExch[i],p[i],0xFFEF);
-     }
-   }
-   index--;
-   if (index < NPRESETS) {
-     PresetParamChange_t *pa = (PresetParamChange_t *)(GetPresets());
-     PresetParamChange_t *p = &pa[index*NPRESET_ENTRIES];
-       int i;
-       for(i=0;i<NPRESET_ENTRIES;i++){
-         PresetParamChange_t *pp = &p[i];
-         if ((pp->pexIndex>=0)&&(pp->pexIndex<NPEXCH)) {
-           PExParameterChange(&PExch[pp->pexIndex],pp->value,0xFFEF);         }
-         else break;
-       }
-   }
-}
-   static PExModulationTarget_t * GetModulationTable(void){
-    static const PExModulationTarget_t PExModulationSources[NMODULATIONSOURCES][NMODULATIONTARGETS] = 
-{{{-1,0},{-1,0},{-1,0},{-1,0},{-1,0},{-1,0},{-1,0},{-1,0}},
-{{-1,0},{-1,0},{-1,0},{-1,0},{-1,0},{-1,0},{-1,0},{-1,0}},
-{{-1,0},{-1,0},{-1,0},{-1,0},{-1,0},{-1,0},{-1,0},{-1,0}},
-{{-1,0},{-1,0},{-1,0},{-1,0},{-1,0},{-1,0},{-1,0},{-1,0}},
-{{-1,0},{-1,0},{-1,0},{-1,0},{-1,0},{-1,0},{-1,0},{-1,0}},
-{{-1,0},{-1,0},{-1,0},{-1,0},{-1,0},{-1,0},{-1,0},{-1,0}},
-{{-1,0},{-1,0},{-1,0},{-1,0},{-1,0},{-1,0},{-1,0},{-1,0}},
-{{-1,0},{-1,0},{-1,0},{-1,0},{-1,0},{-1,0},{-1,0},{-1,0}}};
-   return (PExModulationTarget_t *)&PExModulationSources[0][0];
-   };
-]]></code.declaration>
-         <code.init><![CDATA[   int i;
-   int j;
-   const int32_t *p;
-   p = GetInitParams();
-   for(j=0;j<16;j++){
-      PExch[j].value = p[j];
-      PExch[j].modvalue = p[j];
-      PExch[j].signals = 0;
-      PExch[j].pfunction = 0;
-   }
-   int32_t *pp = &PExModulationPrevVal[0][0];
-   for(j=0;j<attr_poly*NMODULATIONSOURCES;j++){
-      *pp = 0; pp++;
-   }
-     displayVector[0] = 0x446F7841;
-     displayVector[1] = 0;
-     displayVector[2] = 0;
-   instanceBit_space_0_i.Init(this );
-   instanceBit_space_8_i.Init(this );
-   instanceBit_space_1_i.Init(this );
-   instanceBit_space_9_i.Init(this );
-   instanceturing__1_i.Init(this );
-   instanceSeed_i.Init(this );
-   instanceBit_space_2_i.Init(this );
-   instanceBit_space_10_i.Init(this );
-   instanceBit_space_3_i.Init(this );
-   instanceBit_space_11_i.Init(this );
-   instanceBit_space_4_i.Init(this );
-   instanceBit_space_12_i.Init(this );
-   instanceBit_space_5_i.Init(this );
-   instanceBit_space_13_i.Init(this );
-   instanceBit_space_6_i.Init(this );
-   instanceBit_space_14_i.Init(this );
-   instanceBit_space_7_i.Init(this );
-   instanceBit_space_15_i.Init(this );
-      int k;
-      for (k = 0; k < NPEXCH; k++) {
-        if (PExch[k].pfunction){
-          (PExch[k].pfunction)(&PExch[k]);
-        } else {
-          PExch[k].finalvalue = PExch[k].value;
-        }
-      }
-]]></code.init>
-         <code.dispose><![CDATA[   instanceBit_space_15_i.Dispose();
-   instanceBit_space_7_i.Dispose();
-   instanceBit_space_14_i.Dispose();
-   instanceBit_space_6_i.Dispose();
-   instanceBit_space_13_i.Dispose();
-   instanceBit_space_5_i.Dispose();
-   instanceBit_space_12_i.Dispose();
-   instanceBit_space_4_i.Dispose();
-   instanceBit_space_11_i.Dispose();
-   instanceBit_space_3_i.Dispose();
-   instanceBit_space_10_i.Dispose();
-   instanceBit_space_2_i.Dispose();
-   instanceSeed_i.Dispose();
-   instanceturing__1_i.Dispose();
-   instanceBit_space_9_i.Dispose();
-   instanceBit_space_1_i.Dispose();
-   instanceBit_space_8_i.Dispose();
-   instanceBit_space_0_i.Dispose();
-]]></code.dispose>
-         <code.krate><![CDATA[int i; /*...*/
-//--------- <nets> -----------//
-    int32_t  net0;
-    int32_t net1;
-    int32_t  net2;
-    int32_t  net3;
-    int32_t  net4;
-    int32_t  net5;
-    int32_t  net6;
-    int32_t  net7;
-    int32_t  net8;
-    int32_t  net9;
-    int32_t  net10;
-    int32_t  net11;
-    int32_t  net12;
-    int32_t  net13;
-    int32_t  net14;
-    int32_t  net15;
-    int32_t  net16;
-//--------- </nets> ----------//
-//--------- <zero> ----------//
-  int32_t UNCONNECTED_OUTPUT;
-  static const int32_t UNCONNECTED_INPUT=0;
-  static const int32buffer zerobuffer = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
-  int32buffer UNCONNECTED_OUTPUT_BUFFER;
-//--------- </zero> ----------//
-//--------- <controller calls> ----------//
-//--------- <object calls> ----------//
-  instanceBit_space_0_i.dsp(net0, PExch[PARAM_INDEX_Bit_space_0_b].finalvalue);
-  instanceBit_space_8_i.dsp(net9, PExch[PARAM_INDEX_Bit_space_8_b].finalvalue);
-  instanceBit_space_1_i.dsp(net2, PExch[PARAM_INDEX_Bit_space_1_b].finalvalue);
-  instanceBit_space_9_i.dsp(net10, PExch[PARAM_INDEX_Bit_space_9_b].finalvalue);
-  instanceturing__1_i.dsp(net0, net2, net3Latch, net4Latch, net5Latch, net6Latch, net7Latch, net8Latch, net9, net10, net11Latch, net12Latch, net13Latch, net14Latch, net15Latch, net16Latch, net1);
-  instanceSeed_i.dsp(net1);
-  instanceBit_space_2_i.dsp(net3, PExch[PARAM_INDEX_Bit_space_2_b].finalvalue);
-  instanceBit_space_10_i.dsp(net11, PExch[PARAM_INDEX_Bit_space_10_b].finalvalue);
-  instanceBit_space_3_i.dsp(net4, PExch[PARAM_INDEX_Bit_space_3_b].finalvalue);
-  instanceBit_space_11_i.dsp(net12, PExch[PARAM_INDEX_Bit_space_11_b].finalvalue);
-  instanceBit_space_4_i.dsp(net5, PExch[PARAM_INDEX_Bit_space_4_b].finalvalue);
-  instanceBit_space_12_i.dsp(net13, PExch[PARAM_INDEX_Bit_space_12_b].finalvalue);
-  instanceBit_space_5_i.dsp(net6, PExch[PARAM_INDEX_Bit_space_5_b].finalvalue);
-  instanceBit_space_13_i.dsp(net14, PExch[PARAM_INDEX_Bit_space_13_b].finalvalue);
-  instanceBit_space_6_i.dsp(net7, PExch[PARAM_INDEX_Bit_space_6_b].finalvalue);
-  instanceBit_space_14_i.dsp(net15, PExch[PARAM_INDEX_Bit_space_14_b].finalvalue);
-  instanceBit_space_7_i.dsp(net8, PExch[PARAM_INDEX_Bit_space_7_b].finalvalue);
-  instanceBit_space_15_i.dsp(net16, PExch[PARAM_INDEX_Bit_space_15_b].finalvalue);
-//--------- </object calls> ----------//
-//--------- <net latch copy> ----------//
-net3Latch = net3;
-net4Latch = net4;
-net5Latch = net5;
-net6Latch = net6;
-net7Latch = net7;
-net8Latch = net8;
-net11Latch = net11;
-net12Latch = net12;
-net13Latch = net13;
-net14Latch = net14;
-net15Latch = net15;
-net16Latch = net16;
-//--------- </net latch copy> ----------//
-   outlet_Seed = instanceSeed_i._outlet;
-]]></code.krate>
-         <code.midihandler><![CDATA[if ( attr_mididevice > 0 && dev > 0 && attr_mididevice != dev) return;
-if ( attr_midiport > 0 && port > 0 && attr_midiport != port) return;
-]]></code.midihandler>
-      </object>
-   </patchobj>
-   <obj type="ctrl/button" uuid="ef3d13774349df85aa9bfecf30dbc91ab8488b3f" name="Load Seed" x="126" y="14">
-      <params>
-         <bool32.mom name="b" value="0"/>
-      </params>
-      <attribs/>
+   <obj type="const/i" uuid="e202f44b2df17ae0b3e663b98ea6b14c8ff00408" name="i_1" x="42" y="14">
+      <params/>
+      <attribs>
+         <spinner attributeName="value" value="400"/>
+      </attribs>
    </obj>
-   <obj type="env/ad" uuid="255cb0cd67470c7498f9c33b820facd26aa629ce" name="ad_1" x="924" y="112">
+   <obj type="env/ad" uuid="255cb0cd67470c7498f9c33b820facd26aa629ce" name="ad_1" x="938" y="14">
       <params>
          <frac32.s.map name="a" value="-64.0"/>
          <frac32.s.map name="d" value="-22.0"/>
       </params>
       <attribs/>
    </obj>
-   <obj type="gain/vca" uuid="a9f2dcd18043e2f47364e45cb8814f63c2a37c0d" name="vca_1" x="1036" y="224">
+   <obj type="rand/uniform f" uuid="8f20d4eee60d56a57c11111c7028f69d6039b658" name="Noise" x="42" y="84">
       <params/>
       <attribs/>
    </obj>
-   <obj type="math/*c" uuid="7a66f52a9594e7e9eb31328ea725cb3641a80b55" name="Master Volume" x="1106" y="224">
+   <obj type="gain/vca" uuid="a9f2dcd18043e2f47364e45cb8814f63c2a37c0d" name="vca_1" x="1050" y="126">
+      <params/>
+      <attribs/>
+   </obj>
+   <obj type="math/*c" uuid="7a66f52a9594e7e9eb31328ea725cb3641a80b55" name="Master Volume" x="1120" y="126">
       <params>
          <frac32.u.map name="amp" value="63.0"/>
       </params>
       <attribs/>
    </obj>
-   <obj type="audio/out stereo" uuid="a1ca7a567f535acc21055669829101d3ee7f0189" name="out_2" x="1218" y="224">
+   <obj type="audio/out stereo" uuid="a1ca7a567f535acc21055669829101d3ee7f0189" name="out_2" x="1232" y="126">
       <params/>
       <attribs/>
    </obj>
-   <obj type="math/*c" uuid="7d5ef61c3bcd571ee6bbd8437ef3612125dfb225" name="*_2" x="490" y="238">
-      <params>
-         <frac32.u.map name="amp" value="13.0"/>
-      </params>
-      <attribs/>
-   </obj>
-   <obj type="math/-c" uuid="bc70bed87e5405985ade03f4806b9450609a9093" name="-c_1" x="602" y="238">
-      <params>
-         <frac32.u.map name="c" value="37.0"/>
-      </params>
-      <attribs/>
-   </obj>
-   <obj type="harmony/note quantizer" uuid="d5343a4fea87a3e4f4dae20287226084550ea8d3" name="note_1" x="672" y="238">
-      <params>
-         <bin12 name="b12" value="2349"/>
-      </params>
-      <attribs/>
-   </obj>
-   <obj type="math/glide" uuid="cfa0324c7cc8ebfd6e03c6b92f41115e3172d0d9" name="glide_1" x="840" y="238">
-      <params>
-         <frac32.u.map name="time" value="16.5"/>
-      </params>
-      <attribs/>
-   </obj>
-   <obj type="osc/pwm" uuid="a6b40ff63f161d8bac8ea2eba5b0dbffcf49b472" name="saw_2" x="924" y="238">
-      <params>
-         <frac32.s.map name="pitch" value="0.0"/>
-      </params>
-      <attribs/>
-   </obj>
-   <obj type="toneburst/pattern/turing" uuid="f4aa3eb926415b6fc796e993dde554a273a022ac" name="Turing" x="224" y="266">
-      <params>
-         <frac32.s.map name="rand" value="-64.0"/>
-      </params>
-      <attribs/>
-   </obj>
-   <comment type="patch/comment" x="140" y="294" text="Seed Number"/>
-   <comment type="patch/comment" x="364" y="294" text="Pattern Out (-64 to 64)"/>
-   <obj type="rand/uniform f" uuid="8f20d4eee60d56a57c11111c7028f69d6039b658" name="Noise" x="28" y="308">
-      <params/>
-      <attribs/>
-   </obj>
-   <comment type="patch/comment" x="140" y="308" text="Noise Input"/>
-   <comment type="patch/comment" x="364" y="308" text="Shift-Reg State"/>
-   <comment type="patch/comment" x="126" y="322" text="Toggle Direction"/>
-   <comment type="patch/comment" x="364" y="322" text="Pulse On Bit-Flip"/>
-   <comment type="patch/comment" x="140" y="336" text="Clock Input"/>
-   <obj type="disp/chart b" uuid="d2bdf496f96ee521628490a038411210fbe29b15" name="Pattern Scope" x="490" y="336">
-      <params/>
-      <attribs/>
-   </obj>
-   <comment type="patch/comment" x="140" y="350" text="Reset Counter"/>
-   <obj type="ctrl/toggle" uuid="42b8134fa729d54bfc8d62d6ef3fa99498c1de99" name="toggle_1" x="756" y="350">
-      <params>
-         <bool32.tgl name="b" value="1"/>
-      </params>
-      <attribs/>
-   </obj>
-   <obj type="ctrl/toggle" uuid="42b8134fa729d54bfc8d62d6ef3fa99498c1de99" name="Direction" x="42" y="364">
+   <obj type="ctrl/toggle" uuid="42b8134fa729d54bfc8d62d6ef3fa99498c1de99" name="Direction" x="56" y="140">
       <params>
          <bool32.tgl name="b" value="0"/>
       </params>
       <attribs/>
    </obj>
-   <comment type="patch/comment" x="154" y="364" text="Load Seed"/>
-   <comment type="patch/comment" x="140" y="378" text="Flip First Bit"/>
-   <obj type="lfo/square" uuid="de6909eb64db13af5b43f979a4c130024b3a4793" name="Clock" x="14" y="434">
+   <obj type="math/*c" uuid="7d5ef61c3bcd571ee6bbd8437ef3612125dfb225" name="*_2" x="504" y="140">
+      <params>
+         <frac32.u.map name="amp" value="13.0"/>
+      </params>
+      <attribs/>
+   </obj>
+   <obj type="math/-c" uuid="bc70bed87e5405985ade03f4806b9450609a9093" name="-c_1" x="616" y="140">
+      <params>
+         <frac32.u.map name="c" value="37.0"/>
+      </params>
+      <attribs/>
+   </obj>
+   <obj type="harmony/note quantizer" uuid="d5343a4fea87a3e4f4dae20287226084550ea8d3" name="note_1" x="686" y="140">
+      <params>
+         <bin12 name="b12" value="2349"/>
+      </params>
+      <attribs/>
+   </obj>
+   <obj type="math/glide" uuid="cfa0324c7cc8ebfd6e03c6b92f41115e3172d0d9" name="glide_1" x="854" y="140">
+      <params>
+         <frac32.u.map name="time" value="16.5"/>
+      </params>
+      <attribs/>
+   </obj>
+   <obj type="osc/pwm" uuid="a6b40ff63f161d8bac8ea2eba5b0dbffcf49b472" name="saw_2" x="938" y="140">
       <params>
          <frac32.s.map name="pitch" value="0.0"/>
       </params>
       <attribs/>
    </obj>
-   <obj type="disp/i" uuid="5e35fd0c62d81e70017289250cf28edd26e19e4a" name="hex_1" x="490" y="462">
+   <obj type="toneburst/pattern/turing" uuid="f4aa3eb926415b6fc796e993dde554a273a022ac" name="Turing" x="238" y="168">
+      <params>
+         <frac32.s.map name="rand" value="-64.0"/>
+      </params>
+      <attribs/>
+   </obj>
+   <comment type="patch/comment" x="154" y="196" text="Seed Number"/>
+   <comment type="patch/comment" x="378" y="196" text="Pattern Out (-64 to 64)"/>
+   <obj type="lfo/square" uuid="de6909eb64db13af5b43f979a4c130024b3a4793" name="Clock" x="28" y="210">
+      <params>
+         <frac32.s.map name="pitch" value="0.0"/>
+      </params>
+      <attribs/>
+   </obj>
+   <comment type="patch/comment" x="154" y="210" text="Noise Input"/>
+   <comment type="patch/comment" x="378" y="210" text="Shift-Reg State"/>
+   <comment type="patch/comment" x="140" y="224" text="Toggle Direction"/>
+   <comment type="patch/comment" x="378" y="224" text="Pulse On Bit-Flip"/>
+   <comment type="patch/comment" x="154" y="238" text="Clock Input"/>
+   <obj type="disp/chart b" uuid="d2bdf496f96ee521628490a038411210fbe29b15" name="Pattern Scope" x="504" y="238">
       <params/>
       <attribs/>
    </obj>
-   <obj type="disp/bool" uuid="a0ee71d48208b71752cbb8c05e55145106ef3946" name="Bit-Flip Scope" x="490" y="532">
-      <params/>
+   <comment type="patch/comment" x="154" y="252" text="Reset Counter"/>
+   <obj type="ctrl/toggle" uuid="42b8134fa729d54bfc8d62d6ef3fa99498c1de99" name="toggle_1" x="770" y="252">
+      <params>
+         <bool32.tgl name="b" value="0"/>
+      </params>
       <attribs/>
    </obj>
-   <obj type="ctrl/button" uuid="ef3d13774349df85aa9bfecf30dbc91ab8488b3f" name="Reset Count" x="42" y="546">
+   <comment type="patch/comment" x="168" y="266" text="Load Seed"/>
+   <comment type="patch/comment" x="154" y="280" text="Flip First Bit"/>
+   <obj type="ctrl/button" uuid="ef3d13774349df85aa9bfecf30dbc91ab8488b3f" name="Reset Count" x="56" y="322">
       <params>
          <bool32.mom name="b" value="0"/>
       </params>
       <attribs/>
    </obj>
-   <obj type="ctrl/button" uuid="ef3d13774349df85aa9bfecf30dbc91ab8488b3f" name="Flip Bit 0" x="42" y="616">
+   <obj type="disp/i" uuid="5e35fd0c62d81e70017289250cf28edd26e19e4a" name="hex_1" x="504" y="364">
+      <params/>
+      <attribs/>
+   </obj>
+   <obj type="ctrl/button" uuid="ef3d13774349df85aa9bfecf30dbc91ab8488b3f" name="Load Seed" x="56" y="392">
+      <params>
+         <bool32.mom name="b" value="0"/>
+      </params>
+      <attribs/>
+   </obj>
+   <obj type="disp/bool" uuid="a0ee71d48208b71752cbb8c05e55145106ef3946" name="Bit-Flip Scope" x="504" y="434">
+      <params/>
+      <attribs/>
+   </obj>
+   <obj type="ctrl/button" uuid="ef3d13774349df85aa9bfecf30dbc91ab8488b3f" name="Flip Bit 0" x="56" y="462">
       <params>
          <bool32.mom name="b" value="0"/>
       </params>
@@ -1135,7 +201,7 @@ if ( attr_midiport > 0 && port > 0 && attr_midiport != port) return;
          <dest obj="Turing" inlet="direction"/>
       </net>
       <net>
-         <source obj="object_1" outlet="Seed"/>
+         <source obj="i_1" outlet="out"/>
          <dest obj="Turing" inlet="seed"/>
       </net>
    </nets>
@@ -1144,8 +210,8 @@ if ( attr_midiport > 0 && port > 0 && attr_midiport != port) return;
    </settings>
    <notes><![CDATA[]]></notes>
    <windowPos>
-      <x>97</x>
-      <y>76</y>
+      <x>71</x>
+      <y>23</y>
       <width>1369</width>
       <height>776</height>
    </windowPos>
