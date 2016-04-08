@@ -1,49 +1,57 @@
 <objdefs appVersion="1.0.8">
    <obj.normal id="turing" uuid="f4aa3eb926415b6fc796e993dde554a273a022ac">
-      <sDescription>16-Bit Shift-register pattern generator, based on Music Thing Turing machine Eurorack module, with extras</sDescription>
+      <sDescription>16bit Shift-register pattern generator, based on Music Thing Turing machine Eurorack module, with extras</sDescription>
       <author>toneburst</author>
       <license>BSD</license>
       <helpPatch>turing.axh</helpPatch>
       <inlets>
          <int32.positive name="seed" description="Seed value (16 bit integer)"/>
-         <frac32.bipolar name="noise" description="Noise Input"/>
-         <bool32 name="direction" description="Shift-Register Read-Direction"/>
-         <bool32.rising name="clock" description="Clock Pulse"/>
-         <bool32.rising name="reset" description="Reset Pulse"/>
-         <bool32.rising name="load" description="Load Seed Bits"/>
-         <bool32.rising name="flip" description="Flip Current Bit"/>
+         <frac32.bipolar name="noise" description="Noise input"/>
+         <bool32 name="direction" description="Shift-register read-direction"/>
+         <bool32.rising name="clock" description="Clock pulse"/>
+         <bool32.rising name="reset" description="Reset pulse"/>
+         <bool32.rising name="load" description="Load seed bits"/>
+         <bool32.rising name="flip" description="Flip current bit"/>
       </inlets>
       <outlets>
-         <frac32.bipolar name="pattern" description="Pattern Out (Bipolar)"/>
-         <int32.positive name="state" description="16-Bit Shift-Register State"/>
-         <bool32 name="flip" description="Pulse On Bit-Flip"/>
+         <frac32.bipolar name="pattern" description="Pattern out (bipolar)"/>
+         <int32.positive name="state" description="16bit shift-register state"/>
+         <bool32 name="flip" description="Pulse on bit-flip"/>
       </outlets>
       <displays/>
       <params>
-         <frac32.s.map name="rand" description="Bit-Flip Threshold" noLabel="true"/>
+         <frac32.s.map name="randomness" description="Bit-flip threshold"/>
+         <bool32.tgl name="evolve" description="Reset seed every 16 steps, or allow sequence to evolve"/>
       </params>
       <attribs/>
       <code.declaration><![CDATA[
 
-// Flip-flop triggers for pulse inputs
-int init = 1;
-int ctrig = 0;
-int rtrig = 0;
-int ltrig = 0;
-int ftrig = 0;
+//////////////////////
+// Global Variables //
+//////////////////////
 
-uint8_t counter = 0;
-uint16_t baseval = 0;
-uint16_t workingval = 0;
-uint16_t state = 0;
+// Toggles
+bool init  = 1;   // Init toggle
+bool ctrig = 0;  // Clock-pulse toggle
+bool rtrig = 0;  // Counter-reset toggle
+bool ltrig = 0;  // Load seed toggle
+bool ftrig = 0;  // Bit-flip toggle
 
-int32_t outval = 0;
-bool flippulse = false;
+// State variables
+uint8_t counter     = 0;    // Step-counter
+uint16_t baseval    = 0;    // Base bits
+uint16_t workingval = 0;    // Working bits
+uint16_t state      = 0;    // Shift-register state
+
+// Output values
+int32_t outval = 0;         // Output value current step
+bool flippulse = false;     // Bit-flip pulse state
 
 ///////////////////////
 // Utility Functions //
 ///////////////////////
 
+// Rotate bits, with wrapping
 uint16_t rotate_right(uint16_t val, uint8_t shift) {
 	return (val << shift) | (val >> (15 - shift));
 }
@@ -52,9 +60,8 @@ uint16_t rotate_right(uint16_t val, uint8_t shift) {
 	return (val << (16 - shift)) | (val >> shift);
 }*/
 
-// Toggle bit X
+// Toggle bit x
 // http://stackoverflow.com/questions/47981/how-do-you-set-clear-and-toggle-a-single-bit-in-c-c
-
 uint16_t togglebitx(uint16_t val, uint8_t x) {
 	return val ^= 1 << x;
 }
@@ -71,7 +78,6 @@ uint16_t getrightbyte(uint16_t word) {
 
 // Reverse bit-order of 16-bit word
 // http://stackoverflow.com/questions/2602823/in-c-c-whats-the-simplest-way-to-reverse-the-order-of-bits-in-a-byte
-
 uint16_t reversebits16(uint16_t val) {
     uint16_t reversed = val;
     for(uint8_t i = 0; i < 16; i++)
@@ -86,53 +92,53 @@ uint16_t reversebits16(uint16_t val) {
 // Loop Running For 1st Time //
 ///////////////////////////////
 
-if (init == 1) {
+if (init) {
 	baseval = inlet_seed;
 	workingval = baseval;
-	init = 0;
+	init = false;
 }
 
 ///////////////
 // Load Seed //
 ///////////////
 
-if ((inlet_load > 0) && !ltrig) {
+if ((inlet_load) && !ltrig) {
 	baseval = inlet_seed;
 	workingval = baseval;
-	ltrig = 1;
-} else if (!(inlet_load > 0)) {
-	ltrig = 0;
+	ltrig = false;
+} else if (!inlet_load) {
+	ltrig = false;
 }
 
 /////////////////////////////
 // Reset Input Rising Edge //
 /////////////////////////////
 
-if ((inlet_reset > 0) && !rtrig) {
+if (inlet_reset && !rtrig) {
 	counter = 0;
-	rtrig = 1;
-} else if (!(inlet_reset > 0)) {
-	rtrig = 0;
+	rtrig = true;
+} else if (inlet_reset) {
+	rtrig = false;
 }
 
 ////////////////////////////////////////
 // Flip Current First Bit Rising Edge //
 ////////////////////////////////////////
 
-if ((inlet_flip > 0) && !ftrig) {
+if (inlet_flip && !ftrig) {
     workingval = togglebitx(workingval, counter);
-	ftrig = 1;
-} else if (!(inlet_flip > 0)) {
-	ftrig = 0;
+	ftrig = true;
+} else if (inlet_flip) {
+	ftrig = false;
 }
 
 /////////////////////////////
 // Clock Input Rising Edge //
 /////////////////////////////
 
-if ((inlet_clock > 0) && !ctrig) {
+if (inlet_clock && !ctrig) {
     // Toggle wrapped bits if noise inlet value lower than noise threshold value
-    if (inlet_noise < param_rand) {
+    if (inlet_noise < param_randomness) {
         workingval = togglebitx(workingval, counter);
         // Send out flip pulse (not sure what this will be useful for, yet)
         flippulse = true;
@@ -147,10 +153,16 @@ if ((inlet_clock > 0) && !ctrig) {
     outval = (state >> 8) - 128;
 	// Update counter
 	counter = (counter < 15) ? counter + 1 : 0;
-	ctrig = 1;
+    // Reset working bits if evolve option not set
+    if (!param_evolve && counter == 15)
+        workingval = baseval;
+    // Set toggle
+    ctrig = true;
 } else if (inlet_clock == 0) {
+    // Set flip pulse low
     flippulse = false;
-    ctrig = 0;
+    // Reset toggle
+    ctrig = false;
 }
 
 ////////////////////
@@ -160,7 +172,6 @@ if ((inlet_clock > 0) && !ctrig) {
 outlet_pattern = outval << 20;
 outlet_state = state;
 outlet_flip = flippulse;
-
 
     ]]></code.krate>
    </obj.normal>
