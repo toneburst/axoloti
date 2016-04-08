@@ -1,12 +1,12 @@
 <objdefs appVersion="1.0.8">
-   <obj.normal id="turing2" uuid="f4aa372926415b6fc796e993dde554a273a022ac">
+   <obj.normal id="toneburst/pattern/turing2" uuid="f4aa372926415b6fc796e993dde554a273a022ac">
       <sDescription>16bit Shift-register pattern generator, based on Music Thing Turing machine Eurorack module, with extras</sDescription>
       <author>toneburst</author>
       <license>BSD</license>
       <helpPatch>turing2.axh</helpPatch>
       <inlets>
          <int32.positive name="seed" description="Seed value (16 bit integer)"/>
-         <frac32.bipolar name="noise" description="Noise input"/>
+         <frac32buffer name="noise" description="Noise input (S-Rate)"/>
          <bool32 name="direction" description="Shift-register read-direction"/>
          <bool32 name="evolve" description="Reset seed every 16 steps, or allow sequence to evolve"/>
          <bool32.rising name="clock" description="Clock pulse"/>
@@ -21,7 +21,7 @@
       </outlets>
       <displays/>
       <params>
-         <frac32.s.map name="randomness" description="Bit-flip threshold"/>
+         <frac32.s.map name="randomness" description="Bit-flip threshold" noLabel="true"/>
       </params>
       <attribs/>
       <code.declaration><![CDATA[
@@ -40,13 +40,13 @@ int32_t rval = 0;  // Previous noise-threshold value
 bool dbool   = false; // Previous direction value
 
 // State variables
-int stepcounter      = 0;    // Step counter
+int stepcounter       = 0;    // Step counter
 int noisecounter     = 0;    // Noise array position counter
 uint16_t baseval     = 0;    // Base bits
 uint16_t workingval  = 0;    // Working bits
 uint16_t state       = 0;    // Shift-register state
 
-uint16_t states[16] = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
+uint32_t states[16] = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
 int32_t noise[16]   = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
 bool flippulses[16] = {false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false};
 
@@ -183,16 +183,14 @@ if (inlet_clock && !ctrig && !init) {
 
 outlet_pattern = outval << 20;
 outlet_state = state[stepcounter];
-outlet_flip[stepcounter] = flippulse;
+//outlet_flip = flippulse[stepcounter];
 
     ]]></code.krate>
-    <code.srate><![CDATA[
-
+      <code.srate><![CDATA[
 // Update noise array counter
 noisecounter = (noisecounter < 15) ? noisecounter + 1 : 0;
 // Write to noise array
 noise[noisecounter] = inlet_noise;
-
-    ]]></code.srate>
+   ]]></code.srate>
    </obj.normal>
 </objdefs>

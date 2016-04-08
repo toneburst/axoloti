@@ -62,13 +62,13 @@
    </obj>
    <obj type="toneburst/pattern/turing2" uuid="f4aa372926415b6fc796e993dde554a273a022ac" name="turing2_1" x="224" y="182">
       <params>
-         <frac32.s.map name="randomness" value="-64.0"/>
+         <frac32.s.map name="randomness" value="-34.0"/>
       </params>
       <attribs/>
    </obj>
    <comment type="patch/comment" x="154" y="210" text="Seed Number"/>
    <comment type="patch/comment" x="364" y="210" text="Pattern Out (-64 to 64)"/>
-   <obj type="ctrl/toggle" uuid="42b8134fa729d54bfc8d62d6ef3fa99498c1de99" name="Evolve" x="56" y="224">
+   <obj type="ctrl/toggle" uuid="42b8134fa729d54bfc8d62d6ef3fa99498c1de99" name="Evolve" x="42" y="224">
       <params>
          <bool32.tgl name="b" value="0"/>
       </params>
@@ -99,7 +99,7 @@
       </params>
       <attribs/>
    </obj>
-   <obj type="disp/i" uuid="5e35fd0c62d81e70017289250cf28edd26e19e4a" name="hex_1" x="490" y="378">
+   <obj type="disp/i" uuid="5e35fd0c62d81e70017289250cf28edd26e19e4a" name="State" x="490" y="378">
       <params/>
       <attribs/>
    </obj>
@@ -189,7 +189,7 @@
       </net>
       <net>
          <source obj="turing2_1" outlet="state"/>
-         <dest obj="hex_1" inlet="in"/>
+         <dest obj="State" inlet="in"/>
       </net>
       <net>
          <source obj="turing2_1" outlet="flip"/>
@@ -201,9 +201,9 @@
    </settings>
    <notes><![CDATA[]]></notes>
    <windowPos>
-      <x>94</x>
+      <x>71</x>
       <y>23</y>
-      <width>1369</width>
-      <height>776</height>
+      <width>1276</width>
+      <height>772</height>
    </windowPos>
 </patch-1.0>
