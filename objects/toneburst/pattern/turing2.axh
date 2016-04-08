@@ -60,18 +60,17 @@
       </params>
       <attribs/>
    </obj>
-   <obj type="toneburst/pattern/turing2" uuid="f4aa372926415b6fc796e993dde554a273a022ac" name="Turing 2" x="224" y="182">
+   <obj type="toneburst/pattern/turing2" uuid="f4aa372926415b6fc796e993dde554a273a022ac" name="turing2_1" x="224" y="182">
       <params>
          <frac32.s.map name="randomness" value="-64.0"/>
-         <bool32.tgl name="evolve" value="0"/>
       </params>
       <attribs/>
    </obj>
    <comment type="patch/comment" x="154" y="210" text="Seed Number"/>
    <comment type="patch/comment" x="364" y="210" text="Pattern Out (-64 to 64)"/>
-   <obj type="lfo/square" uuid="de6909eb64db13af5b43f979a4c130024b3a4793" name="Clock" x="14" y="224">
+   <obj type="ctrl/toggle" uuid="42b8134fa729d54bfc8d62d6ef3fa99498c1de99" name="Evolve" x="56" y="224">
       <params>
-         <frac32.s.map name="pitch" value="3.0"/>
+         <bool32.tgl name="b" value="0"/>
       </params>
       <attribs/>
    </obj>
@@ -79,21 +78,22 @@
    <comment type="patch/comment" x="364" y="224" text="Shift-Reg State"/>
    <comment type="patch/comment" x="140" y="238" text="Toggle Direction"/>
    <comment type="patch/comment" x="364" y="238" text="Pulse On Bit-Flip"/>
-   <comment type="patch/comment" x="154" y="252" text="Clock Input"/>
+   <comment type="patch/comment" x="140" y="252" text="Enable Evolution"/>
    <obj type="disp/chart b" uuid="d2bdf496f96ee521628490a038411210fbe29b15" name="Pattern Scope" x="490" y="252">
       <params/>
       <attribs/>
    </obj>
-   <comment type="patch/comment" x="154" y="266" text="Reset Counter"/>
-   <comment type="patch/comment" x="168" y="280" text="Load Seed"/>
-   <comment type="patch/comment" x="154" y="294" text="Flip First Bit"/>
-   <obj type="ctrl/button" uuid="ef3d13774349df85aa9bfecf30dbc91ab8488b3f" name="Reset Count" x="42" y="322">
+   <comment type="patch/comment" x="154" y="266" text="Clock Input"/>
+   <obj type="lfo/square" uuid="de6909eb64db13af5b43f979a4c130024b3a4793" name="Clock" x="14" y="280">
       <params>
-         <bool32.mom name="b" value="0"/>
+         <frac32.s.map name="pitch" value="3.0"/>
       </params>
       <attribs/>
    </obj>
-   <obj type="ctrl/button" uuid="ef3d13774349df85aa9bfecf30dbc91ab8488b3f" name="Load Seed" x="42" y="378">
+   <comment type="patch/comment" x="154" y="280" text="Reset Counter"/>
+   <comment type="patch/comment" x="168" y="294" text="Load Seed"/>
+   <comment type="patch/comment" x="154" y="308" text="Flip First Bit"/>
+   <obj type="ctrl/button" uuid="ef3d13774349df85aa9bfecf30dbc91ab8488b3f" name="Reset Count" x="42" y="378">
       <params>
          <bool32.mom name="b" value="0"/>
       </params>
@@ -103,7 +103,7 @@
       <params/>
       <attribs/>
    </obj>
-   <obj type="ctrl/button" uuid="ef3d13774349df85aa9bfecf30dbc91ab8488b3f" name="Flip Bit 0" x="42" y="434">
+   <obj type="ctrl/button" uuid="ef3d13774349df85aa9bfecf30dbc91ab8488b3f" name="Load Seed" x="42" y="434">
       <params>
          <bool32.mom name="b" value="0"/>
       </params>
@@ -113,11 +113,17 @@
       <params/>
       <attribs/>
    </obj>
+   <obj type="ctrl/button" uuid="ef3d13774349df85aa9bfecf30dbc91ab8488b3f" name="Flip Bit 0" x="42" y="490">
+      <params>
+         <bool32.mom name="b" value="0"/>
+      </params>
+      <attribs/>
+   </obj>
    <nets>
       <net>
          <source obj="Clock" outlet="wave"/>
          <dest obj="ad_1" inlet="trig"/>
-         <dest obj="Turing 2" inlet="clock"/>
+         <dest obj="turing2_1" inlet="clock"/>
       </net>
       <net>
          <source obj="saw_2" outlet="wave"/>
@@ -136,11 +142,6 @@
          <dest obj="saw_2" inlet="pitch"/>
       </net>
       <net>
-         <source obj="Turing 2" outlet="pattern"/>
-         <dest obj="Pattern Scope" inlet="in"/>
-         <dest obj="*_2" inlet="in"/>
-      </net>
-      <net>
          <source obj="Master Volume" outlet="out"/>
          <dest obj="out_2" inlet="right"/>
          <dest obj="out_2" inlet="left"/>
@@ -154,36 +155,45 @@
          <dest obj="note_1" inlet="note"/>
       </net>
       <net>
-         <source obj="Turing 2" outlet="state"/>
-         <dest obj="hex_1" inlet="in"/>
-      </net>
-      <net>
-         <source obj="Turing 2" outlet="flip"/>
-         <dest obj="Bit-Flip Scope" inlet="in"/>
+         <source obj="turing2_1" outlet="pattern"/>
+         <dest obj="*_2" inlet="in"/>
+         <dest obj="Pattern Scope" inlet="in"/>
       </net>
       <net>
          <source obj="i_1" outlet="out"/>
-         <dest obj="Turing 2" inlet="seed"/>
+         <dest obj="turing2_1" inlet="seed"/>
       </net>
       <net>
          <source obj="Noise" outlet="wave"/>
-         <dest obj="Turing 2" inlet="noise"/>
+         <dest obj="turing2_1" inlet="noise"/>
       </net>
       <net>
          <source obj="Direction" outlet="o"/>
-         <dest obj="Turing 2" inlet="direction"/>
+         <dest obj="turing2_1" inlet="direction"/>
+      </net>
+      <net>
+         <source obj="Evolve" outlet="o"/>
+         <dest obj="turing2_1" inlet="evolve"/>
       </net>
       <net>
          <source obj="Reset Count" outlet="o"/>
-         <dest obj="Turing 2" inlet="reset"/>
+         <dest obj="turing2_1" inlet="reset"/>
       </net>
       <net>
          <source obj="Load Seed" outlet="o"/>
-         <dest obj="Turing 2" inlet="load"/>
+         <dest obj="turing2_1" inlet="load"/>
       </net>
       <net>
          <source obj="Flip Bit 0" outlet="o"/>
-         <dest obj="Turing 2" inlet="flip"/>
+         <dest obj="turing2_1" inlet="flip"/>
+      </net>
+      <net>
+         <source obj="turing2_1" outlet="state"/>
+         <dest obj="hex_1" inlet="in"/>
+      </net>
+      <net>
+         <source obj="turing2_1" outlet="flip"/>
+         <dest obj="Bit-Flip Scope" inlet="in"/>
       </net>
    </nets>
    <settings>
@@ -191,8 +201,8 @@
    </settings>
    <notes><![CDATA[]]></notes>
    <windowPos>
-      <x>71</x>
-      <y>48</y>
+      <x>94</x>
+      <y>23</y>
       <width>1369</width>
       <height>776</height>
    </windowPos>

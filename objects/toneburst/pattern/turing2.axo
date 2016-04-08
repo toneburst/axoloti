@@ -40,8 +40,8 @@ int32_t rval = 0;  // Previous noise-threshold value
 bool dbool   = false; // Previous direction value
 
 // State variables
-uint8_t stepcounter  = 0;    // Step counter
-uint8_t noisecounter = 0;    // Noise array position counter
+int stepcounter      = 0;    // Step counter
+int noisecounter     = 0;    // Noise array position counter
 uint16_t baseval     = 0;    // Base bits
 uint16_t workingval  = 0;    // Working bits
 uint16_t state       = 0;    // Shift-register state
@@ -79,9 +79,6 @@ uint16_t reversebits16(uint16_t val) {
 }
 
 void makesequence() {
-    // Reset working bits if evolve option not set
-    if (!inlet_evolve && stepcounter == 0)
-        workingval = baseval;
     for(uint8_t i = stepcounter; i < 16; i++) {
         // Toggle wrapped bits if noise inlet value lower than noise threshold value
         if (noise[i] < rval) {
@@ -154,6 +151,9 @@ if (inlet_flip && !ftrig) {
 if (inlet_clock && !ctrig && !init) {
     // Refresh state and flip-pulse arrays if stepcounter = 0
     if (stepcounter == 0) {
+        // Reset working bits if evolve option not set
+        if (!inlet_evolve)
+            workingval = baseval;
         makesequence();
     } else if (rval != param_randomness) {
     // Refresh arrays if randomness param changes
@@ -166,7 +166,7 @@ if (inlet_clock && !ctrig && !init) {
     }
     // Output value (-128 to +128 range)
     outval = (states[stepcounter] >> 8) - 128;
-	// Update stepcounter
+    // Update stepcounter
 	stepcounter = (stepcounter < 15) ? stepcounter + 1 : 0;
     // Set toggle
     ctrig = true;
