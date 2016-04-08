@@ -161,11 +161,13 @@ if (inlet_clock && !ctrig && !init) {
         makesequence();
     } else if (dbool != inlet_direction) {
     // Refresh arrays if direction param changes
-        dbool != inlet_direction;
+        dbool = inlet_direction;
         makesequence();
     }
     // Output value (-128 to +128 range)
     outval = (states[stepcounter] >> 8) - 128;
+    // Flip output
+    flippulse = flippulses[stepcounter];
     // Update stepcounter
 	stepcounter = (stepcounter < 15) ? stepcounter + 1 : 0;
     // Set toggle
@@ -182,15 +184,17 @@ if (inlet_clock && !ctrig && !init) {
 ////////////////////
 
 outlet_pattern = outval << 20;
-outlet_state = state[stepcounter];
-//outlet_flip = flippulse[stepcounter];
+outlet_state = states[stepcounter];
+outlet_flip = flippulse;
 
     ]]></code.krate>
       <code.srate><![CDATA[
+
 // Update noise array counter
 noisecounter = (noisecounter < 15) ? noisecounter + 1 : 0;
 // Write to noise array
 noise[noisecounter] = inlet_noise;
+
    ]]></code.srate>
    </obj.normal>
 </objdefs>
