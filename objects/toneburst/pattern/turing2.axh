@@ -1,4 +1,4 @@
-<patch-1.0 appVersion="1.0.8">
+<patch-1.0 appVersion="1.0.9">
    <obj type="env/ad" uuid="255cb0cd67470c7498f9c33b820facd26aa629ce" name="ad_1" x="840" y="28">
       <params>
          <frac32.s.map name="a" value="-64.0"/>
@@ -71,7 +71,7 @@
    <comment type="patch/comment" x="364" y="210" text="Pattern Out (-64 to 64)"/>
    <obj type="ctrl/toggle" uuid="42b8134fa729d54bfc8d62d6ef3fa99498c1de99" name="Evolve" x="42" y="224">
       <params>
-         <bool32.tgl name="b" value="1"/>
+         <bool32.tgl name="b" value="0"/>
       </params>
       <attribs/>
    </obj>
@@ -127,20 +127,12 @@
          <dest obj="turing 2" inlet="clock"/>
       </net>
       <net>
-         <source obj="saw_2" outlet="wave"/>
-         <dest obj="vca_1" inlet="a"/>
-      </net>
-      <net>
          <source obj="ad_1" outlet="env"/>
          <dest obj="vca_1" inlet="v"/>
       </net>
       <net>
          <source obj="vca_1" outlet="o"/>
          <dest obj="Master Volume" inlet="in"/>
-      </net>
-      <net>
-         <source obj="note_1" outlet="note"/>
-         <dest obj="saw_2" inlet="pitch"/>
       </net>
       <net>
          <source obj="Master Volume" outlet="out"/>
@@ -152,17 +144,9 @@
          <dest obj="-c_1" inlet="in"/>
       </net>
       <net>
-         <source obj="-c_1" outlet="out"/>
-         <dest obj="note_1" inlet="note"/>
-      </net>
-      <net>
          <source obj="turing 2" outlet="pattern"/>
          <dest obj="*_2" inlet="in"/>
          <dest obj="Pattern Scope" inlet="in"/>
-      </net>
-      <net>
-         <source obj="i_1" outlet="out"/>
-         <dest obj="turing 2" inlet="seed"/>
       </net>
       <net>
          <source obj="Reverse" outlet="o"/>
@@ -185,16 +169,32 @@
          <dest obj="turing 2" inlet="flip"/>
       </net>
       <net>
-         <source obj="turing 2" outlet="state"/>
-         <dest obj="State" inlet="in"/>
-      </net>
-      <net>
          <source obj="turing 2" outlet="flip"/>
          <dest obj="Bit-Flip Scope" inlet="in"/>
       </net>
       <net>
          <source obj="Noise" outlet="wave"/>
          <dest obj="turing 2" inlet="noise"/>
+      </net>
+      <net>
+         <source obj="-c_1" outlet="out"/>
+         <dest obj="note_1" inlet="note"/>
+      </net>
+      <net>
+         <source obj="turing 2" outlet="state"/>
+         <dest obj="State" inlet="in"/>
+      </net>
+      <net>
+         <source obj="i_1" outlet="out"/>
+         <dest obj="turing 2" inlet="seed"/>
+      </net>
+      <net>
+         <source obj="note_1" outlet="note"/>
+         <dest obj="saw_2" inlet="pitch"/>
+      </net>
+      <net>
+         <source obj="saw_2" outlet="wave"/>
+         <dest obj="vca_1" inlet="a"/>
       </net>
    </nets>
    <settings>
