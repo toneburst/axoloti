@@ -1,5 +1,5 @@
 <objdefs appVersion="1.0.8">
-   <obj.normal id="turing2" uuid="f4aa372926415b6fc796e993dde554a273a022ac">
+   <obj.normal id="toneburst/pattern/turing2" uuid="f4aa372926415b6fc796e993dde554a273a022ac">
       <sDescription>16bit Shift-register pattern generator, based on Music Thing Turing machine Eurorack module, with extras</sDescription>
       <author>toneburst</author>
       <license>BSD</license>
@@ -22,6 +22,7 @@
       <displays/>
       <params>
          <frac32.s.map name="randomness" description="Bit-flip threshold" noLabel="true"/>
+         <frac32.u.map name="length" description="Pattern Length 2-16 steps" />
       </params>
       <attribs/>
       <code.declaration><![CDATA[
@@ -40,8 +41,10 @@ int32_t rval = 0;  // Previous noise-threshold value
 bool dbool   = false; // Previous direction value
 
 // State variables
-int stepcounter       = 0;    // Step counter
-int noisecounter     = 0;    // Noise array position counter
+uint8_t stepcounter  = 0;    // Step counter
+uint8_t noisecounter = 0;    // Noise array position counter
+uint8_t length       = 16;   // Patterns playback length
+uint8_t minlength    = 2;    // Minimum playback length
 uint16_t baseval     = 0;    // Base bits
 uint16_t workingval  = 0;    // Working bits
 uint16_t state       = 0;    // Shift-register state
@@ -69,6 +72,17 @@ uint16_t togglebitx(uint16_t val, uint8_t x) {
 	return val ^= 1 << x;
 }
 
+// Return Max of 2 values
+int32_t max(int32_t minval, int32_t val) {
+    return(val >= minval) ? val : minval;
+}
+
+// Calculate pattern length based on param_length
+uint8_t calculatelength(int32_t len) {
+    // Max 32 steps
+    return max(minlength, len >> 22);
+}
+
 // Reverse bit-order of 16-bit word
 // http://stackoverflow.com/questions/2602823/in-c-c-whats-the-simplest-way-to-reverse-the-order-of-bits-in-a-byte
 uint16_t reversebits16(uint16_t val) {
@@ -85,6 +99,8 @@ void makesequence() {
             workingval = togglebitx(workingval, i);
             // Send out flip pulse (not sure what this will be useful for, yet)
             flippulses[i] = true;
+        } else {
+        	  flippulses[i] = false;
         }
         // State output value
         states[i] = rotate_right(workingval, i);
@@ -149,6 +165,8 @@ if (inlet_flip && !ftrig) {
 /////////////////////////////
 
 if (inlet_clock && !ctrig && !init) {
+    length = calculatelength(param_length);
+
     // Refresh state and flip-pulse arrays if stepcounter = 0
     if (stepcounter == 0) {
         // Reset working bits if evolve option not set
@@ -169,7 +187,7 @@ if (inlet_clock && !ctrig && !init) {
     // Flip output
     flippulse = flippulses[stepcounter];
     // Update stepcounter
-	stepcounter = (stepcounter < 15) ? stepcounter + 1 : 0;
+	stepcounter = (stepcounter < (length - 1)) ? stepcounter + 1 : 0;
     // Set toggle
     ctrig = true;
 } else if (inlet_clock == 0) {

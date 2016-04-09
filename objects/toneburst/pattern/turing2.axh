@@ -54,15 +54,15 @@
       </params>
       <attribs/>
    </obj>
-   <obj type="ctrl/toggle" uuid="42b8134fa729d54bfc8d62d6ef3fa99498c1de99" name="Direction" x="42" y="168">
+   <obj type="ctrl/toggle" uuid="42b8134fa729d54bfc8d62d6ef3fa99498c1de99" name="Reverse" x="42" y="168">
       <params>
          <bool32.tgl name="b" value="0"/>
       </params>
       <attribs/>
    </obj>
-   <obj type="toneburst/pattern/turing2" uuid="f4aa372926415b6fc796e993dde554a273a022ac" name="turing2_1" x="224" y="182">
+   <obj type="toneburst/pattern/turing2" uuid="f4aa372926415b6fc796e993dde554a273a022ac" name="turing 2" x="224" y="182">
       <params>
-         <frac32.s.map name="randomness" value="-34.0"/>
+         <frac32.s.map name="randomness" value="-64.0"/>
       </params>
       <attribs/>
    </obj>
@@ -123,7 +123,7 @@
       <net>
          <source obj="Clock" outlet="wave"/>
          <dest obj="ad_1" inlet="trig"/>
-         <dest obj="turing2_1" inlet="clock"/>
+         <dest obj="turing 2" inlet="clock"/>
       </net>
       <net>
          <source obj="saw_2" outlet="wave"/>
@@ -155,45 +155,45 @@
          <dest obj="note_1" inlet="note"/>
       </net>
       <net>
-         <source obj="turing2_1" outlet="pattern"/>
+         <source obj="turing 2" outlet="pattern"/>
          <dest obj="*_2" inlet="in"/>
          <dest obj="Pattern Scope" inlet="in"/>
       </net>
       <net>
          <source obj="i_1" outlet="out"/>
-         <dest obj="turing2_1" inlet="seed"/>
+         <dest obj="turing 2" inlet="seed"/>
       </net>
       <net>
-         <source obj="Direction" outlet="o"/>
-         <dest obj="turing2_1" inlet="direction"/>
+         <source obj="Reverse" outlet="o"/>
+         <dest obj="turing 2" inlet="direction"/>
       </net>
       <net>
          <source obj="Evolve" outlet="o"/>
-         <dest obj="turing2_1" inlet="evolve"/>
+         <dest obj="turing 2" inlet="evolve"/>
       </net>
       <net>
          <source obj="Reset Count" outlet="o"/>
-         <dest obj="turing2_1" inlet="reset"/>
+         <dest obj="turing 2" inlet="reset"/>
       </net>
       <net>
          <source obj="Load Seed" outlet="o"/>
-         <dest obj="turing2_1" inlet="load"/>
+         <dest obj="turing 2" inlet="load"/>
       </net>
       <net>
          <source obj="Flip Bit 0" outlet="o"/>
-         <dest obj="turing2_1" inlet="flip"/>
+         <dest obj="turing 2" inlet="flip"/>
       </net>
       <net>
-         <source obj="turing2_1" outlet="state"/>
+         <source obj="turing 2" outlet="state"/>
          <dest obj="State" inlet="in"/>
       </net>
       <net>
-         <source obj="turing2_1" outlet="flip"/>
+         <source obj="turing 2" outlet="flip"/>
          <dest obj="Bit-Flip Scope" inlet="in"/>
       </net>
       <net>
          <source obj="Noise" outlet="wave"/>
-         <dest obj="turing2_1" inlet="noise"/>
+         <dest obj="turing 2" inlet="noise"/>
       </net>
    </nets>
    <settings>
