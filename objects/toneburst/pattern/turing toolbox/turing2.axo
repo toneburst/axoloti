@@ -16,7 +16,7 @@
       </inlets>
       <outlets>
          <frac32.bipolar name="pattern" description="Pattern out (bipolar)"/>
-         <int32.positive name="state" description="16bit shift-register state"/>
+         <int32.positive name="state" description="16-bit shift-register state"/>
          <bool32 name="flip" description="Pulse on bit-flip"/>
       </outlets>
       <displays/>
@@ -38,8 +38,8 @@ bool ctrig   = 0;  // Clock-pulse toggle
 bool rtrig   = 0;  // stepcounter-reset toggle
 bool ltrig   = 0;  // Load seed toggle
 bool ftrig   = 0;  // Bit-flip toggle
-int32_t rval = 0;  // Previous noise-threshold value
 bool dbool   = false; // Previous direction value
+int32_t rval = 0;  // Previous noise-threshold value
 
 // State variables
 uint8_t stepcounter  = 0;    // Step counter
@@ -50,11 +50,11 @@ uint8_t minlength    = 2;    // Minimum playback length
 //uint8_t offset       = 0;    // Playback offset
 uint16_t baseval     = 0;    // Base bits
 uint16_t workingval  = 0;    // Working bits
-uint16_t state       = 0;    // Shift-register state
 
-uint32_t states[16] = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
-int32_t noise[16]   = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
-bool flippulses[16] = {false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false};
+// Arrays
+uint32_t states[16]  = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
+int32_t noise[16]    = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
+bool flippulses[16]  = {false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false};
 
 // Output values
 int32_t outval = 0;         // Output value current step
