@@ -63,6 +63,7 @@
    <obj type="toneburst/pattern/turing2" uuid="f4aa372926415b6fc796e993dde554a273a022ac" name="turing 2" x="224" y="182">
       <params>
          <frac32.s.map name="randomness" value="-64.0"/>
+         <frac32.u.map name="length" value="64.0"/>
       </params>
       <attribs/>
    </obj>
@@ -70,7 +71,7 @@
    <comment type="patch/comment" x="364" y="210" text="Pattern Out (-64 to 64)"/>
    <obj type="ctrl/toggle" uuid="42b8134fa729d54bfc8d62d6ef3fa99498c1de99" name="Evolve" x="42" y="224">
       <params>
-         <bool32.tgl name="b" value="0"/>
+         <bool32.tgl name="b" value="1"/>
       </params>
       <attribs/>
    </obj>

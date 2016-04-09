@@ -1,5 +1,5 @@
 <objdefs appVersion="1.0.8">
-   <obj.normal id="toneburst/pattern/turing2" uuid="f4aa372926415b6fc796e993dde554a273a022ac">
+   <obj.normal id="turing2" uuid="f4aa372926415b6fc796e993dde554a273a022ac">
       <sDescription>16bit Shift-register pattern generator, based on Music Thing Turing machine Eurorack module, with extras</sDescription>
       <author>toneburst</author>
       <license>BSD</license>
@@ -22,7 +22,8 @@
       <displays/>
       <params>
          <frac32.s.map name="randomness" description="Bit-flip threshold" noLabel="true"/>
-         <frac32.u.map name="length" description="Pattern Length 2-16 steps" />
+         <frac32.u.map name="length" description="Pattern Length 2-16 steps"/>
+         <!--<frac32.u.map name="offset" description="Pattern Offset"/>-->
       </params>
       <attribs/>
       <code.declaration><![CDATA[
@@ -45,6 +46,7 @@ uint8_t stepcounter  = 0;    // Step counter
 uint8_t noisecounter = 0;    // Noise array position counter
 uint8_t length       = 16;   // Patterns playback length
 uint8_t minlength    = 2;    // Minimum playback length
+//uint8_t offset       = 0;    // Playback offset
 uint16_t baseval     = 0;    // Base bits
 uint16_t workingval  = 0;    // Working bits
 uint16_t state       = 0;    // Shift-register state
@@ -80,8 +82,14 @@ int32_t max(int32_t minval, int32_t val) {
 // Calculate pattern length based on param_length
 uint8_t calculatelength(int32_t len) {
     // Max 32 steps
-    return max(minlength, len >> 22);
+    return max(minlength, len >> 23);
 }
+
+// Calculate step-offset value based on param_offset
+/*uint8_t calculateoffset(int32_t offs, uint8_t maxoffs) {
+    // Max 32 steps
+    return min(offs >> 23, maxoffs);
+}*/
 
 // Reverse bit-order of 16-bit word
 // http://stackoverflow.com/questions/2602823/in-c-c-whats-the-simplest-way-to-reverse-the-order-of-bits-in-a-byte
@@ -93,7 +101,7 @@ uint16_t reversebits16(uint16_t val) {
 }
 
 void makesequence() {
-    for(uint8_t i = stepcounter; i < 16; i++) {
+    for(uint8_t i = 0; i < 16; i++) {
         // Toggle wrapped bits if noise inlet value lower than noise threshold value
         if (noise[i] < rval) {
             workingval = togglebitx(workingval, i);
@@ -165,8 +173,9 @@ if (inlet_flip && !ftrig) {
 /////////////////////////////
 
 if (inlet_clock && !ctrig && !init) {
+    // Calculate pattern playback length and offset
     length = calculatelength(param_length);
-
+    offset = calculateoffset(param_offset, length);
     // Refresh state and flip-pulse arrays if stepcounter = 0
     if (stepcounter == 0) {
         // Reset working bits if evolve option not set
