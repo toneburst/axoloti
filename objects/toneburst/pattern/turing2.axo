@@ -175,7 +175,7 @@ if (inlet_flip && !ftrig) {
 if (inlet_clock && !ctrig && !init) {
     // Calculate pattern playback length and offset
     length = calculatelength(param_length);
-    offset = calculateoffset(param_offset, length);
+    //offset = calculateoffset(param_offset, length);
     // Refresh state and flip-pulse arrays if stepcounter = 0
     if (stepcounter == 0) {
         // Reset working bits if evolve option not set
