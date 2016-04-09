@@ -21,7 +21,7 @@
       </outlets>
       <displays/>
       <params>
-         <frac32.s.map name="randomness" description="Bit-flip threshold" noLabel="true"/>
+         <frac32.s.map name="randomness" description="Bit-flip threshold"/>
          <frac32.u.map name="length" description="Pattern Length 2-16 steps"/>
          <!--<frac32.u.map name="offset" description="Pattern Offset"/>-->
       </params>
@@ -43,6 +43,7 @@ bool dbool   = false; // Previous direction value
 
 // State variables
 uint8_t stepcounter  = 0;    // Step counter
+uint8_t playcounter  = 0;    // Playback position counter
 uint8_t noisecounter = 0;    // Noise array position counter
 uint8_t length       = 16;   // Patterns playback length
 uint8_t minlength    = 2;    // Minimum playback length
