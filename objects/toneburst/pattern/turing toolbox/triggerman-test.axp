@@ -1,12 +1,12 @@
 <patch-1.0 appVersion="1.0.9">
    <patchobj type="disp/bool" uuid="a0ee71d48208b71752cbb8c05e55145106ef3946" name="object_1" x="56" y="56">
       <params>
-         <frac32.u.map name="pattern" value="22.5"/>
-         <frac32.u.map name="shift" value="46.5"/>
+         <frac32.u.map name="pattern" value="53.0"/>
+         <frac32.u.map name="shift" value="1.5"/>
       </params>
       <attribs/>
       <object id="patch/object" uuid="a0ee71d48208b71752cbb8c05e55145106ef3946">
-         <sDescription></sDescription>
+         <sDescription>display boolean</sDescription>
          <author>Johannes Taelman</author>
          <license>BSD</license>
          <helpPatch>disp.axh</helpPatch>
@@ -31,8 +31,7 @@
          <attribs/>
          <includes/>
          <code.declaration><![CDATA[// Seed value
-uint8_t bits = 0;
-
+uint8_t seed = 0;
 uint8_t patterns[32] = {0,1,3,5,9,7,11,13,19,21,25,37,15,27,29,23,39,43,45,53,31,47,55,59,61,87,91,63,95,111,127,255};
 
 // Rotate bits, with wrapping
@@ -41,29 +40,29 @@ uint8_t rotate_right(uint8_t val, uint8_t shift) {
 }
 
 // Check bit at position bit
-bool checkbit(uint8_t val, uint8_t bit) { 
+bool checkbit(uint8_t val, uint8_t bit) {
 	return (val >> bit) & 1;
 }]]></code.declaration>
          <code.init><![CDATA[]]></code.init>
          <code.dispose><![CDATA[]]></code.dispose>
-         <code.krate><![CDATA[bits = patterns[param_pattern >> 22];
-//bits = rotate_right(seed, param_shift >> 24);
+         <code.krate><![CDATA[seed = patterns[param_pattern >> 22];
+seed = rotate_right(seed, param_shift >> 24);
 
-disp_bit0 = checkbit(bits, 0);
-disp_bit1 = checkbit(bits, 1);
-disp_bit2 = checkbit(bits, 2);
-disp_bit3 = checkbit(bits, 3);
-disp_bit4 = checkbit(bits, 4);
-disp_bit5 = checkbit(bits, 5);
-disp_bit6 = checkbit(bits, 6);
-disp_bit7 = checkbit(bits, 7);
+outlet_seed = seed;
 
-outlet_seed = bits;]]></code.krate>
+disp_bit0 = checkbit(seed, 0);
+disp_bit1 = checkbit(seed, 1);
+disp_bit2 = checkbit(seed, 2);
+disp_bit3 = checkbit(seed, 3);
+disp_bit4 = checkbit(seed, 4);
+disp_bit5 = checkbit(seed, 5);
+disp_bit6 = checkbit(seed, 6);
+disp_bit7 = checkbit(seed, 7);]]></code.krate>
          <code.srate><![CDATA[]]></code.srate>
          <code.midihandler><![CDATA[]]></code.midihandler>
       </object>
    </patchobj>
-   <obj type="disp/i" uuid="5e35fd0c62d81e70017289250cf28edd26e19e4a" name="i_1" x="224" y="56">
+   <obj type="disp/i" uuid="5e35fd0c62d81e70017289250cf28edd26e19e4a" name="i_1" x="154" y="56">
       <params/>
       <attribs/>
    </obj>
@@ -79,9 +78,9 @@ outlet_seed = bits;]]></code.krate>
    </settings>
    <notes><![CDATA[]]></notes>
    <windowPos>
-      <x>301</x>
-      <y>61</y>
-      <width>752</width>
-      <height>712</height>
+      <x>70</x>
+      <y>45</y>
+      <width>646</width>
+      <height>438</height>
    </windowPos>
 </patch-1.0>
