@@ -1,0 +1,30 @@
+<html>
+    <head>
+        <title>Bit-Shifting Playground</title>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.2/jquery.min.js"></script>
+        <script>
+            $(document).ready(function() {
+
+                var looplength = 7;
+
+                var bits = [1,0,0,0,1,1,0,0,1,0,1,1,0,1,0,1];
+
+                var wrappedbits = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];
+
+                for(var counter = 0; counter < 16; counter++) {
+
+                    var bitcount = 0;
+
+                    for(var j = (15 - counter); j < 16; j++) {
+                        wrappedbits[bitcount] = bits[counter];
+                        bitcount++;
+                    };
+                    console.log(wrappedbits);
+                }
+            });
+        </script>
+    </head>
+    <body>
+        This page intentionally blank.
+    </body>
+</html>
