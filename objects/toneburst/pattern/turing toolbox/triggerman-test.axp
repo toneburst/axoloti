@@ -1,7 +1,7 @@
 <patch-1.0 appVersion="1.0.9">
-   <patchobj type="disp/bool" uuid="a0ee71d48208b71752cbb8c05e55145106ef3946" name="Turing Byte" x="112" y="56">
+   <patchobj type="disp/bool" uuid="a0ee71d48208b71752cbb8c05e55145106ef3946" name="Turing Byte 1" x="112" y="56">
       <params>
-         <frac32.u.map name="pattern" value="2.0"/>
+         <frac32.u.map name="pattern" value="0.0"/>
          <frac32.u.map name="shift" value="0.0"/>
       </params>
       <attribs/>
@@ -23,6 +23,7 @@
             <bool32 name="bit5"/>
             <bool32 name="bit6"/>
             <bool32 name="bit7"/>
+            <int32.label name="seed"/>
          </displays>
          <params>
             <frac32.u.map name="pattern" description="Select Bit-Pattern"/>
@@ -56,7 +57,6 @@ bool checkbit(uint8_t val, uint8_t bit) {
 	seed = patterns[param_pattern >> 22];
 	// Shift number
 	seed = rotate_right(seed, param_shift >> 24);
-
 	// Display bits
 	disp_bit0 = checkbit(seed, 0);
 	disp_bit1 = checkbit(seed, 1);
@@ -66,7 +66,9 @@ bool checkbit(uint8_t val, uint8_t bit) {
 	disp_bit5 = checkbit(seed, 5);
 	disp_bit6 = checkbit(seed, 6);
 	disp_bit7 = checkbit(seed, 7);
-
+	// Display seed integer
+	disp_seed = seed;
+	// Update previous param values
 	pval = param_pattern;
 	sval = param_shift;
 }
@@ -77,14 +79,135 @@ outlet_seed = seed;]]></code.krate>
          <code.midihandler><![CDATA[]]></code.midihandler>
       </object>
    </patchobj>
-   <obj type="disp/i" uuid="5e35fd0c62d81e70017289250cf28edd26e19e4a" name="i_1" x="210" y="56">
+   <patchobj type="disp/bool" uuid="a0ee71d48208b71752cbb8c05e55145106ef3946" name="Turing Byte 2" x="210" y="56">
+      <params>
+         <frac32.u.map name="pattern" value="0.0"/>
+         <frac32.u.map name="shift" value="0.0"/>
+      </params>
+      <attribs/>
+      <object id="patch/object" uuid="a0ee71d48208b71752cbb8c05e55145106ef3946">
+         <sDescription>Create 8-bit type for Turing object.</sDescription>
+         <author>toneburst</author>
+         <license>BSD</license>
+         <helpPatch>disp.axh</helpPatch>
+         <inlets/>
+         <outlets>
+            <int32.positive name="seed"/>
+         </outlets>
+         <displays>
+            <bool32 name="bit0"/>
+            <bool32 name="bit1"/>
+            <bool32 name="bit2"/>
+            <bool32 name="bit3"/>
+            <bool32 name="bit4"/>
+            <bool32 name="bit5"/>
+            <bool32 name="bit6"/>
+            <bool32 name="bit7"/>
+            <int32.label name="seed"/>
+         </displays>
+         <params>
+            <frac32.u.map name="pattern" description="Select Bit-Pattern"/>
+            <frac32.u.map name="shift"/>
+         </params>
+         <attribs/>
+         <includes/>
+         <code.declaration><![CDATA[// Previous values for 'pattern' and 'shift' params
+int32_t pval, sval = 0;
+
+// Seed value
+uint8_t seed = 0;
+
+// Bit Patterns. These numbers represent the 32 unique bit patterns in an 8-bit word
+// (all other patterns are one of these patterns shifted left/right)
+uint8_t patterns[32] = {0,1,3,5,9,7,11,13,19,21,25,37,15,27,29,23,39,43,45,53,31,47,55,59,61,87,91,63,95,111,127,255};
+
+// Rotate bits, with wrapping
+uint8_t rotate_right(uint8_t val, uint8_t shift) {
+	return (val << shift) | (val >> (8 - shift));
+}
+
+// Check bit at position bit
+bool checkbit(uint8_t val, uint8_t bit) {
+	return (val >> bit) & 1;
+}]]></code.declaration>
+         <code.krate><![CDATA[if ((pval != param_pattern) || (sval != param_shift)) {
+	// Get pattern number from array
+	seed = patterns[param_pattern >> 22];
+	// Shift number
+	seed = rotate_right(seed, param_shift >> 24);
+	// Display bits
+	disp_bit0 = checkbit(seed, 0);
+	disp_bit1 = checkbit(seed, 1);
+	disp_bit2 = checkbit(seed, 2);
+	disp_bit3 = checkbit(seed, 3);
+	disp_bit4 = checkbit(seed, 4);
+	disp_bit5 = checkbit(seed, 5);
+	disp_bit6 = checkbit(seed, 6);
+	disp_bit7 = checkbit(seed, 7);
+	// Display seed integer
+	disp_seed = seed;
+	// Update previous param values
+	pval = param_pattern;
+	sval = param_shift;
+}
+
+// Set outlet value
+outlet_seed = seed;]]></code.krate>
+      </object>
+   </patchobj>
+   <patchobj type="patch/object" uuid="5e35fd0c62d81e70017289250cf28edd26e19e4a" name="object_1" x="308" y="56">
+      <params/>
+      <attribs/>
+      <object id="patch/object" uuid="5e35fd0c62d81e70017289250cf28edd26e19e4a">
+         <sDescription>Combine 2 Turing object 8-bit bytes into a single 16-bit word.</sDescription>
+         <author>toneburst</author>
+         <license>BSD</license>
+         <helpPatch>disp.axh</helpPatch>
+         <inlets>
+            <int32.positive name="byte1"/>
+            <int32.positive name="byte2"/>
+         </inlets>
+         <outlets>
+            <int32.positive name="seed" description="Turing object 16-bit seed"/>
+         </outlets>
+         <displays>
+            <int32.label name="seed" noLabel="true"/>
+         </displays>
+         <params/>
+         <attribs/>
+         <includes/>
+         <code.declaration><![CDATA[// Seed value
+uint16_t seed = 0;]]></code.declaration>
+         <code.init><![CDATA[]]></code.init>
+         <code.dispose><![CDATA[]]></code.dispose>
+         <code.krate><![CDATA[// Calculate seed number
+seed = inlet_byte1 | (inlet_byte2 << 8);
+
+// Display value as int
+disp_seed = seed;
+
+// Set output value
+outlet_seed = seed;]]></code.krate>
+         <code.srate><![CDATA[]]></code.srate>
+         <code.midihandler><![CDATA[]]></code.midihandler>
+      </object>
+   </patchobj>
+   <obj type="disp/i" uuid="5e35fd0c62d81e70017289250cf28edd26e19e4a" name="i_2" x="406" y="56">
       <params/>
       <attribs/>
    </obj>
    <nets>
       <net>
-         <source obj="Turing Byte" outlet="seed"/>
-         <dest obj="i_1" inlet="in"/>
+         <source obj="Turing Byte 1" outlet="seed"/>
+         <dest obj="object_1" inlet="byte1"/>
+      </net>
+      <net>
+         <source obj="object_1" outlet="seed"/>
+         <dest obj="i_2" inlet="in"/>
+      </net>
+      <net>
+         <source obj="Turing Byte 2" outlet="seed"/>
+         <dest obj="object_1" inlet="byte2"/>
       </net>
    </nets>
    <settings>
@@ -92,8 +215,8 @@ outlet_seed = seed;]]></code.krate>
    </settings>
    <notes><![CDATA[]]></notes>
    <windowPos>
-      <x>70</x>
-      <y>87</y>
+      <x>134</x>
+      <y>23</y>
       <width>1077</width>
       <height>777</height>
    </windowPos>
