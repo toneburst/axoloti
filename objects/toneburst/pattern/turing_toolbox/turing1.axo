@@ -22,6 +22,7 @@
       <displays/>
       <params>
          <frac32.s.map name="randomness" description="Bit-flip threshold"/>
+         <frac32.u.map name="length" description="Pattern Length 2-16 steps" />
       </params>
       <attribs/>
       <code.declaration><![CDATA[
@@ -29,6 +30,8 @@
 //////////////////////
 // Global Variables //
 //////////////////////
+
+uint8_t minlength = 1;
 
 // Toggles
 bool init  = 1;   // Init toggle
@@ -38,6 +41,7 @@ bool ltrig = 0;  // Load seed toggle
 bool ftrig = 0;  // Bit-flip toggle
 
 // State variables
+uint8_t length      = 8;    // Sequence length
 uint8_t counter     = 0;    // Step-counter
 uint16_t baseval    = 0;    // Base bits
 uint16_t workingval = 0;    // Working bits
@@ -56,9 +60,12 @@ uint16_t rotate_right(uint16_t val, uint8_t shift) {
 	return (val << shift) | (val >> (15 - shift));
 }
 
-/*uint16_t rotate_left(uint16_t val, uint8_t shift) {
-	return (val << (16 - shift)) | (val >> shift);
-}*/
+uint16_t loop_right(uint16_t val, uint8_t shift, uint8_t looplen) {
+    uint16_t loop = 0;
+    for (uint8_t i = 0; i < shift; i++) {
+        //bool 
+    }
+}
 
 // Toggle bit x
 // http://stackoverflow.com/questions/47981/how-do-you-set-clear-and-toggle-a-single-bit-in-c-c
@@ -83,6 +90,22 @@ uint16_t reversebits16(uint16_t val) {
     for(uint8_t i = 0; i < 16; i++)
         reversed |= ((val >> i) & 1) << (15 - i);
     return reversed;
+}
+
+// Return Max of 2 values
+int32_t max(int32_t minval, int32_t val) {
+    return(val >= minval) ? val : minval;
+}
+
+// Return Min of 2 values
+int32_t min(int32_t maxval, int32_t val) {
+    return(val <= maxval) ? val : maxval;
+}
+
+// Calculate pattern length based on param_length
+int32_t calculatelength(int32_t len) {
+    // Max 32 steps
+    return max(minlength, len >> 22);
 }
 
            ]]></code.declaration>
