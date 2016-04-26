@@ -1,4 +1,4 @@
-<objdefs appVersion="1.0.8">
+<objdefs appVersion="1.0.9">
    <obj.normal id="turing1" uuid="f4aa3be926415b6fc796e993dde554a273a022ac">
       <sDescription>16bit Shift-register pattern generator, based on Music Thing Turing machine Eurorack module, with extras</sDescription>
       <author>toneburst</author>
@@ -22,7 +22,7 @@
       <displays/>
       <params>
          <frac32.s.map name="randomness" description="Bit-flip threshold"/>
-         <frac32.u.map name="length" description="Pattern Length 2-16 steps" />
+         <frac32.u.map name="length" description="Pattern Length 2-16 steps"/>
       </params>
       <attribs/>
       <code.declaration><![CDATA[
@@ -63,8 +63,11 @@ uint16_t rotate_right(uint16_t val, uint8_t shift) {
 uint16_t loop_right(uint16_t val, uint8_t shift, uint8_t looplen) {
     uint16_t loop = 0;
     for (uint8_t i = 0; i < shift; i++) {
-        //bool 
+    	   uint8_t pos = (i + looplen) % looplen;
+        bool bit = (val >> pos) & 1;
+        loop ^= (-bit ^ loop) & (1 << i);
     }
+    return (val >> shift) | loop;
 }
 
 // Toggle bit x
@@ -161,13 +164,14 @@ if (inlet_flip && !ftrig) {
 
 if (inlet_clock && !ctrig) {
     // Toggle wrapped bits if noise inlet value lower than noise threshold value
-    if (inlet_noise < param_randomness) {
+    /*if (inlet_noise < param_randomness) {
         workingval = togglebitx(workingval, counter);
         // Send out flip pulse (not sure what this will be useful for, yet)
         flippulse = true;
-    }
+    }*/
     // State output value
-    state = rotate_right(workingval, counter);
+    //state = rotate_right(workingval, counter);
+    state = loop_right(workingval, counter, 8);
     // Reverse bits if 'direction' input true
     if (inlet_direction) {
         state = reversebits16(state);
