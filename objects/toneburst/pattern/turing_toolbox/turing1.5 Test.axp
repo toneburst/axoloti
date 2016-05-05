@@ -1,7 +1,7 @@
 <patch-1.0 appVersion="1.0.9">
    <obj type="ctrl/dial p" uuid="cc5d2846c3d50e425f450c4b9851371b54f4d674" name="dial_1" x="700" y="84">
       <params>
-         <frac32.u.map name="value" value="3.5"/>
+         <frac32.u.map name="value" value="12.5"/>
       </params>
       <attribs/>
    </obj>

@@ -57,21 +57,25 @@ bool flippulse = false;     // Bit-flip pulse state
 
 // Rotate bits, with wrapping at end of 16-bit byte
 uint16_t rotate_right(uint16_t val, uint8_t shift) {
-	uint8_t len = 3;
 	return (val << shift) | (val >> (15 - shift));
 }
 
-
+// 
 uint16_t loop_left(uint16_t val, uint8_t shift) {
 	
-	uint8_t len = 7;
+	uint8_t len = 15;
 	uint16_t right = 0;
 
-	for(uint8_t i = 0; i <= shift; i++ ) {
-		bool endbit = getbitx(val, i % 3);
+	for(uint8_t i = 0; i <= shift; i++) {
+		bool endbit = getbitx(val, i % len);
 		right = setbitx(right, i, endbit);
 	}	
 	return (val << shift) | right;
+}
+
+uint16_t asr_shift(uint16_t val) {
+	uint8_t len = 7;
+	return val >> 1;//setbitx(val >> 1, 0, getbitx(val, len));
 }
 
 // Get bit from byte
@@ -121,6 +125,7 @@ int32_t calculatelength(int32_t len) {
 if (init) {
 	baseval = inlet_seed;
 	workingval = baseval;
+	state = 7674;
 	init = false;
 }
 
@@ -170,8 +175,9 @@ if (inlet_clock && !ctrig) {
         flippulse = true;
     }
     // State output value
-    state = rotate_right(workingval, counter);
+    //state = rotate_right(workingval, counter);
     //state = loop_left(workingval, counter);
+    state = asr_shift(state);
     
     // Reverse bits if 'direction' input true
     if (inlet_direction) {
