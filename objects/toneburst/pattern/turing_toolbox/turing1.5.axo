@@ -34,7 +34,7 @@
 uint8_t minlength = 1;
 
 // Toggles
-bool init  = 1;   // Init toggle
+bool init  = 1;  // Init toggle
 bool ctrig = 0;  // Clock-pulse toggle
 bool rtrig = 0;  // Counter-reset toggle
 bool ltrig = 0;  // Load seed toggle
@@ -55,19 +55,33 @@ bool flippulse = false;     // Bit-flip pulse state
 // Utility Functions //
 ///////////////////////
 
-// Rotate bits, with wrapping
+// Rotate bits, with wrapping at end of 16-bit byte
 uint16_t rotate_right(uint16_t val, uint8_t shift) {
+	uint8_t len = 3;
 	return (val << shift) | (val >> (15 - shift));
 }
 
-uint16_t loop_right(uint16_t val, uint8_t shift, uint8_t looplen) {
-    uint16_t loop = 0;
-    for (uint8_t i = 0; i < shift; i++) {
-    	   uint8_t pos = (i + looplen) % looplen;
-        bool bit = (val >> pos) & 1;
-        loop ^= (-bit ^ loop) & (1 << i);
-    }
-    return (val >> shift) | loop;
+
+uint16_t loop_left(uint16_t val, uint8_t shift) {
+	
+	uint8_t len = 7;
+	uint16_t right = 0;
+
+	for(uint8_t i = 0; i <= shift; i++ ) {
+		bool endbit = getbitx(val, i % 3);
+		right = setbitx(right, i, endbit);
+	}	
+	return (val << shift) | right;
+}
+
+// Get bit from byte
+bool getbitx(uint16_t val, uint8_t bit) {
+	return (val >> bit) & 1;
+}
+
+// Set bit of byte
+uint16_t setbitx(uint16_t val, uint8_t bit, bool newbit) {
+	return val ^ (-newbit ^ val) & (1 << bit);
 }
 
 // Toggle bit x
@@ -76,23 +90,9 @@ uint16_t togglebitx(uint16_t val, uint8_t x) {
 	return val ^= 1 << x;
 }
 
-// Get values of left-hand 8 bytes of 16bit int (other bits zeroed)
-/*uint16_t getleftbyte(uint16_t word) {
-    return word >> 8;
-}
-
-// Get values of right-hand 8 bytes of 16bit int (other bits zeroed)
-uint16_t getrightbyte(uint16_t word) {
-    return (word << 8) >> 8;
-}*/
-
 // Reverse bit-order of 16-bit word
-// http://stackoverflow.com/questions/2602823/in-c-c-whats-the-simplest-way-to-reverse-the-order-of-bits-in-a-byte
 uint16_t reversebits16(uint16_t val) {
-    uint16_t reversed = val;
-    for(uint8_t i = 0; i < 16; i++)
-        reversed |= ((val >> i) & 1) << (15 - i);
-    return reversed;
+    return __REV16(val);
 }
 
 // Return Max of 2 values
@@ -136,9 +136,9 @@ if ((inlet_load) && !ltrig) {
 	ltrig = false;
 }
 
-/////////////////////////////
-// Reset Input Rising Edge //
-/////////////////////////////
+////////////////////////////////
+// Reset Input On Rising Edge //
+////////////////////////////////
 
 if (inlet_reset && !rtrig) {
 	counter = 0;
@@ -147,9 +147,9 @@ if (inlet_reset && !rtrig) {
 	rtrig = false;
 }
 
-////////////////////////////////////////
-// Flip Current First Bit Rising Edge //
-////////////////////////////////////////
+///////////////////////////////////////////
+// Flip Current First Bit On Rising Edge //
+///////////////////////////////////////////
 
 if (inlet_flip && !ftrig) {
     workingval = togglebitx(workingval, counter);
@@ -158,23 +158,25 @@ if (inlet_flip && !ftrig) {
 	ftrig = false;
 }
 
-/////////////////////////////
-// Clock Input Rising Edge //
-/////////////////////////////
+////////////////////////////////
+// Clock Input On Rising Edge //
+////////////////////////////////
 
 if (inlet_clock && !ctrig) {
     // Toggle wrapped bits if noise inlet value lower than noise threshold value
-    /*if (inlet_noise < param_randomness) {
+    if (inlet_noise < param_randomness) {
         workingval = togglebitx(workingval, counter);
         // Send out flip pulse (not sure what this will be useful for, yet)
         flippulse = true;
-    }*/
+    }
     // State output value
     state = rotate_right(workingval, counter);
+    //state = loop_left(workingval, counter);
+    
     // Reverse bits if 'direction' input true
-    /*if (inlet_direction) {
+    if (inlet_direction) {
         state = reversebits16(state);
-    }*/
+    }
     // Output value (-128 to +128 range)
     outval = (state >> 8) - 128;
 	// Update counter
