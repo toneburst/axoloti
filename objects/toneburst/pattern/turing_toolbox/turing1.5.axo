@@ -61,21 +61,13 @@ uint16_t rotate_right(uint16_t val, uint8_t shift) {
 }
 
 // 
-uint16_t loop_left(uint16_t val, uint8_t shift) {
-	
-	uint8_t len = 15;
+uint16_t loop_right(uint16_t val, uint8_t shift, uint8_t len) {
 	uint16_t right = 0;
-
 	for(uint8_t i = 0; i <= shift; i++) {
 		bool endbit = getbitx(val, i % len);
 		right = setbitx(right, i, endbit);
 	}	
-	return (val << shift) | right;
-}
-
-uint16_t asr_shift(uint16_t val) {
-	uint8_t len = 7;
-	return val >> 1;//setbitx(val >> 1, 0, getbitx(val, len));
+	return (val << shift) | (right >> (15 - shift));
 }
 
 // Get bit from byte
@@ -111,8 +103,8 @@ int32_t min(int32_t maxval, int32_t val) {
 
 // Calculate pattern length based on param_length
 int32_t calculatelength(int32_t len) {
-    // Max 32 steps
-    return max(minlength, len >> 22);
+    // Max 16 steps
+    return max(minlength, len >> 23);
 }
 
            ]]></code.declaration>
@@ -176,8 +168,7 @@ if (inlet_clock && !ctrig) {
     }
     // State output value
     //state = rotate_right(workingval, counter);
-    //state = loop_left(workingval, counter);
-    state = asr_shift(state);
+    state = loop_right(workingval, counter, param_length >> 22);
     
     // Reverse bits if 'direction' input true
     if (inlet_direction) {
