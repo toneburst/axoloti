@@ -55,6 +55,26 @@ bool flippulse = false;     // Bit-flip pulse state
 // Utility Functions //
 ///////////////////////
 
+// Return Max of 2 values
+int32_t max(int32_t minval, int32_t val) {
+    return(val >= minval) ? val : minval;
+}
+
+// Return Min of 2 values
+int32_t min(int32_t maxval, int32_t val) {
+    return(val <= maxval) ? val : maxval;
+}
+
+// Calculate pattern length based on param_length
+int32_t calculatelength(int32_t len) {
+    // Max 16 steps
+    return max(minlength, len >> 23);
+}
+
+////////////////////////////////
+// Bit-Manipulation Functions //
+////////////////////////////////
+
 // Rotate bits, with wrapping at end of 16-bit byte
 uint16_t rotate_right(uint16_t val, uint8_t shift) {
 	return (val << shift) | (val >> (15 - shift));
@@ -89,22 +109,6 @@ uint16_t togglebitx(uint16_t val, uint8_t x) {
 // Reverse bit-order of 16-bit word
 uint16_t reversebits16(uint16_t val) {
     return __REV16(val);
-}
-
-// Return Max of 2 values
-int32_t max(int32_t minval, int32_t val) {
-    return(val >= minval) ? val : minval;
-}
-
-// Return Min of 2 values
-int32_t min(int32_t maxval, int32_t val) {
-    return(val <= maxval) ? val : maxval;
-}
-
-// Calculate pattern length based on param_length
-int32_t calculatelength(int32_t len) {
-    // Max 16 steps
-    return max(minlength, len >> 23);
 }
 
            ]]></code.declaration>
@@ -168,7 +172,7 @@ if (inlet_clock && !ctrig) {
     }
     // State output value
     //state = rotate_right(workingval, counter);
-    state = loop_right(workingval, counter, param_length >> 22);
+    state = loop_right(workingval, counter, param_length >> 23);
     
     // Reverse bits if 'direction' input true
     if (inlet_direction) {
@@ -176,11 +180,8 @@ if (inlet_clock && !ctrig) {
     }
     // Output value (-128 to +128 range)
     outval = (state >> 8) - 128;
-	// Update counter
-	counter = (counter < 15) ? counter + 1 : 0;
-    // Reset working bits if evolve option not set
-    if (!inlet_evolve && counter == 15)
-        workingval = baseval;
+    // Update counter
+    counter = (counter < 15) ? counter + 1 : 0;
     // Set toggle
     ctrig = true;
 } else if (inlet_clock == 0) {

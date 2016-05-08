@@ -1,4 +1,4 @@
-<patch-1.0 appVersion="1.0.8">
+<patch-1.0 appVersion="1.0.9">
    <obj type="env/ad" uuid="255cb0cd67470c7498f9c33b820facd26aa629ce" name="ad_1" x="812" y="28">
       <params>
          <frac32.s.map name="a" value="-64.0"/>
@@ -6,13 +6,13 @@
       </params>
       <attribs/>
    </obj>
-   <obj type="const/i" uuid="e202f44b2df17ae0b3e663b98ea6b14c8ff00408" name="i_1" x="28" y="70">
+   <obj type="const/i" uuid="e202f44b2df17ae0b3e663b98ea6b14c8ff00408" name="i_1" x="42" y="70">
       <params/>
       <attribs>
          <spinner attributeName="value" value="6483"/>
       </attribs>
    </obj>
-   <obj type="rand/uniform f" uuid="8f20d4eee60d56a57c11111c7028f69d6039b658" name="Noise" x="28" y="126">
+   <obj type="rand/uniform f" uuid="8f20d4eee60d56a57c11111c7028f69d6039b658" name="Noise" x="42" y="126">
       <params/>
       <attribs/>
    </obj>
@@ -54,13 +54,13 @@
       </params>
       <attribs/>
    </obj>
-   <obj type="ctrl/toggle" uuid="42b8134fa729d54bfc8d62d6ef3fa99498c1de99" name="Direction" x="42" y="168">
+   <obj type="ctrl/toggle" uuid="42b8134fa729d54bfc8d62d6ef3fa99498c1de99" name="Direction" x="56" y="168">
       <params>
          <bool32.tgl name="b" value="0"/>
       </params>
       <attribs/>
    </obj>
-   <obj type="toneburst/pattern/turing" uuid="f4aa3eb926415b6fc796e993dde554a273a022ac" name="Turing" x="210" y="182">
+   <obj type="toneburst/pattern/turing_toolbox/turing" uuid="f4aa3eb926415b6fc796e993dde554a273a022ac" name="Turing" x="210" y="182">
       <params>
          <frac32.s.map name="randomness" value="-64.0"/>
       </params>
@@ -70,7 +70,7 @@
    <comment type="patch/comment" x="336" y="210" text="Pattern Out (-64 to 64)"/>
    <obj type="ctrl/toggle" uuid="42b8134fa729d54bfc8d62d6ef3fa99498c1de99" name="Evolve" x="56" y="224">
       <params>
-         <bool32.tgl name="b" value="1"/>
+         <bool32.tgl name="b" value="0"/>
       </params>
       <attribs/>
    </obj>
@@ -84,7 +84,7 @@
       <attribs/>
    </obj>
    <comment type="patch/comment" x="140" y="266" text="Clock Input"/>
-   <obj type="lfo/square" uuid="de6909eb64db13af5b43f979a4c130024b3a4793" name="Clock" x="14" y="280">
+   <obj type="lfo/square" uuid="de6909eb64db13af5b43f979a4c130024b3a4793" name="Clock" x="28" y="280">
       <params>
          <frac32.s.map name="pitch" value="3.0"/>
       </params>
@@ -93,7 +93,7 @@
    <comment type="patch/comment" x="140" y="280" text="Reset Counter"/>
    <comment type="patch/comment" x="154" y="294" text="Load Seed"/>
    <comment type="patch/comment" x="140" y="308" text="Flip First Bit"/>
-   <obj type="ctrl/button" uuid="ef3d13774349df85aa9bfecf30dbc91ab8488b3f" name="Reset Count" x="42" y="378">
+   <obj type="ctrl/button" uuid="ef3d13774349df85aa9bfecf30dbc91ab8488b3f" name="Reset Count" x="56" y="378">
       <params>
          <bool32.mom name="b" value="0"/>
       </params>
@@ -103,7 +103,7 @@
       <params/>
       <attribs/>
    </obj>
-   <obj type="ctrl/button" uuid="ef3d13774349df85aa9bfecf30dbc91ab8488b3f" name="Load Seed" x="42" y="434">
+   <obj type="ctrl/button" uuid="ef3d13774349df85aa9bfecf30dbc91ab8488b3f" name="Load Seed" x="56" y="434">
       <params>
          <bool32.mom name="b" value="0"/>
       </params>
@@ -113,7 +113,7 @@
       <params/>
       <attribs/>
    </obj>
-   <obj type="ctrl/button" uuid="ef3d13774349df85aa9bfecf30dbc91ab8488b3f" name="Flip Bit 0" x="42" y="490">
+   <obj type="ctrl/button" uuid="ef3d13774349df85aa9bfecf30dbc91ab8488b3f" name="Flip Bit 0" x="56" y="490">
       <params>
          <bool32.mom name="b" value="0"/>
       </params>
