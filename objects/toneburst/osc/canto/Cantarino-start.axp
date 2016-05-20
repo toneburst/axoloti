@@ -1,98 +1,62 @@
 <patch-1.0 appVersion="1.0.10">
-   <patchobj type="patch/object" uuid="a7d5ef18-190c-4917-b0d8-d553a0e83a6c" name="Canto" x="140" y="84">
+   <obj type="ctrl/dial p" uuid="cc5d2846c3d50e425f450c4b9851371b54f4d674" name="dial_1" x="364" y="56">
+      <params>
+         <frac32.u.map name="value" value="8.5"/>
+      </params>
+      <attribs/>
+   </obj>
+   <obj type="math/*" uuid="3ac307b9f782049739ed62504081b96d580ea336" name="*_1" x="462" y="154">
       <params/>
       <attribs/>
-      <object id="patch/object" uuid="a7d5ef18-190c-4917-b0d8-d553a0e83a6c">
-         <sDescription>k- to s-rate without interpolation</sDescription>
-         <author>Johannes Taelman</author>
-         <license>BSD</license>
-         <inlets>
-            <frac32 name="i" description="input"/>
-         </inlets>
-         <outlets>
-            <frac32buffer name="o" description="output"/>
-         </outlets>
-         <displays/>
-         <params/>
-         <attribs/>
-         <includes/>
-         <code.declaration><![CDATA[
-uint16_t pitchPhase, form1Phase,form2Phase,form3Phase;
-uint16_t pitchPhaseInc,form1PhaseInc,form2PhaseInc,form3PhaseInc;
-uint8_t form1Amp,form2Amp,form3Amp;
-uint8_t noiseMod=10;
-
-const int8_t sinCalc[256] = {
-	0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-	0,2,2,3,3,4,5,6,7,8,10,12,14,17,20,24,
-	0,4,4,5,6,7,9,11,13,15,18,22,26,31,37,45,
-	0,5,6,7,8,10,12,14,17,20,24,28,34,41,49,58,
-	0,5,6,7,9,10,12,15,18,21,26,31,37,44,53,63,
-	0,5,6,7,8,10,12,14,17,20,24,28,34,41,49,58,
-	0,4,4,5,6,7,9,11,13,15,18,22,26,31,37,45,
-	0,2,2,3,3,4,5,6,7,8,10,12,14,17,20,24,
-	0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-	0,-2,-2,-3,-3,-4,-5,-6,-7,-8,-10,-12,-14,-17,-20,-24,
-	0,-4,-4,-5,-6,-7,-9,-11,-13,-15,-18,-22,-26,-31,-37,-45,
-	0,-5,-6,-7,-8,-10,-12,-14,-17,-20,-24,-28,-34,-41,-49,-58,
-	0,-5,-6,-7,-9,-10,-12,-15,-18,-21,-26,-31,-37,-44,-53,-63,
-	0,-5,-6,-7,-8,-10,-12,-14,-17,-20,-24,-28,-34,-41,-49,-58,
-	0,-4,-4,-5,-6,-7,-9,-11,-13,-15,-18,-22,-26,-31,-37,-45,
-	0,-2,-2,-3,-3,-4,-5,-6,-7,-8,-10,-12,-14,-17,-20,-24
-};
-
-const int8_t sqrCalc[256] = {
-	0,1,2,2,2,3,3,4,5,5,6,8,9,11,13,16,
-	0,1,2,2,2,3,3,4,5,5,6,8,9,11,13,16,
-	0,1,2,2,2,3,3,4,5,5,6,8,9,11,13,16,
-	0,1,2,2,2,3,3,4,5,5,6,8,9,11,13,16,
-	0,1,2,2,2,3,3,4,5,5,6,8,9,11,13,16,
-	0,1,2,2,2,3,3,4,5,5,6,8,9,11,13,16,
-	0,1,2,2,2,3,3,4,5,5,6,8,9,11,13,16,
-	0,1,2,2,2,3,3,4,5,5,6,8,9,11,13,16,
-	0,-1,-2,-2,-2,-3,-3,-4,-5,-5,-6,-8,-9,-11,-13,-16,
-	0,-1,-2,-2,-2,-3,-3,-4,-5,-5,-6,-8,-9,-11,-13,-16,
-	0,-1,-2,-2,-2,-3,-3,-4,-5,-5,-6,-8,-9,-11,-13,-16,
-	0,-1,-2,-2,-2,-3,-3,-4,-5,-5,-6,-8,-9,-11,-13,-16,
-	0,-1,-2,-2,-2,-3,-3,-4,-5,-5,-6,-8,-9,-11,-13,-16,
-	0,-1,-2,-2,-2,-3,-3,-4,-5,-5,-6,-8,-9,-11,-13,-16,
-	0,-1,-2,-2,-2,-3,-3,-4,-5,-5,-6,-8,-9,-11,-13,-16,
-	0,-1,-2,-2,-2,-3,-3,-4,-5,-5,-6,-8,-9,-11,-13,-16
-};
-
-#define FORMANT_SZ 7
-enum {
-	_SP,_DOT,_QM,_COM,_HYP,_IY,_IH,_EH,_AE,_AA,
-	_AH,_AO,_UH,_AX,_IX,_ER,_UX,_OH,_RX,_LX,
-	_WX,_YX,_WH,_R,_L,_W,_Y,_M,_N,_NX,
-	_DX,_Q,_S,_SH,_F,_TH,__H,__X,_Z,_ZH,
-	_V,_DH,_CHa,_CHb,_Ja,_Jb,_Jc,_Jd,_EY,_AY,
-	_OY,_AW,_OW,_UW,_Ba,_Bb,_Bc,_Da,_Db,_Dc,
-	_Ga,_Gb,_Gc,_GXa,_GXb,_GXc,_Pa,_Pb,_Pc,_Ta,
-	_Tb,_Tc,_Ka,_Kb,_Kc,_KXa,_KXb,_KXc
-};
-
-int vowels[19] {5,6,7,8,9,10,11,12,13,14,16,17,21,48,49,50,51,52,53,};
-
-uint16_t pitchTable[64] = {
-	// Covers A1 to C7
-	58,61,65,69,73,77,82,86,92,97,
-	103,109,115,122,129,137,145,154,163,173,
-	183,194,206,218,231,244,259,274,291,308,
-	326,346,366,388,411,435,461,489,518,549,
-	581,616,652,691,732,776,822,871,923,978,
-	1036,1097,1163,1232,1305,1383,1465,1552,1644,1742,
-	1845,1955,2071,2195
-};
-
-int frameTime = 15; // ms
-uint16_t basePitch;
-int formantScale;]]></code.declaration>
-         <code.srate><![CDATA[   outlet_o = inlet_i;
-]]></code.srate>
-      </object>
-   </patchobj>
-   <nets/>
+   </obj>
+   <obj type="audio/out stereo" uuid="a1ca7a567f535acc21055669829101d3ee7f0189" name="out_1" x="546" y="154">
+      <params/>
+      <attribs/>
+   </obj>
+   <obj type="ctrl/button" uuid="ef3d13774349df85aa9bfecf30dbc91ab8488b3f" name="Gate" x="140" y="168">
+      <params>
+         <bool32.mom name="b" value="0"/>
+      </params>
+      <attribs/>
+   </obj>
+   <obj type="toneburst/osc/canto/canto.axo" uuid="28df314d-5479-4383-b602-c3fb0939b767" name="Canto" x="252" y="168">
+      <params>
+         <frac32.s.map name="pitch" value="0.0"/>
+         <frac32.u.map name="phoneme" value="0.0"/>
+      </params>
+      <attribs/>
+   </obj>
+   <obj type="disp/i" uuid="5e35fd0c62d81e70017289250cf28edd26e19e4a" name="i_1" x="728" y="252">
+      <params/>
+      <attribs/>
+   </obj>
+   <obj type="disp/scope 128 b" uuid="2b69f51a714fc276503ef10c349d6d253d1ae5e2" name="scope_2" x="490" y="266">
+      <params/>
+      <attribs/>
+   </obj>
+   <nets>
+      <net>
+         <source obj="*_1" outlet="result"/>
+         <dest obj="out_1" inlet="left"/>
+         <dest obj="out_1" inlet="right"/>
+      </net>
+      <net>
+         <source obj="dial_1" outlet="out"/>
+         <dest obj="*_1" inlet="a"/>
+      </net>
+      <net>
+         <source obj="Canto" outlet="wave"/>
+         <dest obj="*_1" inlet="b"/>
+      </net>
+      <net>
+         <source obj="Canto" outlet="debug"/>
+         <dest obj="i_1" inlet="in"/>
+      </net>
+      <net>
+         <source obj="Gate" outlet="o"/>
+         <dest obj="Canto" inlet="gate"/>
+      </net>
+   </nets>
    <settings>
       <subpatchmode>no</subpatchmode>
    </settings>
