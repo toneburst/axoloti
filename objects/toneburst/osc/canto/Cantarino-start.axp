@@ -1,5 +1,5 @@
 <patch-1.0 appVersion="1.0.10">
-   <patchobj type="patch/object" uuid="a7d5ef18-190c-4917-b0d8-d553a0e83a6c" name="nointerp_1" x="546" y="210">
+   <patchobj type="patch/object" uuid="a7d5ef18-190c-4917-b0d8-d553a0e83a6c" name="Canto" x="140" y="84">
       <params/>
       <attribs/>
       <object id="patch/object" uuid="a7d5ef18-190c-4917-b0d8-d553a0e83a6c">

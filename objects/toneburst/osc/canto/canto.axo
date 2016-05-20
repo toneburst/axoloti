@@ -1,0 +1,27 @@
+<objdefs appVersion="1.0.10">
+   <obj.normal id="canto.axo" uuid="28df314d-5479-4383-b602-c3fb0939b767">
+      <sDescription>Cantarino oscillator</sDescription>
+      <author>Johannes Taelman</author>
+      <license>BSD</license>
+      <inlets>
+         <frac32 name="i" description="input"/>
+      </inlets>
+      <outlets>
+         <frac32buffer name="o" description="output"/>
+      </outlets>
+      <displays/>
+      <params/>
+      <attribs/>
+      <code.declaration><![CDATA[
+uint16_t pitchPhase, form1Phase,form2Phase,form3Phase;
+uint16_t pitchPhaseInc,form1PhaseInc,form2PhaseInc,form3PhaseInc;
+uint8_t form1Amp,form2Amp,form3Amp;
+uint8_t noiseMod=10;
+
+int frameTime = 15; // ms
+uint16_t basePitch;
+int formantScale;]]></code.declaration>
+      <code.srate><![CDATA[   outlet_o = inlet_i;
+]]></code.srate>
+   </obj.normal>
+</objdefs>
