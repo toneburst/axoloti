@@ -6,8 +6,8 @@
       <inlets>
          <frac32.bipolar name="pitch"/>
          <frac32.positive name="phoneme"/>
+         <frac32.bipolar name="noise"/>
          <bool32.risingfalling name="gate" description="gate"/>
-         <frac32buffer name="noise"/>
       </inlets>
       <outlets>
          <frac32buffer.bipolar name="wave" description="waveform"/>
@@ -210,9 +210,13 @@ for(j=0; j < BUFSIZE; j++) {
 	int8_t value;
 	// Noise
 	int8_t noise = inlet_noise;
-	int16_t phaseNoise = noise * noiseMod;
-	noise += noise<<2;
-	noise++;
+	int16_t phaseNoise = (noise<<2) * noiseMod;
+
+	if (((pitchPhase>>16)+phaseNoise) < (freq >> 16)) {
+		form1Phase = 0;
+		form2Phase = 0;
+		form3Phase = 0;
+	};
 
 	// Formants
 	form1Phase += form1PhaseInc;
@@ -225,12 +229,6 @@ for(j=0; j < BUFSIZE; j++) {
 	// Final sample value
 	value = (value * (0xff^((uint16_t)(pitchPhase>>24))))>>8;
 	pitchPhase+=freq;
-
-	if ((pitchPhase+phaseNoise) < pitchPhaseInc) {
-		form1Phase = 0;
-		form2Phase = 0;
-		form3Phase = 0;
-	};
 
  	outlet_wave[j] = (value) << 20;
  };]]></code.krate>
