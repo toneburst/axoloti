@@ -7,8 +7,8 @@
          <bool32 name="gate" description="trigger phoneme"/>
          <frac32.bipolar name="pitch" description="pitch input"/>
          <frac32.positive name="phoneme" description="phoneme select"/>
-         <frac32.positive name="glide" description="glide amt"/>
          <frac32.positive name="formant" description="formant shift"/>
+         <frac32.positive name="glide" description="glide amt"/>
       </inlets>
       <outlets>
          <frac32buffer.bipolar name="wave" description="waveform"/>
@@ -151,6 +151,7 @@ uint16_t form1PhaseInc,form2PhaseInc,form3PhaseInc;
 uint8_t form1Amp,form2Amp,form3Amp;
 // Noise modulation
 uint8_t noiseMod;
+
 // Formant shift param
 uint8_t formantScale;
 // Roughness
@@ -159,8 +160,10 @@ uint8_t roughness;
 uint8_t phoneme;
 // Var to hold noise values (used in audio-render loop)
 int8_t noise;
-
 ]]></code.declaration>
+      <code.init><![CDATA[
+
+phoneme = 0;]]></code.init>
       <code.krate><![CDATA[
 
 ////////////////////////////////
@@ -221,14 +224,13 @@ for(uint8_t j = 0; j < BUFSIZE; j++) {
 	int8_t value;
 	
 	// Noise
-	int8_t noise = GenerateRandomNumber();
 	int16_t phaseNoise = noise * (noiseMod + roughness);
-	//noise += noise<<2;
-	//noise++;
+	noise += noise << 2;
+	noise++;
 
 	// Mix formants
 	form1Phase += form1PhaseInc;
-	value = sinCalc[(((form1Phase >> 8) & 0xf0) | form1Amp)];
+	value  = sinCalc[(((form1Phase >> 8) & 0xf0) | form1Amp)];
 	form2Phase += form2PhaseInc;
 	value += sinCalc[(((form2Phase >> 8) & 0xf0) | form2Amp)];
 	form3Phase += form3PhaseInc;
@@ -238,7 +240,7 @@ for(uint8_t j = 0; j < BUFSIZE; j++) {
 	value = (value * (0xff^(pitchPhase >> 24))) >> 8;
 	pitchPhase += pitchPhaseInc;
 
-	// Reset phase-increment
+	// Reset phase-increment to simulate noise
 	if ((pitchPhase + (phaseNoise << 16)) < pitchPhaseInc) {
 		form1Phase = 0;
 		form2Phase = 0;
