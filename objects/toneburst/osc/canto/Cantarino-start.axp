@@ -1,7 +1,7 @@
 <patch-1.0 appVersion="1.0.10">
    <obj type="ctrl/dial p" uuid="cc5d2846c3d50e425f450c4b9851371b54f4d674" name="dial_1" x="364" y="56">
       <params>
-         <frac32.u.map name="value" value="45.0"/>
+         <frac32.u.map name="value" value="2.0"/>
       </params>
       <attribs/>
    </obj>
@@ -19,11 +19,11 @@
       </params>
       <attribs/>
    </obj>
-   <obj type="toneburst/osc/canto/canto.axo" uuid="28df314d-5479-4383-b602-c3fb0939b767" name="canto.axo_1" x="238" y="182">
+   <obj type="toneburst/osc/canto/canto.axo" uuid="28df314d-5479-4383-b602-c3fb0939b767" name="canto.axo_1" x="224" y="168">
       <params>
-         <frac32.s.map name="pitch" value="-9.0"/>
-         <frac32.u.map name="phoneme" value="53.0"/>
-         <frac32.u.map name="formant" value="5.0"/>
+         <frac32.s.map name="pitch" value="0.0"/>
+         <frac32.u.map name="phoneme" value="52.5"/>
+         <frac32.u.map name="formant" value="17.0"/>
       </params>
       <attribs/>
    </obj>
@@ -34,7 +34,7 @@
    <obj type="noise/pink oct" uuid="972351c4c2b2b4e358c64a64d119b5ddfa074f8e" name="pink_1" x="98" y="252">
       <params/>
       <attribs>
-         <combo attributeName="octaves" selection="1"/>
+         <combo attributeName="octaves" selection="2"/>
       </attribs>
    </obj>
    <obj type="disp/hex" uuid="87617898f70d90033f8add921438bf0d11721fdd" name="hex_1" x="434" y="252">
@@ -57,12 +57,12 @@
          <dest obj="*_1" inlet="b"/>
       </net>
       <net>
-         <source obj="canto.axo_1" outlet="debug"/>
-         <dest obj="hex_1" inlet="in"/>
-      </net>
-      <net>
          <source obj="pink_1" outlet="out"/>
          <dest obj="canto.axo_1" inlet="noise"/>
+      </net>
+      <net>
+         <source obj="canto.axo_1" outlet="debug"/>
+         <dest obj="hex_1" inlet="in"/>
       </net>
    </nets>
    <settings>
