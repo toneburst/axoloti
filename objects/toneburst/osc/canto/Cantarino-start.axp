@@ -1,7 +1,23 @@
 <patch-1.0 appVersion="1.0.10">
    <obj type="ctrl/dial p" uuid="cc5d2846c3d50e425f450c4b9851371b54f4d674" name="dial_1" x="364" y="56">
       <params>
-         <frac32.u.map name="value" value="26.0"/>
+         <frac32.u.map name="value" value="20.0"/>
+      </params>
+      <attribs/>
+   </obj>
+   <obj type="ctrl/button" uuid="ef3d13774349df85aa9bfecf30dbc91ab8488b3f" name="Gate" x="154" y="154">
+      <params>
+         <bool32.mom name="b" value="0"/>
+      </params>
+      <attribs/>
+   </obj>
+   <obj type="toneburst/osc/canto/canto.axo" uuid="28df314d-5479-4383-b602-c3fb0939b767" name="canto.axo_1" x="252" y="154">
+      <params>
+         <frac32.s.map name="pitch" value="-5.0"/>
+         <frac32.u.map name="phoneme" value="25.0"/>
+         <frac32.u.map name="formant" value="19.0"/>
+         <frac32.u.map name="roughness" value="0.0"/>
+         <frac32.u.map name="glide" value="0.0"/>
       </params>
       <attribs/>
    </obj>
@@ -13,34 +29,265 @@
       <params/>
       <attribs/>
    </obj>
-   <obj type="ctrl/button" uuid="ef3d13774349df85aa9bfecf30dbc91ab8488b3f" name="Gate" x="140" y="168">
-      <params>
-         <bool32.mom name="b" value="0"/>
-      </params>
-      <attribs/>
-   </obj>
-   <obj type="toneburst/osc/canto/canto.axo" uuid="28df314d-5479-4383-b602-c3fb0939b767" name="canto.axo_1" x="224" y="168">
-      <params>
-         <frac32.s.map name="pitch" value="-24.0"/>
-         <frac32.u.map name="phoneme" value="21.5"/>
-         <frac32.u.map name="formant" value="20.0"/>
-      </params>
-      <attribs/>
-   </obj>
    <obj type="disp/scope 128 b" uuid="2b69f51a714fc276503ef10c349d6d253d1ae5e2" name="scope_2" x="658" y="182">
       <params/>
       <attribs/>
-   </obj>
-   <obj type="noise/pink oct" uuid="972351c4c2b2b4e358c64a64d119b5ddfa074f8e" name="pink_1" x="98" y="252">
-      <params/>
-      <attribs>
-         <combo attributeName="octaves" selection="2"/>
-      </attribs>
    </obj>
    <obj type="disp/hex" uuid="87617898f70d90033f8add921438bf0d11721fdd" name="hex_1" x="434" y="252">
       <params/>
       <attribs/>
    </obj>
+   <patchobj type="patch/object" uuid="45dee74d-1a51-449a-a2c8-3b6268834f43" name="canto.axo_2" x="28" y="406">
+      <params>
+         <frac32.s.map name="pitch" value="0.0"/>
+         <frac32.u.map name="phoneme" value="17.0"/>
+         <frac32.u.map name="formant" value="22.5"/>
+         <frac32.u.map name="glide" value="0.0"/>
+      </params>
+      <attribs/>
+      <object id="patch/object" uuid="45dee74d-1a51-449a-a2c8-3b6268834f43">
+         <sDescription>Cantarino oscillator</sDescription>
+         <author>toneburst</author>
+         <license>BSD</license>
+         <inlets>
+            <frac32.bipolar name="pitch" description="pitch input"/>
+            <frac32.positive name="phoneme" description="phoneme select"/>
+            <frac32.positive name="glide" description="glide amt"/>
+            <bool32 name="gate" description="trigger phoneme"/>
+         </inlets>
+         <outlets>
+            <frac32buffer.bipolar name="wave" description="waveform"/>
+            <frac32 name="debug"/>
+         </outlets>
+         <displays/>
+         <params>
+            <frac32.s.map.pitch name="pitch" description="pitch" noLabel="true"/>
+            <frac32.u.map name="phoneme" description="phoneme select"/>
+            <frac32.u.map name="formant" description="formant shift"/>
+            <frac32.u.map name="glide" description="glide amt"/>
+         </params>
+         <attribs/>
+         <includes/>
+         <code.declaration><![CDATA[
+
+
+const int8_t sinCalc[256] = {
+    /* This table rolls a lot of functions together for speed.
+       Extracting phase and amplitude from the nybble packed form
+       Sine calculation
+       Exponential amplitude mapping
+       Scaling to appropriate range
+
+       ROUND(
+         FLOOR(a/16,1)
+         *SIN(
+           2
+           * PI()
+           * IF(
+             MOD(a,16),
+             EXP(0.18*MOD(a,16)),
+             0
+           ) /16
+         )*127
+       ,0)
+    */
+    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+    0,2,2,3,3,4,5,6,7,8,10,12,14,17,20,24,
+    0,4,4,5,6,7,9,11,13,15,18,22,26,31,37,45,
+    0,5,6,7,8,10,12,14,17,20,24,28,34,41,49,58,
+    0,5,6,7,9,10,12,15,18,21,26,31,37,44,53,63,
+    0,5,6,7,8,10,12,14,17,20,24,28,34,41,49,58,
+    0,4,4,5,6,7,9,11,13,15,18,22,26,31,37,45,
+    0,2,2,3,3,4,5,6,7,8,10,12,14,17,20,24,
+    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+    0,-2,-2,-3,-3,-4,-5,-6,-7,-8,-10,-12,-14,-17,-20,-24,
+    0,-4,-4,-5,-6,-7,-9,-11,-13,-15,-18,-22,-26,-31,-37,-45,
+    0,-5,-6,-7,-8,-10,-12,-14,-17,-20,-24,-28,-34,-41,-49,-58,
+    0,-5,-6,-7,-9,-10,-12,-15,-18,-21,-26,-31,-37,-44,-53,-63,
+    0,-5,-6,-7,-8,-10,-12,-14,-17,-20,-24,-28,-34,-41,-49,-58,
+    0,-4,-4,-5,-6,-7,-9,-11,-13,-15,-18,-22,-26,-31,-37,-45,
+    0,-2,-2,-3,-3,-4,-5,-6,-7,-8,-10,-12,-14,-17,-20,-24
+};
+
+const int8_t sqrCalc[256] = {
+    0,1,2,2,2,3,3,4,5,5,6,8,9,11,13,16,
+    0,1,2,2,2,3,3,4,5,5,6,8,9,11,13,16,
+    0,1,2,2,2,3,3,4,5,5,6,8,9,11,13,16,
+    0,1,2,2,2,3,3,4,5,5,6,8,9,11,13,16,
+    0,1,2,2,2,3,3,4,5,5,6,8,9,11,13,16,
+    0,1,2,2,2,3,3,4,5,5,6,8,9,11,13,16,
+    0,1,2,2,2,3,3,4,5,5,6,8,9,11,13,16,
+    0,1,2,2,2,3,3,4,5,5,6,8,9,11,13,16,
+    0,-1,-2,-2,-2,-3,-3,-4,-5,-5,-6,-8,-9,-11,-13,-16,
+    0,-1,-2,-2,-2,-3,-3,-4,-5,-5,-6,-8,-9,-11,-13,-16,
+    0,-1,-2,-2,-2,-3,-3,-4,-5,-5,-6,-8,-9,-11,-13,-16,
+    0,-1,-2,-2,-2,-3,-3,-4,-5,-5,-6,-8,-9,-11,-13,-16,
+    0,-1,-2,-2,-2,-3,-3,-4,-5,-5,-6,-8,-9,-11,-13,-16,
+    0,-1,-2,-2,-2,-3,-3,-4,-5,-5,-6,-8,-9,-11,-13,-16,
+    0,-1,-2,-2,-2,-3,-3,-4,-5,-5,-6,-8,-9,-11,-13,-16,
+    0,-1,-2,-2,-2,-3,-3,-4,-5,-5,-6,-8,-9,-11,-13,-16
+};
+
+#define FORMANT_SZ 7
+enum {
+    _SP,_DOT,_QM,_COM,_HYP,_IY,_IH,_EH,_AE,_AA,
+    _AH,_AO,_UH,_AX,_IX,_ER,_UX,_OH,_RX,_LX,
+    _WX,_YX,_WH,_R,_L,_W,_Y,_M,_N,_NX,
+    _DX,_Q,_S,_SH,_F,_TH,__H,__X,_Z,_ZH,
+    _V,_DH,_CHa,_CHb,_Ja,_Jb,_Jc,_Jd,_EY,_AY,
+    _OY,_AW,_OW,_UW,_Ba,_Bb,_Bc,_Da,_Db,_Dc,
+    _Ga,_Gb,_Gc,_GXa,_GXb,_GXc,_Pa,_Pb,_Pc,_Ta,
+    _Tb,_Tc,_Ka,_Kb,_Kc,_KXa,_KXb,_KXc
+};
+
+// The formant data has the following format:
+// [formant1 phase-increment],[f2 phase-incr],[f3 phase-incr],
+// [formant1 amplitude],[f2 amp],[f3 amp],
+// [noise-mod]
+
+const uint8_t formantTable[78][7] = {
+	{0x0, 0x0, 0x0,0x0,0x0,0x0,0x0},/*00 space*/	{0x13,0x43,0x5b,0x0,0x0,0x0,0x0},/*01 .*/
+	{0x13,0x43,0x5b,0x0,0x0,0x0,0x0},/*02 ?*/		{0x13,0x43,0x5b,0x0,0x0,0x0,0x0},/*03 ,*/
+	{0x13,0x43,0x5b,0x0,0x0,0x0,0x0},/*04 -*/		{0xa,0x54,0x6e,0xd,0xa,0x8,0x0},/*05 IY*/
+	{0xe,0x49,0x5d,0xd,0x8,0x7,0x0},/*06 IH*/		{0x13,0x43,0x5b,0xe,0xd,0x8,0x0},/*07 EH*/
+	{0x18,0x3f,0x58,0xf,0xe,0x8,0x0},/*08 AE*/		{0x1b,0x28,0x59,0xf,0xd,0x1,0x0},/*09 AA*/
+	{0x17,0x2c,0x57,0xf,0xc,0x1,0x0},/*10 AH*/		{0x15,0x1f,0x58,0xf,0xc,0x0,0x0},/*11 AO*/
+	{0x10,0x25,0x52,0xf,0xb,0x1,0x0},/*12 UH*/		{0x14,0x2c,0x57,0xe,0xb,0x0,0x0},/*13 AX*/
+	{0xe,0x49,0x5d,0xd,0xb,0x7,0x0},/*14 IX*/		{0x12,0x31,0x3e,0xc,0xb,0x5,0x0},/*15 ER*/
+	{0xe,0x24,0x52,0xf,0xc,0x1,0x0},/*16 UX*/		{0x12,0x1e,0x58,0xf,0xc,0x0,0x0},/*17 OH*/
+	{0x12,0x33,0x3e,0xd,0xc,0x6,0x0},/*18 RX*/		{0x10,0x25,0x6e,0xd,0x8,0x1,0x0},/*19 LX*/
+	{0xd,0x1d,0x50,0xd,0x8,0x0,0x0},/*20 WX*/		{0xf,0x45,0x5d,0xe,0xc,0x7,0x0},/*21 YX*/
+	{0xb,0x18,0x5a,0xd,0x8,0x0,0x0},/*22 WH*/		{0x12,0x32,0x3c,0xc,0xa,0x5,0x0},/*23 R*/
+	{0xe,0x1e,0x6e,0xd,0x8,0x1,0x0},/*24 L*/		{0xb,0x18,0x5a,0xd,0x8,0x0,0x0},/*25 W*/
+	{0x9,0x53,0x6e,0xd,0xa,0x8,0x0},/*26 Y*/		{0x6,0x2e,0x51,0xc,0x3,0x0,0x0},/*27 M*/
+	{0x6,0x36,0x79,0x9,0x9,0x0,0x0},/*28 N*/		{0x6,0x56,0x65,0x9,0x6,0x3,0x0},/*29 NX*/
+	{0x6,0x36,0x79,0x0,0x0,0x0,0x0},/*30 DX*/		{0x11,0x43,0x5b,0x0,0x0,0x0,0x0},/*31 Q*/
+	{0x6,0x49,0x63,0x7,0xa,0xd,0xf},/*32 S*/		{0x6,0x4f,0x6a,0x0,0x0,0x0,0x0},/*33 SH*/
+	{0x6,0x1a,0x51,0x3,0x3,0x3,0xf},/*34 F*/		{0x6,0x42,0x79,0x0,0x0,0x0,0x0},/*35 TH*/
+	{0xe,0x49,0x5d,0x0,0x0,0x0,0x0},/*36 /H*/		{0x10,0x25,0x52,0x0,0x0,0x0,0x0},/*37 /X*/
+	{0x9,0x33,0x5d,0xf,0x3,0x0,0x3},/*38 Z*/		{0xa,0x42,0x67,0xb,0x5,0x1,0x0},/*39 ZH*/
+	{0x8,0x28,0x4c,0xb,0x3,0x0,0x0},/*40 V*/		{0xa,0x2f,0x5d,0xb,0x4,0x0,0x0},/*41 DH*/
+	{0x6,0x4f,0x65,0x0,0x0,0x0,0x0},/*42 CHa*/		{0x6,0x4f,0x65,0x0,0x0,0x0,0x0},/*43 CHb*/
+	{0x6,0x42,0x79,0x1,0x0,0x0,0x0},/*44 Ja*/		{0x5,0x42,0x79,0x1,0x0,0x0,0x0},/*45 Jb*/
+	{0x6,0x6e,0x79,0x0,0xa,0xe,0x0},/*46 Jc*/		{0x0, 0x0, 0x0,0x2,0x2,0x1,0x0},/*47 Jd*/
+	{0x13,0x48,0x5a,0xe,0xe,0x9,0x0},/*48 EY*/		{0x1b,0x27,0x58,0xf,0xd,0x1,0x0},/*49 AY*/
+	{0x15,0x1f,0x58,0xf,0xc,0x0,0x0},/*50 OY*/		{0x1b,0x2b,0x58,0xf,0xd,0x1,0x0},/*51 AW*/
+	{0x12,0x1e,0x58,0xf,0xc,0x0,0x0},/*52 OW*/		{0xd,0x22,0x52,0xd,0x8,0x0,0x0},/*53 UW*/
+	{0x6,0x1a,0x51,0x2,0x0,0x0,0x0},/*54 Ba*/		{0x6,0x1a,0x51,0x4,0x1,0x0,0xf},/*55 Bb*/
+	{0x6,0x1a,0x51,0x0,0x0,0x0,0x0},/*56 Bc*/		{0x6,0x42,0x79,0x2,0x0,0x0,0x0},/*57 Da*/
+	{0x6,0x42,0x79,0x4,0x1,0x0,0xf},/*58 Db*/		{0x6,0x42,0x79,0x0,0x0,0x0,0x0},/*59 Dc*/
+	{0x6,0x6e,0x70,0x1,0x0,0x0,0x0},/*60 Ga*/		{0x6,0x6e,0x6e,0x4,0x1,0x0,0xf},/*61 Gb*/
+	{0x6,0x6e,0x6e,0x0,0x0,0x0,0x0},/*62 Gc*/		{0x6,0x54,0x5e,0x1,0x0,0x0,0x0},/*63 GXa*/
+	{0x6,0x54,0x5e,0x4,0x1,0x0,0xf},/*64 GXb*/		{0x6,0x54,0x5e,0x0,0x0,0x0,0x0},/*65 GXc*/
+	{0x6,0x1a,0x51,0x0,0x0,0x0,0x0},/*66 Pa*/		{0x6,0x1a,0x51,0x0,0x0,0x0,0x0},/*67 Pb*/
+	{0x6,0x1a,0x51,0x0,0x0,0x0,0x0},/*68 Pc*/		{0x6,0x42,0x79,0x0,0x0,0x0,0x0},/*69 Ta*/
+	{0x6,0x42,0x79,0x0,0x0,0x0,0x0},/*70 Tb*/		{0x6,0x42,0x79,0x0,0x0,0x0,0x0},/*71 Tc*/
+	{0x6,0x6d,0x65,0x0,0x0,0x0,0x0},/*72 Ka*/		{0xa,0x56,0x65,0xc,0xa,0x7,0x0},/*73 Kb*/
+	{0xa,0x6d,0x70,0x0,0x0,0x0,0x0},/*74 Kc*/		{0x6,0x54,0x5e,0x0,0x0,0x0,0x0},/*75 KXa*/
+	{0x6,0x54,0x5e,0x0,0xa,0x5,0x0},/*76 KXb*/		{0x26,0x54,0x5e,0x20,0x20,0x0,0x0}/*77 KXc*/
+};
+
+// Vowel indices
+const int vowels[19] = {
+    5,6,7,8,9,10,11,12,13,14,16,17,21,48,49,50,51,52,53
+};
+
+// Oscillator phases
+uint32_t pitchPhase, pitchPhaseInc;
+uint16_t form1Phase,form2Phase,form3Phase;
+// Phase-increment values
+uint16_t form1PhaseInc,form2PhaseInc,form3PhaseInc;
+// Formant amplitudes
+uint8_t form1Amp,form2Amp,form3Amp;
+// Noise modulation
+uint8_t noiseMod;
+
+uint8_t formantScale;
+uint8_t phoneme;
+int32_t noiseArray[16];
+uint8_t ncounter;
+int8_t noise;]]></code.declaration>
+         <code.init><![CDATA[
+
+pitchPhase = 0;
+noiseMod = 10;
+ncounter = 0;
+
+]]></code.init>
+         <code.krate><![CDATA[
+
+// Formant phase and amp vars
+uint8_t startFormant,nextFormant,staticFrames,tweenFrames;
+uint16_t startPitch,nextPitch;
+int16_t startForm1PhaseInc,startForm2PhaseInc,startForm3PhaseInc;
+uint8_t startForm1Amp,startForm2Amp,startForm3Amp;
+uint8_t startMod;
+
+// Scale formant amount
+formantScale = (param_formant >> 20) + 5;
+
+// Phoneme selection
+phoneme = param_phoneme >> 21;
+int newFormant = phoneme;
+outlet_debug = newFormant;
+
+form1PhaseInc = startForm1PhaseInc = formantTable[newFormant][0] * formantScale;
+form2PhaseInc = startForm2PhaseInc = formantTable[newFormant][1] * formantScale;
+form3PhaseInc = startForm3PhaseInc = formantTable[newFormant][2] * formantScale;
+form1Amp = startForm1Amp = formantTable[newFormant][3];
+form2Amp = startForm2Amp = formantTable[newFormant][4];
+form3Amp = startForm3Amp = formantTable[newFormant][5];
+noiseMod = startMod = formantTable[newFormant][6];
+
+// Calculate values while gate ON
+/*if (inlet_gate) {
+
+	// Add tweenframe code here?
+
+};*/
+
+// Calculate base pitch phase-increment
+MTOFEXTENDED(param_pitch + inlet_pitch, pitchPhaseInc);
+pitchPhaseInc = pitchPhaseInc >> 2;
+
+// Loop through buffer
+int j;
+for(j = 0; j < BUFSIZE; j++) {
+	// Output value
+	int8_t value;
+	
+	// Noise
+	int16_t phaseNoise = noise * noiseMod;
+	noise += noise<<2;
+	noise++;
+
+	// Formants
+	form1Phase += form1PhaseInc;
+	value = sinCalc[(((form1Phase >> 8) & 0xf0) | form1Amp)];
+	form2Phase += form2PhaseInc;
+	value += sinCalc[(((form2Phase >> 8) & 0xf0) | form2Amp)];
+	form3Phase += form3PhaseInc;
+	value += sqrCalc[(((form3Phase >> 8) & 0xf0) | form3Amp)];
+
+	// Final sample value
+	value = (value * (0xff^((uint16_t)(pitchPhase >> 24)))) >> 8;
+	pitchPhase += pitchPhaseInc;
+
+	// Reset phase-increment
+	if ((pitchPhase + phaseNoise) < pitchPhaseInc) {
+		form1Phase = 0;
+		form2Phase = 0;
+		form3Phase = 0;
+	};
+
+ 	outlet_wave[j] = value << 20;
+ };
+
+ ]]></code.krate>
+         <code.srate><![CDATA[/*noiseArray[ncounter] = inlet_noise;
+ncounter = (ncounter == 15) ? 0 : ncounter + 1;*/]]></code.srate>
+      </object>
+   </patchobj>
    <nets>
       <net>
          <source obj="*_1" outlet="result"/>
@@ -57,8 +304,8 @@
          <dest obj="*_1" inlet="b"/>
       </net>
       <net>
-         <source obj="pink_1" outlet="out"/>
-         <dest obj="canto.axo_1" inlet="noise"/>
+         <source obj="Gate" outlet="o"/>
+         <dest obj="canto.axo_1" inlet="gate"/>
       </net>
       <net>
          <source obj="canto.axo_1" outlet="debug"/>
@@ -72,7 +319,7 @@
    <windowPos>
       <x>242</x>
       <y>29</y>
-      <width>936</width>
-      <height>666</height>
+      <width>1002</width>
+      <height>779</height>
    </windowPos>
 </patch-1.0>
