@@ -145,10 +145,10 @@ const int vowels[19] = {
 };
 
 // Phases
-uint32_t pitchPhase;
+uint32_t pitchPhase, pitchPhaseInc;
 uint16_t form1Phase,form2Phase,form3Phase;
 // Phase-increment values
-uint16_t pitchPhaseInc,form1PhaseInc,form2PhaseInc,form3PhaseInc;
+uint16_t form1PhaseInc,form2PhaseInc,form3PhaseInc;
 // Formant amplitudes
 uint8_t form1Amp,form2Amp,form3Amp;
 // Noise modulation
@@ -156,7 +156,8 @@ uint8_t noiseMod;
 
 int frameTime;
 int formantScale;
-int phoneme;]]></code.declaration>
+int phoneme;
+]]></code.declaration>
       <code.init><![CDATA[
 
 pitchPhase = 0;
@@ -167,7 +168,6 @@ frameTime = 15; // 15ms
       <code.krate><![CDATA[
 
 // Formant phase and amp vars
-int n;
 uint8_t startFormant,nextFormant,staticFrames,tweenFrames;
 uint16_t startPitch,nextPitch;
 int16_t startForm1PhaseInc,startForm2PhaseInc,startForm3PhaseInc;
@@ -178,7 +178,7 @@ uint8_t startMod;
 formantScale = (param_formant >> 19) + 5;
 
 // Phoneme selection
-phoneme = param_phoneme >> 21;
+phoneme = param_phoneme >> 23;
 int newFormant = phoneme;
 
 form1PhaseInc = startForm1PhaseInc = formantTable[newFormant][0] * formantScale;
@@ -199,9 +199,8 @@ if (inlet_gate) {
 };
 
 // Calculate base pitch phase-increment
-uint32_t freq;
-MTOFEXTENDED(param_pitch + inlet_pitch,freq);
-freq = freq >> 2;
+MTOFEXTENDED(param_pitch + inlet_pitch, pitchPhaseInc);
+pitchPhaseInc = pitchPhaseInc >> 2;
 
 // Loop through buffer
 int j;
@@ -210,9 +209,9 @@ for(j=0; j < BUFSIZE; j++) {
 	int8_t value;
 	// Noise
 	int8_t noise = inlet_noise;
-	int16_t phaseNoise = (noise<<2) * noiseMod;
+	int16_t phaseNoise = (noise << 2) * noiseMod;
 
-	if (((pitchPhase>>16)+phaseNoise) < (freq >> 16)) {
+	if (((pitchPhase >> 16)+phaseNoise) < (pitchPhaseInc >> 16)) {
 		form1Phase = 0;
 		form2Phase = 0;
 		form3Phase = 0;
@@ -220,15 +219,15 @@ for(j=0; j < BUFSIZE; j++) {
 
 	// Formants
 	form1Phase += form1PhaseInc;
-	value = sinCalc[(((form1Phase>>8) & 0xf0) | form1Amp)];
+	value = sinCalc[(((form1Phase >> 8) & 0xf0) | form1Amp)];
 	form2Phase += form2PhaseInc;
-	value += sinCalc[(((form2Phase>>8) & 0xf0) | form2Amp)];
+	value += sinCalc[(((form2Phase >> 8) & 0xf0) | form2Amp)];
 	form3Phase += form3PhaseInc;
-	value += sqrCalc[(((form3Phase>>8) & 0xf0) | form3Amp)];
+	value += sqrCalc[(((form3Phase >> 8) & 0xf0) | form3Amp)];
 
 	// Final sample value
-	value = (value * (0xff^((uint16_t)(pitchPhase>>24))))>>8;
-	pitchPhase+=freq;
+	value = (value * (0xff^((uint16_t)(pitchPhase >> 24)))) >> 8;
+	pitchPhase+=pitchPhaseInc;
 
  	outlet_wave[j] = (value) << 20;
  };]]></code.krate>
