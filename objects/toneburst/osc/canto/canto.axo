@@ -7,6 +7,7 @@
          <frac32.bipolar name="pitch"/>
          <frac32.positive name="phoneme"/>
          <bool32.risingfalling name="gate" description="gate"/>
+         <frac32buffer name="noise"/>
       </inlets>
       <outlets>
          <frac32buffer.bipolar name="wave" description="waveform"/>
@@ -208,7 +209,7 @@ for(j=0; j < BUFSIZE; j++) {
 	// Output value
 	int8_t value;
 	// Noise
-	static int8_t noise;
+	int8_t noise = inlet_noise;
 	int16_t phaseNoise = noise * noiseMod;
 	noise += noise<<2;
 	noise++;
