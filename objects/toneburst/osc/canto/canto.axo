@@ -158,7 +158,7 @@ int frameTime;
 int formantScale;
 int phoneme;
 int32_t noiseArray[16];
-int ncounter;]]></code.declaration>
+uint8_t ncounter;]]></code.declaration>
       <code.init><![CDATA[
 
 pitchPhase = 0;
@@ -208,9 +208,10 @@ int j;
 for(j = 0; j < BUFSIZE; j++) {
 	// Output value
 	int8_t value;
+	
 	// Noise
-	int8_t noise = (int8_t)noiseArray[j];
-	int16_t phaseNoise = noise * noiseMod;
+	//int8_t noise = (int8_t)noiseArray[j];
+	//int16_t phaseNoise = noise * noiseMod;
 
 	// Formants
 	form1Phase += form1PhaseInc;

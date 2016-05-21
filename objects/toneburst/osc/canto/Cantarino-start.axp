@@ -1,7 +1,7 @@
 <patch-1.0 appVersion="1.0.10">
    <obj type="ctrl/dial p" uuid="cc5d2846c3d50e425f450c4b9851371b54f4d674" name="dial_1" x="364" y="56">
       <params>
-         <frac32.u.map name="value" value="2.0"/>
+         <frac32.u.map name="value" value="26.0"/>
       </params>
       <attribs/>
    </obj>
@@ -21,9 +21,9 @@
    </obj>
    <obj type="toneburst/osc/canto/canto.axo" uuid="28df314d-5479-4383-b602-c3fb0939b767" name="canto.axo_1" x="224" y="168">
       <params>
-         <frac32.s.map name="pitch" value="0.0"/>
-         <frac32.u.map name="phoneme" value="52.5"/>
-         <frac32.u.map name="formant" value="17.0"/>
+         <frac32.s.map name="pitch" value="-24.0"/>
+         <frac32.u.map name="phoneme" value="21.5"/>
+         <frac32.u.map name="formant" value="20.0"/>
       </params>
       <attribs/>
    </obj>
