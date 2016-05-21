@@ -16,6 +16,7 @@
       <params>
          <frac32.s.map.pitch name="pitch" description="pitch" noLabel="true"/>
          <frac32.u.map name="phoneme"/>
+         <frac32.u.map name="formant"/>
       </params>
       <attribs/>
       <code.declaration><![CDATA[
@@ -160,7 +161,6 @@ int phoneme;]]></code.declaration>
 pitchPhase = 0;
 noiseMod = 10;
 frameTime = 15; // 15ms
-formantScale = 54;
 
 ]]></code.init>
       <code.krate><![CDATA[
@@ -173,36 +173,45 @@ int16_t startForm1PhaseInc,startForm2PhaseInc,startForm3PhaseInc;
 uint8_t startForm1Amp,startForm2Amp,startForm3Amp;
 uint8_t startMod;
 
+// Scale formant amount
+formantScale = (param_formant >> 19) + 5;
+
+// Phoneme selection
+phoneme = param_phoneme >> 21;
+int newFormant = phoneme;
+
+form1PhaseInc = startForm1PhaseInc = formantTable[newFormant][0] * formantScale;
+form2PhaseInc = startForm2PhaseInc = formantTable[newFormant][1] * formantScale;
+form3PhaseInc = startForm3PhaseInc = formantTable[newFormant][2] * formantScale;
+form1Amp = startForm1Amp = formantTable[newFormant][3];
+form2Amp = startForm2Amp = formantTable[newFormant][4];
+form3Amp = startForm3Amp = formantTable[newFormant][5];
+noiseMod = startMod = formantTable[newFormant][6];
+
+
+
+// Calculate values while gate ON
+if (inlet_gate) {
+
+	// Add tweenframe code here?
+
+};
+
 // Calculate base pitch phase-increment
 uint32_t freq;
 MTOFEXTENDED(param_pitch + inlet_pitch,freq);
-
-phoneme = param_phoneme >> 28;
-
-// Calculate values while gate ON
-//if (inlet_gate) {
-
-	uint8_t newFormant = 0;//vowels[phoneme];
-
-	form1PhaseInc = startForm1PhaseInc = formantTable[0][0] * formantScale;
-     form2PhaseInc = startForm2PhaseInc = formantTable[0][1] * formantScale;
-	form3PhaseInc = startForm3PhaseInc = formantTable[0][2] * formantScale;
-	form1Amp = startForm1Amp = formantTable[0][3];
-	form2Amp = startForm2Amp = formantTable[0][4];
-	form3Amp = startForm3Amp = formantTable[0][5];
-	noiseMod = startMod = formantTable[0][6];
-
-//};
-
+freq = freq >> 2;
 
 // Loop through buffer
 int j;
- for(j=0;j<BUFSIZE;j++) {
+for(j=0; j < BUFSIZE; j++) {
+	// Output value
 	int8_t value;
-	
+	// Noise
 	static int8_t noise;
 	int16_t phaseNoise = noise * noiseMod;
-	noise += noise<<2; noise++;
+	noise += noise<<2;
+	noise++;
 
 	// Formants
 	form1Phase += form1PhaseInc;
@@ -213,17 +222,16 @@ int j;
 	value += sqrCalc[(((form3Phase>>8) & 0xf0) | form3Amp)];
 
 	// Final sample value
-	//value = (value * (0xff^(uint16_t(pitchPhase>>24))))>>8;
+	value = (value * (0xff^((uint16_t)(pitchPhase>>24))))>>8;
 	pitchPhase+=freq;
 
-	// Reset phase-increment
 	if ((pitchPhase+phaseNoise) < pitchPhaseInc) {
 		form1Phase = 0;
 		form2Phase = 0;
 		form3Phase = 0;
 	};
 
- 	outlet_wave[j] = (value + 0x80) << 24;
-}]]></code.krate>
+ 	outlet_wave[j] = (value) << 20;
+ };]]></code.krate>
    </obj.normal>
 </objdefs>
