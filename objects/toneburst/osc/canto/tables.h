@@ -1,7 +1,3 @@
-/* Tables for Canto
- * Extracted from Cantarino by Peter Knight
- */
-
 const int8_t sinCalc[256] = {
     /* This table rolls a lot of functions together for speed.
        Extracting phase and amplitude from the nybble packed form
@@ -59,18 +55,6 @@ const int8_t sqrCalc[256] = {
     0,-1,-2,-2,-2,-3,-3,-4,-5,-5,-6,-8,-9,-11,-13,-16
 };
 
-#define FORMANT_SZ 7
-enum {
-    _SP,_DOT,_QM,_COM,_HYP,_IY,_IH,_EH,_AE,_AA,
-    _AH,_AO,_UH,_AX,_IX,_ER,_UX,_OH,_RX,_LX,
-    _WX,_YX,_WH,_R,_L,_W,_Y,_M,_N,_NX,
-    _DX,_Q,_S,_SH,_F,_TH,__H,__X,_Z,_ZH,
-    _V,_DH,_CHa,_CHb,_Ja,_Jb,_Jc,_Jd,_EY,_AY,
-    _OY,_AW,_OW,_UW,_Ba,_Bb,_Bc,_Da,_Db,_Dc,
-    _Ga,_Gb,_Gc,_GXa,_GXb,_GXc,_Pa,_Pb,_Pc,_Ta,
-    _Tb,_Tc,_Ka,_Kb,_Kc,_KXa,_KXb,_KXc
-};
-
 // The formant data has the following format:
 // [formant1 phase-increment],[f2 phase-incr],[f3 phase-incr],
 // [formant1 amplitude],[f2 amp],[f3 amp],
@@ -119,28 +103,9 @@ const uint8_t formantTable[78][7] = {
 };
 
 // Vowel indices
-int vowels[] = {
+const int vowels[19] = {
     5,6,7,8,9,10,11,12,13,14,16,17,21,48,49,50,51,52,53
 };
 
-// Oscillator phase-increment values for notes A1 to C7
-uint16_t pitchTable[64] = {
-    58,61,65,69,73,77,82,86,92,97,
-    103,109,115,122,129,137,145,154,163,173,
-    183,194,206,218,231,244,259,274,291,308,
-    326,346,366,388,411,435,461,489,518,549,
-    581,616,652,691,732,776,822,871,923,978,
-    1036,1097,1163,1232,1305,1383,1465,1552,1644,1742,
-    1845,1955,2071,2195
-};
-
-// The framelist has the following format:
-//[allophone],[static frames],[transition frames],[pitch]
-// Not used in this implementation
-const uint8_t frameList[] = {
-    #if 1
-    _OH,20,5,20,
-    _AH,20,5,20,
-    #endif
-    // _Ta,0,0,61
-};
+// Sample-rate reduction divisor table
+uint8_t srateTable[8] = {1,2,4,8,16,32,64,128};
