@@ -1,8 +1,9 @@
 <objdefs appVersion="1.0.10">
    <obj.normal id="canto.axo" uuid="28df314d-5479-4383-b602-c3fb0939b767">
-      <sDescription>Cantarino oscillator</sDescription>
+      <sDescription>8-bit speech formant synthesiser, based on Cantarino Arduino sketch by Peter Knight</sDescription>
       <author>toneburst</author>
       <license>BSD</license>
+      <helpPatch>canto.axh</helpPatch>
       <inlets>
          <bool32 name="gate" description="trigger phoneme"/>
          <frac32.bipolar name="pitch" description="pitch input"/>
@@ -12,14 +13,15 @@
       </inlets>
       <outlets>
          <frac32buffer.bipolar name="wave" description="waveform"/>
-         <frac32 name="debug"/>
+         <frac32 name="pindex" description="phoneme index"/>
       </outlets>
       <displays/>
       <params>
          <frac32.s.map.pitch name="pitch" description="pitch" noLabel="true"/>
          <frac32.u.map name="phoneme" description="phoneme select"/>
-         <frac32.s.map name="formant" description="formant shift"/>
+         <frac32.u.map name="formant"/>
          <frac32.u.map name="roughness" description="roughness amt"/>
+         <frac32.u.map name="srate" description="sample-rate reduction"/>
          <frac32.u.map name="glide" description="formant glide time"/>
       </params>
       <attribs/>
@@ -138,6 +140,9 @@ const int vowels[19] = {
     5,6,7,8,9,10,11,12,13,14,16,17,21,48,49,50,51,52,53
 };
 
+// Sample-rate reduction divisor table
+uint8_t srateTable[8] = {1,2,4,8,16,32,64,128};
+
 //////////////////////
 // GLOBAL VARIABLES //
 //////////////////////
@@ -156,11 +161,23 @@ uint8_t noiseMod;
 uint8_t formantScale;
 // Roughness
 uint8_t roughness;
+// Sample-rate reduction divisor
+uint8_t srateDivisor;
+// Sample-rate counter (counts render loops)
+uint32_t srateCounter;
 // Phoneme-select param
 uint8_t phoneme;
 // Var to hold noise values (used in audio-render loop)
 int8_t noise;
+// Store final output value
+int8_t outValue;
+
 ]]></code.declaration>
+      <code.init><![CDATA[
+srateDivisor = 1;
+srateCounter = 0;
+
+]]></code.init>
       <code.krate><![CDATA[
 
 ////////////////////////////////
@@ -182,6 +199,9 @@ formantScale = (param_formant >> 20) + 5;
 
 // Roughness param
 roughness = param_roughness >> 23;
+
+// Sample-rate divisor
+srateDivisor = srateTable[(param_srate >> 24)];
 
 // Phoneme selection
 phoneme = param_phoneme >> 21;
@@ -216,10 +236,9 @@ pitchPhaseInc = pitchPhaseInc >> 2;
 ////////////////////////
 
 for(uint8_t j = 0; j < BUFSIZE; j++) {
-	
-	// Store final sample value
+
 	int8_t value;
-	
+
 	// Noise
 	int16_t phaseNoise = noise * (noiseMod + roughness);
 	noise += noise << 2;
@@ -232,7 +251,7 @@ for(uint8_t j = 0; j < BUFSIZE; j++) {
 	value += sinCalc[(((form2Phase >> 8) & 0xf0) | form2Amp)];
 	form3Phase += form3PhaseInc;
 	value += sqrCalc[(((form3Phase >> 8) & 0xf0) | form3Amp)];
-	
+
 	// Final sample value
 	value = (value * (0xff^(pitchPhase >> 24))) >> 8;
 	pitchPhase += pitchPhaseInc;
@@ -244,12 +263,19 @@ for(uint8_t j = 0; j < BUFSIZE; j++) {
 		form3Phase = 0;
 	};
 
+	// Sample-rate reduction
+	if (srateCounter % srateDivisor == 0)
+		outValue = value;
+
 	// Final sample value
-	outlet_wave[j] = value << 20;
+	outlet_wave[j] = outValue << 20;
+
+	// Increment render loop counter
+	srateCounter++;
 };
 
 // Debug output
-outlet_debug = newFormant;
+outlet_pindex = newFormant;
 
 ]]></code.krate>
    </obj.normal>

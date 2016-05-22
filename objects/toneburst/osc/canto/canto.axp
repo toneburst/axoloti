@@ -1,75 +1,100 @@
 <patch-1.0 appVersion="1.0.10">
-   <obj type="ctrl/dial p" uuid="cc5d2846c3d50e425f450c4b9851371b54f4d674" name="dial_1" x="364" y="56">
+   <obj type="ctrl/dial p" uuid="cc5d2846c3d50e425f450c4b9851371b54f4d674" name="dial_1" x="308" y="14">
       <params>
-         <frac32.u.map name="value" value="20.0"/>
+         <frac32.u.map name="value" value="8.5"/>
       </params>
       <attribs/>
    </obj>
-   <obj type="ctrl/button" uuid="ef3d13774349df85aa9bfecf30dbc91ab8488b3f" name="Gate" x="154" y="154">
+   <obj type="math/*" uuid="3ac307b9f782049739ed62504081b96d580ea336" name="*_1" x="504" y="98">
+      <params/>
+      <attribs/>
+   </obj>
+   <obj type="audio/out stereo" uuid="a1ca7a567f535acc21055669829101d3ee7f0189" name="out_1" x="574" y="98">
+      <params/>
+      <attribs/>
+   </obj>
+   <obj type="ctrl/button" uuid="ef3d13774349df85aa9bfecf30dbc91ab8488b3f" name="Gate" x="112" y="112">
       <params>
          <bool32.mom name="b" value="0"/>
       </params>
       <attribs/>
    </obj>
-   <obj type="toneburst/osc/canto/canto.axo" uuid="28df314d-5479-4383-b602-c3fb0939b767" name="canto.axo_1" x="252" y="154">
+   <obj type="toneburst/osc/canto/canto.axo" uuid="28df314d-5479-4383-b602-c3fb0939b767" name="canto.axo_1" x="210" y="112">
       <params>
-         <frac32.s.map name="pitch" value="1.0"/>
-         <frac32.u.map name="phoneme" value="26.5"/>
-         <frac32.u.map name="formant" value="32.0"/>
+         <frac32.s.map name="pitch" value="9.0"/>
+         <frac32.u.map name="phoneme" value="18.5"/>
+         <frac32.u.map name="formant" value="31.5"/>
          <frac32.u.map name="roughness" value="0.0"/>
+         <frac32.u.map name="srate" value="0.0"/>
          <frac32.u.map name="glide" value="0.0"/>
       </params>
       <attribs/>
    </obj>
-   <obj type="math/*" uuid="3ac307b9f782049739ed62504081b96d580ea336" name="*_1" x="462" y="154">
+   <obj type="disp/scope 128 b" uuid="2b69f51a714fc276503ef10c349d6d253d1ae5e2" name="scope_2" x="728" y="168">
       <params/>
       <attribs/>
    </obj>
-   <obj type="audio/out stereo" uuid="a1ca7a567f535acc21055669829101d3ee7f0189" name="out_1" x="546" y="154">
+   <obj type="disp/hex" uuid="87617898f70d90033f8add921438bf0d11721fdd" name="hex_1" x="420" y="182">
       <params/>
       <attribs/>
    </obj>
-   <obj type="disp/scope 128 b" uuid="2b69f51a714fc276503ef10c349d6d253d1ae5e2" name="scope_2" x="658" y="182">
+   <obj type="patch/cyclecounter" uuid="6b9e9c2187a0e07fb56029aef6ccaaf1f9621e35" name="cyclecounter_1" x="434" y="336">
       <params/>
       <attribs/>
    </obj>
-   <obj type="disp/hex" uuid="87617898f70d90033f8add921438bf0d11721fdd" name="hex_1" x="434" y="252">
+   <obj type="patch/cyclecounter" uuid="6b9e9c2187a0e07fb56029aef6ccaaf1f9621e35" name="cyclecounter_2" x="602" y="336">
       <params/>
       <attribs/>
    </obj>
-   <patchobj type="patch/object" uuid="45dee74d-1a51-449a-a2c8-3b6268834f43" name="canto.axo_2" x="28" y="406">
+   <obj type="math/-" uuid="1643d55e6e7ce1c995a5e66db9f54fd969e6c9b7" name="-_1" x="728" y="378">
+      <params/>
+      <attribs/>
+   </obj>
+   <obj type="disp/i" uuid="5e35fd0c62d81e70017289250cf28edd26e19e4a" name="i_1" x="826" y="378">
+      <params/>
+      <attribs/>
+   </obj>
+   <patchobj type="patch/object" uuid="3bc20ec2-5a10-4ccb-81d3-b058a919ecdd" name="canto.axo_2" x="70" y="476">
       <params>
-         <frac32.s.map name="pitch" value="0.0"/>
-         <frac32.u.map name="phoneme" value="17.0"/>
-         <frac32.u.map name="formant" value="22.5"/>
+         <frac32.s.map name="pitch" value="9.0"/>
+         <frac32.u.map name="phoneme" value="50.5"/>
+         <frac32.u.map name="formant" value="44.5"/>
+         <frac32.u.map name="roughness" value="0.0"/>
+         <frac32.u.map name="srate" value="0.0"/>
          <frac32.u.map name="glide" value="0.0"/>
       </params>
       <attribs/>
-      <object id="patch/object" uuid="45dee74d-1a51-449a-a2c8-3b6268834f43">
+      <object id="patch/object" uuid="3bc20ec2-5a10-4ccb-81d3-b058a919ecdd">
          <sDescription>Cantarino oscillator</sDescription>
          <author>toneburst</author>
          <license>BSD</license>
          <inlets>
+            <bool32 name="gate" description="trigger phoneme"/>
             <frac32.bipolar name="pitch" description="pitch input"/>
             <frac32.positive name="phoneme" description="phoneme select"/>
+            <frac32.positive name="formant" description="formant shift"/>
             <frac32.positive name="glide" description="glide amt"/>
-            <bool32 name="gate" description="trigger phoneme"/>
          </inlets>
          <outlets>
             <frac32buffer.bipolar name="wave" description="waveform"/>
-            <frac32 name="debug"/>
+            <frac32 name="pindex" description="phoneme index"/>
          </outlets>
          <displays/>
          <params>
             <frac32.s.map.pitch name="pitch" description="pitch" noLabel="true"/>
             <frac32.u.map name="phoneme" description="phoneme select"/>
-            <frac32.u.map name="formant" description="formant shift"/>
-            <frac32.u.map name="glide" description="glide amt"/>
+            <frac32.u.map name="formant"/>
+            <frac32.u.map name="roughness" description="roughness amt"/>
+            <frac32.u.map name="srate" description="sample-rate reduction"/>
+            <frac32.u.map name="glide" description="formant glide time"/>
          </params>
          <attribs/>
          <includes/>
          <code.declaration><![CDATA[
 
+////////////
+// TABLES //
+////////////
 
 const int8_t sinCalc[256] = {
     /* This table rolls a lot of functions together for speed.
@@ -128,18 +153,6 @@ const int8_t sqrCalc[256] = {
     0,-1,-2,-2,-2,-3,-3,-4,-5,-5,-6,-8,-9,-11,-13,-16
 };
 
-#define FORMANT_SZ 7
-enum {
-    _SP,_DOT,_QM,_COM,_HYP,_IY,_IH,_EH,_AE,_AA,
-    _AH,_AO,_UH,_AX,_IX,_ER,_UX,_OH,_RX,_LX,
-    _WX,_YX,_WH,_R,_L,_W,_Y,_M,_N,_NX,
-    _DX,_Q,_S,_SH,_F,_TH,__H,__X,_Z,_ZH,
-    _V,_DH,_CHa,_CHb,_Ja,_Jb,_Jc,_Jd,_EY,_AY,
-    _OY,_AW,_OW,_UW,_Ba,_Bb,_Bc,_Da,_Db,_Dc,
-    _Ga,_Gb,_Gc,_GXa,_GXb,_GXc,_Pa,_Pb,_Pc,_Ta,
-    _Tb,_Tc,_Ka,_Kb,_Kc,_KXa,_KXb,_KXc
-};
-
 // The formant data has the following format:
 // [formant1 phase-increment],[f2 phase-incr],[f3 phase-incr],
 // [formant1 amplitude],[f2 amp],[f3 amp],
@@ -192,6 +205,13 @@ const int vowels[19] = {
     5,6,7,8,9,10,11,12,13,14,16,17,21,48,49,50,51,52,53
 };
 
+// Sample-rate reduction divisor table
+uint8_t srateTable[8] = {1,2,4,8,16,32,64,128};
+
+//////////////////////
+// GLOBAL VARIABLES //
+//////////////////////
+
 // Oscillator phases
 uint32_t pitchPhase, pitchPhaseInc;
 uint16_t form1Phase,form2Phase,form3Phase;
@@ -202,34 +222,60 @@ uint8_t form1Amp,form2Amp,form3Amp;
 // Noise modulation
 uint8_t noiseMod;
 
+// Formant shift param
 uint8_t formantScale;
+// Roughness
+uint8_t roughness;
+// Sample-rate reduction divisor
+uint8_t srateDivisor;
+// Sample-rate counter (counts render loops)
+uint32_t srateCounter;
+// Phoneme-select param
 uint8_t phoneme;
-int32_t noiseArray[16];
-uint8_t ncounter;
-int8_t noise;]]></code.declaration>
-         <code.init><![CDATA[
+// Var to hold noise values (used in audio-render loop)
+int8_t noise;
+// Store final output value
+int8_t outValue;
 
-pitchPhase = 0;
-noiseMod = 10;
-ncounter = 0;
+]]></code.declaration>
+         <code.init><![CDATA[
+srateDivisor = 1;
+srateCounter = 0;
 
 ]]></code.init>
          <code.krate><![CDATA[
 
-// Formant phase and amp vars
+////////////////////////////////
+// Formant phase and amp vars //
+////////////////////////////////
+
 uint8_t startFormant,nextFormant,staticFrames,tweenFrames;
 uint16_t startPitch,nextPitch;
 int16_t startForm1PhaseInc,startForm2PhaseInc,startForm3PhaseInc;
 uint8_t startForm1Amp,startForm2Amp,startForm3Amp;
 uint8_t startMod;
 
+///////////////////////////
+// Process params/inlets //
+///////////////////////////
+
 // Scale formant amount
 formantScale = (param_formant >> 20) + 5;
 
+// Roughness param
+roughness = param_roughness >> 23;
+
+// Sample-rate divisor
+srateDivisor = srateTable[(param_srate >> 24)];
+
 // Phoneme selection
 phoneme = param_phoneme >> 21;
-int newFormant = phoneme;
-outlet_debug = newFormant;
+
+//////////////////////////
+// Read vals from table //
+//////////////////////////
+
+uint8_t newFormant = phoneme;
 
 form1PhaseInc = startForm1PhaseInc = formantTable[newFormant][0] * formantScale;
 form2PhaseInc = startForm2PhaseInc = formantTable[newFormant][1] * formantScale;
@@ -250,42 +296,53 @@ noiseMod = startMod = formantTable[newFormant][6];
 MTOFEXTENDED(param_pitch + inlet_pitch, pitchPhaseInc);
 pitchPhaseInc = pitchPhaseInc >> 2;
 
-// Loop through buffer
-int j;
-for(j = 0; j < BUFSIZE; j++) {
-	// Output value
+////////////////////////
+// Fill Sample Buffer //
+////////////////////////
+
+for(uint8_t j = 0; j < BUFSIZE; j++) {
+
 	int8_t value;
 	
 	// Noise
-	int16_t phaseNoise = noise * noiseMod;
-	noise += noise<<2;
+	int16_t phaseNoise = noise * (noiseMod + roughness);
+	noise += noise << 2;
 	noise++;
 
-	// Formants
+	// Mix formants
 	form1Phase += form1PhaseInc;
-	value = sinCalc[(((form1Phase >> 8) & 0xf0) | form1Amp)];
+	value  = sinCalc[(((form1Phase >> 8) & 0xf0) | form1Amp)];
 	form2Phase += form2PhaseInc;
 	value += sinCalc[(((form2Phase >> 8) & 0xf0) | form2Amp)];
 	form3Phase += form3PhaseInc;
 	value += sqrCalc[(((form3Phase >> 8) & 0xf0) | form3Amp)];
 
 	// Final sample value
-	value = (value * (0xff^((uint16_t)(pitchPhase >> 24)))) >> 8;
+	value = (value * (0xff^(pitchPhase >> 24))) >> 8;
 	pitchPhase += pitchPhaseInc;
 
-	// Reset phase-increment
-	if ((pitchPhase + phaseNoise) < pitchPhaseInc) {
+	// Reset phase-increment to simulate noise
+	if ((pitchPhase + (phaseNoise << 16)) < pitchPhaseInc) {
 		form1Phase = 0;
 		form2Phase = 0;
 		form3Phase = 0;
 	};
 
- 	outlet_wave[j] = value << 20;
- };
+	// Sample-rate reduction
+	if (srateCounter % srateDivisor == 0)
+		outValue = value;
 
- ]]></code.krate>
-         <code.srate><![CDATA[/*noiseArray[ncounter] = inlet_noise;
-ncounter = (ncounter == 15) ? 0 : ncounter + 1;*/]]></code.srate>
+	// Final sample value
+	outlet_wave[j] = outValue << 20;
+
+	// Increment render loop counter
+	srateCounter++;
+};
+
+// Debug output
+outlet_pindex = newFormant;
+
+]]></code.krate>
       </object>
    </patchobj>
    <nets>
@@ -304,12 +361,24 @@ ncounter = (ncounter == 15) ? 0 : ncounter + 1;*/]]></code.srate>
          <dest obj="*_1" inlet="b"/>
       </net>
       <net>
-         <source obj="canto.axo_1" outlet="debug"/>
-         <dest obj="hex_1" inlet="in"/>
-      </net>
-      <net>
          <source obj="Gate" outlet="o"/>
          <dest obj="canto.axo_1" inlet="gate"/>
+      </net>
+      <net>
+         <source obj="cyclecounter_2" outlet="t"/>
+         <dest obj="-_1" inlet="in1"/>
+      </net>
+      <net>
+         <source obj="cyclecounter_1" outlet="t"/>
+         <dest obj="-_1" inlet="in2"/>
+      </net>
+      <net>
+         <source obj="-_1" outlet="out"/>
+         <dest obj="i_1" inlet="in"/>
+      </net>
+      <net>
+         <source obj="canto.axo_1" outlet="pindex"/>
+         <dest obj="hex_1" inlet="in"/>
       </net>
    </nets>
    <settings>
