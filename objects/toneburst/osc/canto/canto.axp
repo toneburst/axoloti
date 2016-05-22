@@ -13,9 +13,9 @@
    </obj>
    <obj type="toneburst/osc/canto/canto.axo" uuid="28df314d-5479-4383-b602-c3fb0939b767" name="canto.axo_1" x="252" y="154">
       <params>
-         <frac32.s.map name="pitch" value="-5.0"/>
-         <frac32.u.map name="phoneme" value="25.0"/>
-         <frac32.u.map name="formant" value="19.0"/>
+         <frac32.s.map name="pitch" value="1.0"/>
+         <frac32.u.map name="phoneme" value="26.5"/>
+         <frac32.u.map name="formant" value="32.0"/>
          <frac32.u.map name="roughness" value="0.0"/>
          <frac32.u.map name="glide" value="0.0"/>
       </params>
@@ -304,12 +304,12 @@ ncounter = (ncounter == 15) ? 0 : ncounter + 1;*/]]></code.srate>
          <dest obj="*_1" inlet="b"/>
       </net>
       <net>
-         <source obj="Gate" outlet="o"/>
-         <dest obj="canto.axo_1" inlet="gate"/>
-      </net>
-      <net>
          <source obj="canto.axo_1" outlet="debug"/>
          <dest obj="hex_1" inlet="in"/>
+      </net>
+      <net>
+         <source obj="Gate" outlet="o"/>
+         <dest obj="canto.axo_1" inlet="gate"/>
       </net>
    </nets>
    <settings>

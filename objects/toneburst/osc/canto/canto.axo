@@ -18,7 +18,7 @@
       <params>
          <frac32.s.map.pitch name="pitch" description="pitch" noLabel="true"/>
          <frac32.u.map name="phoneme" description="phoneme select"/>
-         <frac32.u.map name="formant" description="formant shift"/>
+         <frac32.s.map name="formant" description="formant shift"/>
          <frac32.u.map name="roughness" description="roughness amt"/>
          <frac32.u.map name="glide" description="formant glide time"/>
       </params>
@@ -161,9 +161,6 @@ uint8_t phoneme;
 // Var to hold noise values (used in audio-render loop)
 int8_t noise;
 ]]></code.declaration>
-      <code.init><![CDATA[
-
-phoneme = 0;]]></code.init>
       <code.krate><![CDATA[
 
 ////////////////////////////////
@@ -187,7 +184,7 @@ formantScale = (param_formant >> 20) + 5;
 roughness = param_roughness >> 23;
 
 // Phoneme selection
-phoneme = param_phoneme >> 28;
+phoneme = param_phoneme >> 21;
 
 //////////////////////////
 // Read vals from table //
