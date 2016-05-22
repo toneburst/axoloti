@@ -5,45 +5,14 @@
       </params>
       <attribs/>
    </obj>
-   <obj type="toneburst/osc/canto/canto.axo" uuid="28df314d-5479-4383-b602-c3fb0939b767" name="canto.axo_1" x="224" y="126">
+   <patchobj type="patch/object" uuid="466ac4ed-06ec-4642-9207-62f32541f086" name="canto 1.0.0" x="252" y="126">
       <params>
-         <frac32.s.map name="pitch" value="-7.0"/>
-         <frac32.u.map name="phoneme" value="17.0"/>
-         <frac32.u.map name="formant" value="29.5"/>
-         <frac32.u.map name="roughness" value="0.0"/>
-         <frac32.u.map name="srate" value="0.0"/>
-         <frac32.s.map name="glidetime" value="5.0"/>
-      </params>
-      <attribs/>
-   </obj>
-   <obj type="math/*" uuid="3ac307b9f782049739ed62504081b96d580ea336" name="*_1" x="406" y="126">
-      <params/>
-      <attribs/>
-   </obj>
-   <obj type="audio/out stereo" uuid="a1ca7a567f535acc21055669829101d3ee7f0189" name="Output" x="476" y="126">
-      <params/>
-      <attribs/>
-   </obj>
-   <comment type="patch/comment" x="70" y="168" text="Mod Inputs not connected"/>
-   <obj type="ctrl/toggle" uuid="42b8134fa729d54bfc8d62d6ef3fa99498c1de99" name="toggle_1" x="98" y="196">
-      <params>
-         <bool32.tgl name="b" value="0"/>
-      </params>
-      <attribs/>
-   </obj>
-   <obj type="disp/scope 128 b" uuid="2b69f51a714fc276503ef10c349d6d253d1ae5e2" name="Waveform" x="476" y="238">
-      <params/>
-      <attribs/>
-   </obj>
-   <comment type="patch/comment" x="826" y="252" text="Old Versions"/>
-   <patchobj type="patch/object" uuid="466ac4ed-06ec-4642-9207-62f32541f086" name="canto 1.0.0" x="826" y="280">
-      <params>
-         <frac32.s.map name="pitch" value="0.0"/>
-         <frac32.u.map name="phoneme" value="0.0"/>
+         <frac32.s.map name="pitch" value="3.0"/>
+         <frac32.u.map name="phoneme" value="12.0"/>
          <frac32.u.map name="formant" value="0.0"/>
          <frac32.u.map name="roughness" value="0.0"/>
          <frac32.u.map name="srate" value="0.0"/>
-         <frac32.s.map name="glide" value="0.0"/>
+         <frac32.s.map name="glide" value="-2.0"/>
       </params>
       <attribs/>
       <object id="patch/object" uuid="466ac4ed-06ec-4642-9207-62f32541f086">
@@ -52,7 +21,6 @@
          <license>BSD</license>
          <helpPatch>canto.axh</helpPatch>
          <inlets>
-            <bool32 name="gate" description="trigger phoneme"/>
             <frac32.bipolar name="pitch" description="pitch input"/>
             <frac32.positive name="phoneme" description="phoneme select"/>
             <frac32.positive name="formant" description="formant shift"/>
@@ -297,25 +265,25 @@ phoneme = param_phoneme >> 21;
 uint8_t newFormant = phoneme;
 
 //form1PhaseInc = startForm1PhaseInc = formantTable[newFormant][0] * formantScale;
-form1PhaseInc = slew((formantTable[newFormant][0]*formantScale)<<16,f1pSlewStatePtr,param_glide)>>16;
+form1PhaseInc = slew((formantTable[newFormant][0]*formantScale)<<16,f1pSlewStatePtr,param_glidetime)>>16;
 
 //form2PhaseInc = formantTable[newFormant][1] * formantScale;
-form2PhaseInc = slew((formantTable[newFormant][1]*formantScale)<<16,f2pSlewStatePtr,param_glide)>>16;
+form2PhaseInc = slew((formantTable[newFormant][1]*formantScale)<<16,f2pSlewStatePtr,param_glidetime)>>16;
 
 //form3PhaseInc = formantTable[newFormant][2] * formantScale;
-form3PhaseInc = slew((formantTable[newFormant][2]*formantScale)<<16,f3pSlewStatePtr,param_glide)>>16;
+form3PhaseInc = slew((formantTable[newFormant][2]*formantScale)<<16,f3pSlewStatePtr,param_glidetime)>>16;
 
 //form1Amp = formantTable[newFormant][3];
-form1Amp = slew(formantTable[newFormant][3]<<24,f1aSlewStatePtr,param_glide)>>24;
+form1Amp = slew(formantTable[newFormant][3]<<24,f1aSlewStatePtr,param_glidetime)>>24;
 
 //form2Amp = formantTable[newFormant][4];
-form2Amp = slew(formantTable[newFormant][4]<<24,f2aSlewStatePtr,param_glide)>>24;
+form2Amp = slew(formantTable[newFormant][4]<<24,f2aSlewStatePtr,param_glidetime)>>24;
 
 //form3Amp = formantTable[newFormant][5];
-form3Amp = slew(formantTable[newFormant][5]<<24,f3aSlewStatePtr,param_glide)>>24;
+form3Amp = slew(formantTable[newFormant][5]<<24,f3aSlewStatePtr,param_glidetime)>>24;
 
 //noiseMod = formantTable[newFormant][6];
-noiseMod = slew(formantTable[newFormant][6]<<24,fmSlewStatePtr,param_glide)>>24;
+noiseMod = slew(formantTable[newFormant][6]<<24,fmSlewStatePtr,param_glidetime)>>24;
 
 // Calculate values while gate ON
 /*if (inlet_gate) {
@@ -326,7 +294,7 @@ noiseMod = slew(formantTable[newFormant][6]<<24,fmSlewStatePtr,param_glide)>>24;
 
 // Calculate base pitch phase-increment
 MTOFEXTENDED(param_pitch + inlet_pitch, pitchPhaseInc);
-pitchPhaseInc = slew(pitchPhaseInc >> 2, pitchSlewStatePtr, param_glide);
+pitchPhaseInc = slew(pitchPhaseInc >> 2, pitchSlewStatePtr, param_glidetime);
 
 ////////////////////////
 // Fill Sample Buffer //
@@ -377,6 +345,26 @@ outlet_pindex = form1PhaseInc;//newFormant;
 ]]></code.krate>
       </object>
    </patchobj>
+   <obj type="math/*" uuid="3ac307b9f782049739ed62504081b96d580ea336" name="*_1" x="406" y="126">
+      <params/>
+      <attribs/>
+   </obj>
+   <obj type="audio/out stereo" uuid="a1ca7a567f535acc21055669829101d3ee7f0189" name="Output" x="476" y="126">
+      <params/>
+      <attribs/>
+   </obj>
+   <comment type="patch/comment" x="70" y="168" text="Mod Inputs not connected"/>
+   <obj type="ctrl/toggle" uuid="42b8134fa729d54bfc8d62d6ef3fa99498c1de99" name="toggle_1" x="98" y="196">
+      <params>
+         <bool32.tgl name="b" value="0"/>
+      </params>
+      <attribs/>
+   </obj>
+   <obj type="disp/scope 128 b" uuid="2b69f51a714fc276503ef10c349d6d253d1ae5e2" name="Waveform" x="476" y="238">
+      <params/>
+      <attribs/>
+   </obj>
+   <comment type="patch/comment" x="826" y="252" text="Old Versions"/>
    <obj type="disp/hex" uuid="87617898f70d90033f8add921438bf0d11721fdd" name="hex_1" x="476" y="448">
       <params/>
       <attribs/>
@@ -392,17 +380,13 @@ outlet_pindex = form1PhaseInc;//newFormant;
          <dest obj="*_1" inlet="a"/>
       </net>
       <net>
-         <source obj="canto.axo_1" outlet="wave"/>
+         <source obj="canto 1.0.0" outlet="wave"/>
          <dest obj="Waveform" inlet="in"/>
          <dest obj="*_1" inlet="b"/>
       </net>
       <net>
-         <source obj="canto.axo_1" outlet="pindex"/>
+         <source obj="canto 1.0.0" outlet="pindex"/>
          <dest obj="hex_1" inlet="in"/>
-      </net>
-      <net>
-         <source obj="toggle_1" outlet="o"/>
-         <dest obj="canto.axo_1" inlet="glide"/>
       </net>
    </nets>
    <settings>
@@ -410,8 +394,8 @@ outlet_pindex = form1PhaseInc;//newFormant;
    </settings>
    <notes><![CDATA[]]></notes>
    <windowPos>
-      <x>291</x>
-      <y>59</y>
+      <x>232</x>
+      <y>39</y>
       <width>1002</width>
       <height>779</height>
    </windowPos>

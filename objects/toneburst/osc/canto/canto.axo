@@ -22,7 +22,7 @@
          <frac32.u.map name="formant" description="format shift"/>
          <frac32.u.map name="roughness" description="roughness amt"/>
          <frac32.u.map name="srate" description="sample-rate reduction"/>
-         <frac32.s.map name="glidetime" description="glide-time"/>
+         <frac32.s.map.klineartime.exp name="glidetime" description="glide time"/>
       </params>
       <attribs/>
       <code.declaration><![CDATA[
