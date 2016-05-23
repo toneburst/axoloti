@@ -1,47 +1,83 @@
 <patch-1.0 appVersion="1.0.10">
    <obj type="ctrl/dial p" uuid="cc5d2846c3d50e425f450c4b9851371b54f4d674" name="Volume" x="322" y="28">
       <params>
-         <frac32.u.map name="value" value="8.5"/>
+         <frac32.u.map name="value" value="53.0"/>
       </params>
       <attribs/>
    </obj>
-   <patchobj type="patch/object" uuid="466ac4ed-06ec-4642-9207-62f32541f086" name="canto 1.0.0" x="252" y="126">
+   <obj type="toneburst/osc/canto/canto.axo" uuid="28df314d-5479-4383-b602-c3fb0939b767" name="Canto 1.0.1" x="224" y="126">
       <params>
-         <frac32.s.map name="pitch" value="3.0"/>
-         <frac32.u.map name="phoneme" value="12.0"/>
-         <frac32.u.map name="formant" value="0.0"/>
+         <frac32.s.map name="pitch" value="0.0"/>
+         <frac32.u.map name="phoneme" value="18.5"/>
+         <frac32.u.map name="formant" value="17.5"/>
          <frac32.u.map name="roughness" value="0.0"/>
          <frac32.u.map name="srate" value="0.0"/>
-         <frac32.s.map name="glide" value="-2.0"/>
+         <frac32.s.map name="glidetime" value="32.0"/>
       </params>
       <attribs/>
-      <object id="patch/object" uuid="466ac4ed-06ec-4642-9207-62f32541f086">
-         <sDescription>8-bit speech formant synthesiser, based on Cantarino Arduino sketch by Peter Knight</sDescription>
-         <author>toneburst</author>
-         <license>BSD</license>
-         <helpPatch>canto.axh</helpPatch>
-         <inlets>
-            <frac32.bipolar name="pitch" description="pitch input"/>
-            <frac32.positive name="phoneme" description="phoneme select"/>
-            <frac32.positive name="formant" description="formant shift"/>
-            <frac32.positive name="glide" description="glide amt"/>
-         </inlets>
-         <outlets>
-            <frac32buffer.bipolar name="wave" description="waveform"/>
-            <frac32 name="pindex" description="phoneme index"/>
-         </outlets>
-         <displays/>
-         <params>
-            <frac32.s.map.pitch name="pitch" description="pitch" noLabel="true"/>
-            <frac32.u.map name="phoneme" description="phoneme select"/>
-            <frac32.u.map name="formant" description="format shift"/>
-            <frac32.u.map name="roughness" description="roughness amt"/>
-            <frac32.u.map name="srate" description="sample-rate reduction"/>
-            <frac32.s.map name="glide"/>
-         </params>
-         <attribs/>
-         <includes/>
-         <code.declaration><![CDATA[
+   </obj>
+   <obj type="math/*" uuid="3ac307b9f782049739ed62504081b96d580ea336" name="*_1" x="406" y="126">
+      <params/>
+      <attribs/>
+   </obj>
+   <obj type="audio/out stereo" uuid="a1ca7a567f535acc21055669829101d3ee7f0189" name="Output" x="476" y="126">
+      <params/>
+      <attribs/>
+   </obj>
+   <comment type="patch/comment" x="70" y="140" text="Mod Inputs not connected"/>
+   <obj type="ctrl/toggle" uuid="42b8134fa729d54bfc8d62d6ef3fa99498c1de99" name="toggle_1" x="140" y="168">
+      <params>
+         <bool32.tgl name="b" value="0"/>
+      </params>
+      <attribs/>
+   </obj>
+   <obj type="disp/scope 128 b" uuid="2b69f51a714fc276503ef10c349d6d253d1ae5e2" name="Waveform" x="476" y="238">
+      <params/>
+      <attribs/>
+   </obj>
+   <comment type="patch/comment" x="826" y="252" text="Old Versions"/>
+   <patcher type="patch/patcher" uuid="435570be-eb35-499f-bf7f-8eec5e639926" name="Old Versions" x="826" y="280">
+      <params/>
+      <attribs/>
+      <subpatch appVersion="1.0.10">
+         <patchobj type="patch/object" uuid="dbd6f4a4-b454-441c-8261-473e4964d910" name="Canto 1.0.1" x="168" y="98">
+            <params>
+               <frac32.s.map name="pitch" value="-3.0"/>
+               <frac32.u.map name="phoneme" value="19.5"/>
+               <frac32.u.map name="formant" value="32.0"/>
+               <frac32.u.map name="roughness" value="0.0"/>
+               <frac32.u.map name="srate" value="0.0"/>
+               <frac32.s.map name="glidetime" value="24.0"/>
+            </params>
+            <attribs/>
+            <object id="patch/object" uuid="dbd6f4a4-b454-441c-8261-473e4964d910">
+               <sDescription>8-bit speech formant synthesiser, based on Cantarino Arduino sketch by Peter Knight</sDescription>
+               <author>toneburst</author>
+               <license>BSD</license>
+               <helpPatch>canto.axh</helpPatch>
+               <inlets>
+                  <frac32.bipolar name="pitch" description="pitch input"/>
+                  <frac32.positive name="phoneme" description="phoneme select"/>
+                  <frac32.positive name="formant" description="formant shift"/>
+                  <bool32 name="glide" description="glide on/off"/>
+                  <frac32.positive name="glidetime" description="glide time"/>
+               </inlets>
+               <outlets>
+                  <frac32buffer.bipolar name="wave" description="waveform"/>
+                  <frac32 name="pindex" description="phoneme index"/>
+               </outlets>
+               <displays/>
+               <params>
+                  <frac32.s.map.pitch name="pitch" description="pitch" noLabel="true"/>
+                  <frac32.u.map name="phoneme" description="phoneme select"/>
+                  <frac32.u.map name="formant" description="format shift"/>
+                  <frac32.u.map name="roughness" description="roughness amt"/>
+                  <frac32.u.map name="srate" description="sample-rate reduction"/>
+                  <frac32.s.map.klineartime.exp2 name="glidetime"/>
+               </params>
+               <attribs/>
+               <includes/>
+               <code.declaration><![CDATA[
 
 ////////////
 // TABLES //
@@ -182,10 +218,12 @@ uint8_t roughness;
 // Sample-rate reduction divisor
 uint8_t srateDivisor;
 // Sample-rate counter (counts render loops)
-uint32_t srateCounter;
+uint8_t srateCounter;
 // Phoneme-select param
 uint8_t phoneme;
-// Var to hold noise values (used in audio-render loop)
+// Formant glide-time
+int32_t glideTime;
+// Stores 'noise' value for phase-reset in render loop
 int8_t noise;
 // Store final output value
 int8_t outValue;
@@ -207,13 +245,18 @@ int32_t fmSlewState;	int32_t *fmSlewStatePtr  = NULL;
 
 // Slew function, with pointer to state variable
 // Adapted from user 'glide_fast' user-contributed object by drj
-__attribute__ ( ( always_inline ) ) __STATIC_INLINE int32_t slew(int32_t target, int32_t *state, int32_t slewTime) {
-	*state = ___SMMLA(*state - target, -slewTime << 2, *state);
-	return *state;
+__attribute__ ( ( always_inline ) ) __STATIC_INLINE int32_t slew(int32_t target, int32_t *state, int32_t slewTime, bool enable) {
+	if (enable) {
+		*state = ___SMMLA(*state - target, -slewTime << 2, *state);
+		return *state;
+	} else {
+		*state = target;
+		return target;
+	};
 }
 
 ]]></code.declaration>
-         <code.init><![CDATA[
+               <code.init><![CDATA[
 
 // Assign sample-rate vars
 srateDivisor = 1;
@@ -229,18 +272,17 @@ f2aSlewStatePtr   = &f2aSlewState;
 f3aSlewStatePtr   = &f3aSlewState;
 fmSlewStatePtr    = &fmSlewState;
 
-]]></code.init>
-         <code.krate><![CDATA[
+// Assign glide-time
+glideTime = 0;]]></code.init>
+               <code.krate><![CDATA[
 
 ////////////////////////////////
 // Formant phase and amp vars //
 ////////////////////////////////
 
-uint8_t startFormant,nextFormant,staticFrames,tweenFrames;
-uint16_t startPitch,nextPitch;
-int16_t startForm1PhaseInc,startForm2PhaseInc,startForm3PhaseInc;
-uint8_t startForm1Amp,startForm2Amp,startForm3Amp;
-uint8_t startMod;
+int16_t  startForm1PhaseInc,startForm2PhaseInc,startForm3PhaseInc;
+uint8_t  startForm1Amp,startForm2Amp,startForm3Amp;
+uint8_t  startMod;
 
 ///////////////////////////
 // Process params/inlets //
@@ -258,50 +300,33 @@ srateDivisor = srateTable[(param_srate >> 24)];
 // Phoneme selection
 phoneme = param_phoneme >> 21;
 
+// Glide-time param
+glideTime = param_glidetime;
+
 //////////////////////////
 // Read vals from table //
 //////////////////////////
 
-uint8_t newFormant = phoneme;
-
-//form1PhaseInc = startForm1PhaseInc = formantTable[newFormant][0] * formantScale;
-form1PhaseInc = slew((formantTable[newFormant][0]*formantScale)<<16,f1pSlewStatePtr,param_glidetime)>>16;
-
-//form2PhaseInc = formantTable[newFormant][1] * formantScale;
-form2PhaseInc = slew((formantTable[newFormant][1]*formantScale)<<16,f2pSlewStatePtr,param_glidetime)>>16;
-
-//form3PhaseInc = formantTable[newFormant][2] * formantScale;
-form3PhaseInc = slew((formantTable[newFormant][2]*formantScale)<<16,f3pSlewStatePtr,param_glidetime)>>16;
-
-//form1Amp = formantTable[newFormant][3];
-form1Amp = slew(formantTable[newFormant][3]<<24,f1aSlewStatePtr,param_glidetime)>>24;
-
-//form2Amp = formantTable[newFormant][4];
-form2Amp = slew(formantTable[newFormant][4]<<24,f2aSlewStatePtr,param_glidetime)>>24;
-
-//form3Amp = formantTable[newFormant][5];
-form3Amp = slew(formantTable[newFormant][5]<<24,f3aSlewStatePtr,param_glidetime)>>24;
-
-//noiseMod = formantTable[newFormant][6];
-noiseMod = slew(formantTable[newFormant][6]<<24,fmSlewStatePtr,param_glidetime)>>24;
-
-// Calculate values while gate ON
-/*if (inlet_gate) {
-
-	// Add tweenframe code here?
-
-};*/
+// Calculate formant phase-increment | amp | noise-mod
+// Pass result through slew function, with bit-shifting to/from 32-bit
+form1PhaseInc = slew((formantTable[phoneme][0]*formantScale)<<16,f1pSlewStatePtr,glideTime,inlet_glide)>>16;
+form2PhaseInc = slew((formantTable[phoneme][1]*formantScale)<<16,f2pSlewStatePtr,glideTime,inlet_glide)>>16;
+form3PhaseInc = slew((formantTable[phoneme][2]*formantScale)<<16,f3pSlewStatePtr,glideTime,inlet_glide)>>16;
+form1Amp = slew(formantTable[phoneme][3]<<24,f1aSlewStatePtr,glideTime,inlet_glide)>>24;
+form2Amp = slew(formantTable[phoneme][4]<<24,f2aSlewStatePtr,glideTime,inlet_glide)>>24;
+form3Amp = slew(formantTable[phoneme][5]<<24,f3aSlewStatePtr,glideTime,inlet_glide)>>24;
+noiseMod = slew(formantTable[phoneme][6]<<24,fmSlewStatePtr,glideTime,inlet_glide)>>24;
 
 // Calculate base pitch phase-increment
 MTOFEXTENDED(param_pitch + inlet_pitch, pitchPhaseInc);
-pitchPhaseInc = slew(pitchPhaseInc >> 2, pitchSlewStatePtr, param_glidetime);
+pitchPhaseInc = slew(pitchPhaseInc >> 2, pitchSlewStatePtr, param_glidetime, inlet_glide);
 
 ////////////////////////
 // Fill Sample Buffer //
 ////////////////////////
 
 for(uint8_t j = 0; j < BUFSIZE; j++) {
-
+	// Final sample value
 	int8_t value;
 
 	// Noise
@@ -339,32 +364,19 @@ for(uint8_t j = 0; j < BUFSIZE; j++) {
 	srateCounter++;
 };
 
-// Debug output
-outlet_pindex = form1PhaseInc;//newFormant;
+// Send out phoneme index
+outlet_pindex = phoneme;
 
 ]]></code.krate>
-      </object>
-   </patchobj>
-   <obj type="math/*" uuid="3ac307b9f782049739ed62504081b96d580ea336" name="*_1" x="406" y="126">
-      <params/>
-      <attribs/>
-   </obj>
-   <obj type="audio/out stereo" uuid="a1ca7a567f535acc21055669829101d3ee7f0189" name="Output" x="476" y="126">
-      <params/>
-      <attribs/>
-   </obj>
-   <comment type="patch/comment" x="70" y="168" text="Mod Inputs not connected"/>
-   <obj type="ctrl/toggle" uuid="42b8134fa729d54bfc8d62d6ef3fa99498c1de99" name="toggle_1" x="98" y="196">
-      <params>
-         <bool32.tgl name="b" value="0"/>
-      </params>
-      <attribs/>
-   </obj>
-   <obj type="disp/scope 128 b" uuid="2b69f51a714fc276503ef10c349d6d253d1ae5e2" name="Waveform" x="476" y="238">
-      <params/>
-      <attribs/>
-   </obj>
-   <comment type="patch/comment" x="826" y="252" text="Old Versions"/>
+            </object>
+         </patchobj>
+         <nets/>
+         <settings>
+            <subpatchmode>no</subpatchmode>
+         </settings>
+         <notes><![CDATA[]]></notes>
+      </subpatch>
+   </patcher>
    <obj type="disp/hex" uuid="87617898f70d90033f8add921438bf0d11721fdd" name="hex_1" x="476" y="448">
       <params/>
       <attribs/>
@@ -380,13 +392,17 @@ outlet_pindex = form1PhaseInc;//newFormant;
          <dest obj="*_1" inlet="a"/>
       </net>
       <net>
-         <source obj="canto 1.0.0" outlet="wave"/>
+         <source obj="Canto 1.0.1" outlet="wave"/>
          <dest obj="Waveform" inlet="in"/>
          <dest obj="*_1" inlet="b"/>
       </net>
       <net>
-         <source obj="canto 1.0.0" outlet="pindex"/>
+         <source obj="Canto 1.0.1" outlet="pindex"/>
          <dest obj="hex_1" inlet="in"/>
+      </net>
+      <net>
+         <source obj="toggle_1" outlet="o"/>
+         <dest obj="Canto 1.0.1" inlet="glide"/>
       </net>
    </nets>
    <settings>

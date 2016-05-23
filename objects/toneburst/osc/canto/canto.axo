@@ -22,7 +22,7 @@
          <frac32.u.map name="formant" description="format shift"/>
          <frac32.u.map name="roughness" description="roughness amt"/>
          <frac32.u.map name="srate" description="sample-rate reduction"/>
-         <frac32.s.map.klineartime.exp name="glidetime" description="glide time"/>
+         <frac32.s.map.klineartime.exp2 name="glidetime"/>
       </params>
       <attribs/>
       <code.declaration><![CDATA[
@@ -166,7 +166,7 @@ uint8_t roughness;
 // Sample-rate reduction divisor
 uint8_t srateDivisor;
 // Sample-rate counter (counts render loops)
-uint32_t srateCounter;
+uint8_t srateCounter;
 // Phoneme-select param
 uint8_t phoneme;
 // Formant glide-time
@@ -177,14 +177,17 @@ int8_t noise;
 int8_t outValue;
 
 // Slew states and pointers
-// formant phase-increment | formant amplitude | noise-mod
+// Pitch phase-increment
 int32_t pitchSlewState;	int32_t *pitchSlewStatePtr = NULL;
+// Formant phase-increment
 int32_t f1pSlewState;	int32_t *f1pSlewStatePtr = NULL;
 int32_t f2pSlewState;	int32_t *f2pSlewStatePtr = NULL;
 int32_t f3pSlewState;	int32_t *f3pSlewStatePtr = NULL;
+//  Formant amplitude
 int32_t f1aSlewState;	int32_t *f1aSlewStatePtr = NULL;
 int32_t f2aSlewState;	int32_t *f2aSlewStatePtr = NULL;
 int32_t f3aSlewState;	int32_t *f3aSlewStatePtr = NULL;
+// Noise-mod
 int32_t fmSlewState;	int32_t *fmSlewStatePtr  = NULL;
 
 ///////////////
@@ -193,9 +196,14 @@ int32_t fmSlewState;	int32_t *fmSlewStatePtr  = NULL;
 
 // Slew function, with pointer to state variable
 // Adapted from user 'glide_fast' user-contributed object by drj
-__attribute__ ( ( always_inline ) ) __STATIC_INLINE int32_t slew(int32_t target, int32_t *state, int32_t slewTime) {
-	*state = ___SMMLA(*state - target, -slewTime << 2, *state);
-	return *state;
+__attribute__ ( ( always_inline ) ) __STATIC_INLINE int32_t slew(int32_t target, int32_t *state, int32_t slewTime, bool enable) {
+	if (enable) {
+		*state = ___SMMLA(*state - target, -slewTime << 2, *state);
+		return *state;
+	} else {
+		*state = target;
+		return target;
+	};
 }
 
 ]]></code.declaration>
@@ -215,19 +223,16 @@ f2aSlewStatePtr   = &f2aSlewState;
 f3aSlewStatePtr   = &f3aSlewState;
 fmSlewStatePtr    = &fmSlewState;
 
-// Assign glide-time
-glideTime = 0;]]></code.init>
+]]></code.init>
       <code.krate><![CDATA[
 
 ////////////////////////////////
 // Formant phase and amp vars //
 ////////////////////////////////
 
-uint8_t startFormant,nextFormant,staticFrames,tweenFrames;
-uint16_t startPitch,nextPitch;
-int16_t startForm1PhaseInc,startForm2PhaseInc,startForm3PhaseInc;
-uint8_t startForm1Amp,startForm2Amp,startForm3Amp;
-uint8_t startMod;
+int16_t  startForm1PhaseInc,startForm2PhaseInc,startForm3PhaseInc;
+uint8_t  startForm1Amp,startForm2Amp,startForm3Amp;
+uint8_t  startMod;
 
 ///////////////////////////
 // Process params/inlets //
@@ -252,47 +257,26 @@ glideTime = param_glidetime;
 // Read vals from table //
 //////////////////////////
 
-uint8_t newFormant = phoneme;
-
-//form1PhaseInc = startForm1PhaseInc = formantTable[newFormant][0] * formantScale;
-form1PhaseInc = slew((formantTable[newFormant][0]*formantScale)<<16,f1pSlewStatePtr,glideTime)>>16;
-
-//form2PhaseInc = formantTable[newFormant][1] * formantScale;
-form2PhaseInc = slew((formantTable[newFormant][1]*formantScale)<<16,f2pSlewStatePtr,glideTime)>>16;
-
-//form3PhaseInc = formantTable[newFormant][2] * formantScale;
-form3PhaseInc = slew((formantTable[newFormant][2]*formantScale)<<16,f3pSlewStatePtr,glideTime)>>16;
-
-//form1Amp = formantTable[newFormant][3];
-form1Amp = slew(formantTable[newFormant][3]<<24,f1aSlewStatePtr,glideTime)>>24;
-
-//form2Amp = formantTable[newFormant][4];
-form2Amp = slew(formantTable[newFormant][4]<<24,f2aSlewStatePtr,glideTime)>>24;
-
-//form3Amp = formantTable[newFormant][5];
-form3Amp = slew(formantTable[newFormant][5]<<24,f3aSlewStatePtr,glideTime)>>24;
-
-//noiseMod = formantTable[newFormant][6];
-noiseMod = slew(formantTable[newFormant][6]<<24,fmSlewStatePtr,glideTime)>>24;
-
-// Calculate values while gate ON
-/*if (inlet_gate) {
-
-	// Add tweenframe code here?
-
-};*/
+// Calculate formant phase-increment | amp | noise-mod
+// Pass result through slew function, with bit-shifting to/from 32-bit
+form1PhaseInc = slew((formantTable[phoneme][0]*formantScale)<<16,f1pSlewStatePtr,glideTime,inlet_glide)>>16;
+form2PhaseInc = slew((formantTable[phoneme][1]*formantScale)<<16,f2pSlewStatePtr,glideTime,inlet_glide)>>16;
+form3PhaseInc = slew((formantTable[phoneme][2]*formantScale)<<16,f3pSlewStatePtr,glideTime,inlet_glide)>>16;
+form1Amp = slew(formantTable[phoneme][3]<<24,f1aSlewStatePtr,glideTime,inlet_glide)>>24;
+form2Amp = slew(formantTable[phoneme][4]<<24,f2aSlewStatePtr,glideTime,inlet_glide)>>24;
+form3Amp = slew(formantTable[phoneme][5]<<24,f3aSlewStatePtr,glideTime,inlet_glide)>>24;
+noiseMod = slew(formantTable[phoneme][6]<<24,fmSlewStatePtr,glideTime,inlet_glide)>>24;
 
 // Calculate base pitch phase-increment
 MTOFEXTENDED(param_pitch + inlet_pitch, pitchPhaseInc);
-//pitchPhaseInc = slew(pitchPhaseInc >> 2, pitchSlewStatePtr, glideTime);
-pitchPhaseInc = pitchPhaseInc >> 2;
+pitchPhaseInc = slew(pitchPhaseInc >> 2, pitchSlewStatePtr, param_glidetime, inlet_glide);
 
 ////////////////////////
 // Fill Sample Buffer //
 ////////////////////////
 
 for(uint8_t j = 0; j < BUFSIZE; j++) {
-
+	// Final sample value
 	int8_t value;
 
 	// Noise
@@ -330,8 +314,8 @@ for(uint8_t j = 0; j < BUFSIZE; j++) {
 	srateCounter++;
 };
 
-// Debug output
-outlet_pindex = glideTime;//newFormant;
+// Send out phoneme index
+outlet_pindex = phoneme;
 
 ]]></code.krate>
    </obj.normal>
