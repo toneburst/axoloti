@@ -22,7 +22,7 @@
          <frac32.u.map name="formant" description="format shift"/>
          <frac32.u.map name="roughness" description="roughness amt"/>
          <frac32.u.map name="srate" description="sample-rate reduction"/>
-         <frac32.s.map.klineartime.exp2 name="glidetime"/>
+         <frac32.u.map name="glidetime"/>
       </params>
       <attribs/>
       <code.declaration><![CDATA[
@@ -195,10 +195,10 @@ int32_t fmSlewState;	int32_t *fmSlewStatePtr  = NULL;
 ///////////////
 
 // Slew function, with pointer to state variable
-// Adapted from user 'glide_fast' user-contributed object by drj
 __attribute__ ( ( always_inline ) ) __STATIC_INLINE int32_t slew(int32_t target, int32_t *state, int32_t slewTime, bool enable) {
 	if (enable) {
-		*state = ___SMMLA(*state - target, -slewTime << 2, *state);
+		//*state = ___SMMLA(*state - target, -slewTime << 2, *state);
+		*state = ___SMMLA(*state - target, (-1 << 26) + (slewTime >> 1), *state);
 		return *state;
 	} else {
 		*state = target;
