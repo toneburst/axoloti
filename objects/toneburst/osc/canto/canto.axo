@@ -8,6 +8,8 @@
          <frac32.bipolar name="pitch" description="pitch input"/>
          <frac32.positive name="phoneme" description="phoneme select"/>
          <frac32.positive name="formant" description="formant shift"/>
+         <frac32.positive name="roughness"/>
+         <frac32.positive name="srate"/>
          <bool32 name="glide" description="glide on/off"/>
          <frac32.positive name="glidetime" description="glide time"/>
       </inlets>
@@ -19,10 +21,10 @@
       <params>
          <frac32.s.map.pitch name="pitch" description="pitch" noLabel="true"/>
          <frac32.u.map name="phoneme" description="phoneme select"/>
-         <frac32.u.map name="formant" description="format shift"/>
+         <frac32.u.map name="formant" description="formant position"/>
          <frac32.u.map name="roughness" description="roughness amt"/>
          <frac32.u.map name="srate" description="sample-rate reduction"/>
-         <frac32.u.map name="glidetime"/>
+         <frac32.u.map name="glidetime" description="glide time"/>
       </params>
       <attribs/>
       <code.declaration><![CDATA[
