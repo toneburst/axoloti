@@ -4,9 +4,6 @@
       <author>toneburst</author>
       <license>BSD</license>
       <helpPatch>canto.axh</helpPatch>
-       <includes>
-         <include>./tables.h</include>
-      </includes>
       <inlets>
          <frac32.bipolar name="pitch" description="pitch input"/>
          <frac32.positive name="phoneme" description="phoneme select"/>
@@ -30,6 +27,9 @@
          <frac32.u.map name="glidetime" description="glide time"/>
       </params>
       <attribs/>
+      <includes>
+         <include>./tables.h</include>
+      </includes>
       <code.declaration><![CDATA[
 
 //////////////////////
@@ -202,7 +202,6 @@ for(uint8_t j = 0; j < BUFSIZE; j++) {
 
 // Send out phoneme index
 outlet_pindex = phoneme;
-*/
 
 ]]></code.krate>
    </obj.normal>

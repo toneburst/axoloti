@@ -111,4 +111,4 @@ const int8_t vowels[] = {
 };
 
 // Sample-rate reduction divisor table
-const int8_t srateTable[] = {1,2,4,8,16,32,64,128};
+const int8_t srateTable[8] = {1,2,4,8,16,32,64,128};
