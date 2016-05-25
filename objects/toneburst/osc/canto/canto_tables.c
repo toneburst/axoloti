@@ -1,23 +1,24 @@
-const int8_t sinCalc[256] = {
-    /* This table rolls a lot of functions together for speed.
-       Extracting phase and amplitude from the nybble packed form
-       Sine calculation
-       Exponential amplitude mapping
-       Scaling to appropriate range
+/*
+This table rolls a lot of functions together for speed.
+Extracting phase and amplitude from the nybble packed form
+Sine calculation
+Exponential amplitude mapping
+Scaling to appropriate range
 
-       ROUND(
-         FLOOR(a/16,1)
-         *SIN(
-           2
-           * PI()
-           * IF(
-             MOD(a,16),
-             EXP(0.18*MOD(a,16)),
-             0
-           ) /16
-         )*127
-       ,0)
-    */
+ROUND(
+ FLOOR(a/16,1)
+ *SIN(
+   2
+   * PI()
+   * IF(
+	 MOD(a,16),
+	 EXP(0.18*MOD(a,16)),
+	 0
+   ) /16
+ )*127
+,0)
+*/
+const int8_t sinCalc[256] = {
     0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
     0,2,2,3,3,4,5,6,7,8,10,12,14,17,20,24,
     0,4,4,5,6,7,9,11,13,15,18,22,26,31,37,45,
@@ -55,12 +56,14 @@ const int8_t sqrCalc[256] = {
     0,-1,-2,-2,-2,-3,-3,-4,-5,-5,-6,-8,-9,-11,-13,-16
 };
 
-// The formant data has the following format:
-// [formant1 phase-increment],[f2 phase-incr],[f3 phase-incr],
-// [formant1 amplitude],[f2 amp],[f3 amp],
-// [noise-mod]
+/*
+The formant data has the following format:
+[formant1 phase-increment],[f2 phase-incr],[f3 phase-incr],
+[formant1 amplitude],[f2 amp],[f3 amp],
+[noise-mod]
+*/
 
-const uint8_t formantTable[78][7] = {
+const int8_t formantTable[][7] = {
 	{0x0, 0x0, 0x0,0x0,0x0,0x0,0x0},/*00 space*/	{0x13,0x43,0x5b,0x0,0x0,0x0,0x0},/*01 .*/
 	{0x13,0x43,0x5b,0x0,0x0,0x0,0x0},/*02 ?*/		{0x13,0x43,0x5b,0x0,0x0,0x0,0x0},/*03 ,*/
 	{0x13,0x43,0x5b,0x0,0x0,0x0,0x0},/*04 -*/		{0xa,0x54,0x6e,0xd,0xa,0x8,0x0},/*05 IY*/
@@ -103,9 +106,9 @@ const uint8_t formantTable[78][7] = {
 };
 
 // Vowel indices
-const int vowels[19] = {
+const int8_t vowels[] = {
     5,6,7,8,9,10,11,12,13,14,16,17,21,48,49,50,51,52,53
 };
 
 // Sample-rate reduction divisor table
-uint8_t srateTable[8] = {1,2,4,8,16,32,64,128};
+const int8_t srateTable[] = {1,2,4,8,16,32,64,128};
