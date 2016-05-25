@@ -16,6 +16,6 @@ extern const int8_t vowels[];
 // Sample-rate reduction divisor table
 extern const int8_t srateTable[];
 
-#include "canto_tables.c"
+#include "tables.c"
 
 #endif

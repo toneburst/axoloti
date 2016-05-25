@@ -5,7 +5,7 @@
       <license>BSD</license>
       <helpPatch>canto.axh</helpPatch>
       <includes>
-    	  <include>./canto_tables.h</include>
+      <include>./tables.h</include>
       </includes>
       <inlets>
          <frac32.bipolar name="pitch" description="pitch input"/>
