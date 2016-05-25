@@ -112,14 +112,6 @@ fmSlewStatePtr    = &fmSlewState;
 ]]></code.init>
       <code.krate><![CDATA[
 
-////////////////////////////////////////
-// Declare formant phase and amp vars //
-////////////////////////////////////////
-
-int16_t  startForm1PhaseInc,startForm2PhaseInc,startForm3PhaseInc;
-//uint8_t  startForm1Amp,startForm2Amp,startForm3Amp;
-//uint8_t  startMod;
-
 ///////////////////////////
 // Process params/inlets //
 ///////////////////////////
@@ -170,7 +162,7 @@ for(uint8_t j = 0; j < BUFSIZE; j++) {
 	noise += noise << 2;
 	noise++;
 
-	// Mix formants
+	// Accululate formants
 	form1Phase += form1PhaseInc;
 	value  = sinCalc[(((form1Phase >> 8) & 0xf0) | form1Amp)];
 	form2Phase += form2PhaseInc;
@@ -178,11 +170,12 @@ for(uint8_t j = 0; j < BUFSIZE; j++) {
 	form3Phase += form3PhaseInc;
 	value += sqrCalc[(((form3Phase >> 8) & 0xf0) | form3Amp)];
 
-	// Final sample value
+	// Window formants with pitch phase-accumulator to calculate final sample value
 	value = (value * (0xff^(pitchPhase >> 24))) >> 8;
 	pitchPhase += pitchPhaseInc;
 
-	// Reset phase-increment to simulate noise
+	// Reset phase-increment for next loop iteration to simulate noise
+	// if phoneme definition requires
 	if ((pitchPhase + (phaseNoise << 16)) < pitchPhaseInc) {
 		form1Phase = 0;
 		form2Phase = 0;
@@ -190,13 +183,14 @@ for(uint8_t j = 0; j < BUFSIZE; j++) {
 	};
 
 	// Sample-rate reduction
+	// (only update sample value if mod(counter, divisor) = 0)
 	if (srateCounter % srateDivisor == 0)
 		outValue = value;
 
-	// Final sample value
+	// Write sample to buffer
 	outlet_wave[j] = outValue << 20;
 
-	// Increment render loop counter
+	// Increment render loop counter (for sample-rate reduction)
 	srateCounter++;
 };
 

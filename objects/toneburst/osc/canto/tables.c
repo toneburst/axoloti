@@ -37,6 +37,7 @@ const int8_t sinCalc[256] = {
     0,-2,-2,-3,-3,-4,-5,-6,-7,-8,-10,-12,-14,-17,-20,-24
 };
 
+// Squarewave lookup-table
 const int8_t sqrCalc[256] = {
     0,1,2,2,2,3,3,4,5,5,6,8,9,11,13,16,
     0,1,2,2,2,3,3,4,5,5,6,8,9,11,13,16,
@@ -57,6 +58,7 @@ const int8_t sqrCalc[256] = {
 };
 
 /*
+Formant data
 The formant data has the following format:
 [formant1 phase-increment],[f2 phase-incr],[f3 phase-incr],
 [formant1 amplitude],[f2 amp],[f3 amp],
