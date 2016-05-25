@@ -4,8 +4,8 @@
       <author>toneburst</author>
       <license>BSD</license>
       <helpPatch>canto.axh</helpPatch>
-      <includes>
-      <include>./tables.h</include>
+       <includes>
+         <include>./tables.h</include>
       </includes>
       <inlets>
          <frac32.bipolar name="pitch" description="pitch input"/>
@@ -95,7 +95,6 @@ __attribute__ ( ( always_inline ) ) __STATIC_INLINE int32_t slew(int32_t target,
 ]]></code.declaration>
       <code.init><![CDATA[
 
-/*
 // Assign sample-rate vars
 srateDivisor = 1;
 srateCounter = 0;
