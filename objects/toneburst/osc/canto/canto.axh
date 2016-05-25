@@ -8,13 +8,15 @@
    <obj type="toneburst/osc/canto/canto.axo" uuid="28df314d-5479-4383-b602-c3fb0939b767" name="canto.axo_1" x="224" y="126">
       <params>
          <frac32.s.map name="pitch" value="0.0"/>
-         <frac32.u.map name="phoneme" value="14.5"/>
-         <frac32.u.map name="formant" value="0.0"/>
+         <frac32.u.map name="phoneme" value="15.5"/>
+         <frac32.u.map name="formant" value="31.0"/>
          <frac32.u.map name="roughness" value="0.0"/>
          <frac32.u.map name="srate" value="0.0"/>
-         <frac32.u.map name="glidetime" value="56.0"/>
+         <frac32.u.map name="glidetime" value="44.5"/>
       </params>
-      <attribs/>
+      <attribs>
+         <combo attributeName="bank" selection="all phonemes"/>
+      </attribs>
    </obj>
    <obj type="math/*" uuid="3ac307b9f782049739ed62504081b96d580ea336" name="*_1" x="406" y="126">
       <params/>
@@ -397,12 +399,12 @@ outlet_pindex = phoneme;
          <dest obj="*_1" inlet="a"/>
       </net>
       <net>
-         <source obj="Glide Enable" outlet="o"/>
-         <dest obj="canto.axo_1" inlet="glide"/>
-      </net>
-      <net>
          <source obj="canto.axo_1" outlet="pindex"/>
          <dest obj="hex_1" inlet="in"/>
+      </net>
+      <net>
+         <source obj="Glide Enable" outlet="o"/>
+         <dest obj="canto.axo_1" inlet="glide"/>
       </net>
    </nets>
    <settings>
@@ -410,8 +412,8 @@ outlet_pindex = phoneme;
    </settings>
    <notes><![CDATA[]]></notes>
    <windowPos>
-      <x>349</x>
-      <y>210</y>
+      <x>361</x>
+      <y>147</y>
       <width>1698</width>
       <height>1178</height>
    </windowPos>

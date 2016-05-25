@@ -58,7 +58,7 @@ const int8_t sqrCalc[256] = {
 };
 
 /*
-Formant data
+Formant data (78)
 The formant data has the following format:
 [formant1 phase-increment],[f2 phase-incr],[f3 phase-incr],
 [formant1 amplitude],[f2 amp],[f3 amp],
@@ -107,10 +107,33 @@ const int8_t formantTable[][7] = {
 	{0x6,0x54,0x5e,0x0,0xa,0x5,0x0},/*76 KXb*/		{0x26,0x54,0x5e,0x20,0x20,0x0,0x0}/*77 KXc*/
 };
 
-// Vowel indices
+// All audible phonemes (73)
+const int8_t phonemes[] = {
+	5, 6, 7, 8, 9,10,11,12,13,14,15,16,17,18,19,20,
+	21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,
+	37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,
+	53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,
+	69,70,71,72,73,74,75,76,77,	
+};
+
+// Vowel indices (19)
 const int8_t vowels[] = {
     5,6,7,8,9,10,11,12,13,14,16,17,21,48,49,50,51,52,53
 };
 
+// Consonant indices (54)
+const int8_t consonants[] = {
+	15,18,19,20,22,23,24,25,26,27,28,29,30,31,32,33,34,
+	35,36,37,38,39,40,41,42,43,44,45,46,47,54,55,56,57,
+	58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,
+	75,76,77
+};
+	
+// Noisy indices (7)
+const int8_t noisy[] = {
+	32,34,38,55,58,61,65
+};
+
 // Sample-rate reduction divisor table
 const int8_t srateTable[8] = {1,2,4,8,16,32,64,128};
+

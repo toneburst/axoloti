@@ -26,7 +26,22 @@
          <frac32.u.map name="srate" description="sample-rate reduction"/>
          <frac32.u.map name="glidetime" description="glide time"/>
       </params>
-      <attribs/>
+      <attribs>
+         <combo name="bank">
+            <MenuEntries>
+               <string>all phonemes</string>
+               <string>vowels</string>
+               <string>consonants</string>
+               <string>noisy</string>
+            </MenuEntries>
+            <CEntries>
+               <string>0</string>
+               <string>1</string>
+               <string>2</string>
+               <string>3</string>
+            </CEntries>
+         </combo>
+      </attribs>
       <includes>
          <include>./tables.h</include>
       </includes>
@@ -45,6 +60,10 @@ uint16_t form1PhaseInc,form2PhaseInc,form3PhaseInc;
 uint8_t form1Amp,form2Amp,form3Amp;
 // Noise modulation
 uint8_t noiseMod;
+
+// Phoneme table pointer
+const int8_t *phonemeTablePtr;
+int8_t phonemeTableLen;
 
 // Formant shift param
 uint8_t formantScale;
@@ -92,6 +111,11 @@ __attribute__ ( ( always_inline ) ) __STATIC_INLINE int32_t slew(int32_t target,
 	};
 }
 
+__attribute__ ( ( always_inline ) ) __STATIC_INLINE int32_t map(int32_t x, int32_t in_min, int32_t in_max, int32_t out_min, int32_t out_max) {
+	return (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
+}
+
+
 ]]></code.declaration>
       <code.init><![CDATA[
 
@@ -109,7 +133,25 @@ f2aSlewStatePtr   = &f2aSlewState;
 f3aSlewStatePtr   = &f3aSlewState;
 fmSlewStatePtr    = &fmSlewState;
 
-]]></code.init>
+// Phoneme bank select
+switch(attr_bank) {
+	case 0  :
+		phonemeTablePtr = &phonemes[0];
+		phonemeTableLen = 73;
+		break;
+	case 1  :
+		phonemeTablePtr = &vowels[0];
+		phonemeTableLen = 19;
+		break;
+	case 2  :
+		phonemeTablePtr = &consonants[0];
+		phonemeTableLen = 54;
+		break;
+	case 3  :
+		phonemeTablePtr = &noisy[0];
+		phonemeTableLen = 7;
+		break;
+};]]></code.init>
       <code.krate><![CDATA[
 
 ///////////////////////////
@@ -117,7 +159,7 @@ fmSlewStatePtr    = &fmSlewState;
 ///////////////////////////
 
 // Phoneme selection
-phoneme = __USAT(param_phoneme + inlet_phoneme, 27) >> 21;
+phoneme = map(__USAT(param_phoneme + inlet_phoneme, 27), 0, 1<<27, 0, phonemeTableLen);
 
 // Shift/scale formant
 formantScale = (__USAT(param_formant + inlet_formant, 27) >> 20) +5;
@@ -195,6 +237,7 @@ for(uint8_t j = 0; j < BUFSIZE; j++) {
 };
 
 // Send out phoneme index
+
 outlet_pindex = phoneme;
 
 ]]></code.krate>
