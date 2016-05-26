@@ -204,7 +204,7 @@ noiseMod = slew(formantTable[phoneme][6]<<24,fmSlewStatePtr,glideTime,inlet_glid
 
 // Calculate base pitch phase-increment
 MTOFEXTENDED(param_pitch + inlet_pitch, pitchPhaseInc);
-pitchPhaseInc = slew(pitchPhaseInc >> 2, pitchSlewStatePtr, param_glidetime, inlet_glide);
+pitchPhaseInc = slew(pitchPhaseInc, pitchSlewStatePtr, param_glidetime, inlet_glide);
 
 ////////////////////////
 // Fill Sample Buffer //
