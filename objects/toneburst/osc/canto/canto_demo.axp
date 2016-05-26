@@ -89,9 +89,6 @@
                </CEntries>
             </combo>
          </attribs>
-         <includes>
-            <include>./tables.h</include>
-         </includes>
          <code.declaration><![CDATA[
 
 const int8_t sinCalc[256] = {
