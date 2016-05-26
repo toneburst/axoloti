@@ -1,0 +1,245 @@
+<objdefs appVersion="1.0.10">
+   <obj.normal id="canto.axo" uuid="28df314d-5479-4383-b602-c3fb0939b767">
+      <sDescription>8-bit speech formant synthesiser, based on Cantarino Arduino sketch by Peter Knight</sDescription>
+      <author>toneburst</author>
+      <license>BSD</license>
+      <helpPatch>canto.axh</helpPatch>
+      <inlets>
+         <frac32.bipolar name="pitch" description="pitch input"/>
+         <frac32.positive name="phoneme" description="phoneme select"/>
+         <frac32.positive name="formant" description="formant shift"/>
+         <frac32.positive name="roughness"/>
+         <frac32.positive name="srate"/>
+         <bool32 name="glide" description="glide on/off"/>
+         <frac32.positive name="glidetime" description="glide time"/>
+      </inlets>
+      <outlets>
+         <frac32buffer.bipolar name="wave" description="waveform"/>
+         <frac32 name="pindex" description="phoneme index"/>
+      </outlets>
+      <displays/>
+      <params>
+         <frac32.s.map.pitch name="pitch" description="pitch" noLabel="true"/>
+         <frac32.u.map name="phoneme" description="phoneme select"/>
+         <frac32.u.map name="formant" description="formant position"/>
+         <frac32.u.map name="roughness" description="roughness amt"/>
+         <frac32.u.map name="srate" description="sample-rate reduction"/>
+         <frac32.u.map name="glidetime" description="glide time"/>
+      </params>
+      <attribs>
+         <combo name="bank">
+            <MenuEntries>
+               <string>all phonemes</string>
+               <string>vowels</string>
+               <string>consonants</string>
+               <string>noisy</string>
+            </MenuEntries>
+            <CEntries>
+               <string>0</string>
+               <string>1</string>
+               <string>2</string>
+               <string>3</string>
+            </CEntries>
+         </combo>
+      </attribs>
+      <includes>
+         <include>./tables.h</include>
+      </includes>
+      <code.declaration><![CDATA[
+
+//////////////////////
+// GLOBAL VARIABLES //
+//////////////////////
+
+// Oscillator phases
+uint32_t pitchPhase, pitchPhaseInc;
+uint16_t form1Phase,form2Phase,form3Phase;
+// Phase-increment values
+uint16_t form1PhaseInc,form2PhaseInc,form3PhaseInc;
+// Formant amplitudes
+uint8_t form1Amp,form2Amp,form3Amp;
+// Noise modulation
+uint8_t noiseMod;
+
+// Phoneme table pointer
+const int8_t *phonemeTablePtr;
+int8_t phonemeTableLen;
+
+// Formant shift param
+uint8_t formantScale;
+// Roughness
+uint8_t roughness;
+// Sample-rate reduction divisor
+uint8_t srateDivisor;
+// Sample-rate counter (counts render loops)
+uint8_t srateCounter;
+// Phoneme-select param
+uint8_t phoneme;
+// Formant glide-time
+int32_t glideTime;
+// Stores 'noise' value for phase-reset in render loop
+int8_t noise;
+// Store final output value
+int8_t outValue;
+
+// Slew states and pointers
+// Pitch phase-increment
+int32_t pitchSlewState;	int32_t *pitchSlewStatePtr = NULL;
+// Formant phase-increment
+int32_t f1pSlewState;	int32_t *f1pSlewStatePtr = NULL;
+int32_t f2pSlewState;	int32_t *f2pSlewStatePtr = NULL;
+int32_t f3pSlewState;	int32_t *f3pSlewStatePtr = NULL;
+//  Formant amplitude
+int32_t f1aSlewState;	int32_t *f1aSlewStatePtr = NULL;
+int32_t f2aSlewState;	int32_t *f2aSlewStatePtr = NULL;
+int32_t f3aSlewState;	int32_t *f3aSlewStatePtr = NULL;
+// Noise-mod
+int32_t fmSlewState;	int32_t *fmSlewStatePtr  = NULL;
+
+///////////////
+// Functions //
+///////////////
+
+// Slew function, with pointer to state variable
+__attribute__ ( ( always_inline ) ) __STATIC_INLINE int32_t slew(int32_t target, int32_t *state, int32_t slewTime, bool enable) {
+	if (enable) {
+		*state = ___SMMLA(*state - target, (-1 << 26) + (slewTime >> 1), *state);
+		return *state;
+	} else {
+		*state = target;
+		return target;
+	};
+}
+
+__attribute__ ( ( always_inline ) ) __STATIC_INLINE int32_t map(int32_t x, int32_t in_min, int32_t in_max, int32_t out_min, int32_t out_max) {
+	return (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
+}
+
+
+]]></code.declaration>
+      <code.init><![CDATA[
+
+// Assign sample-rate vars
+srateDivisor = 1;
+srateCounter = 0;
+
+// Assign slew-state pointers
+pitchSlewStatePtr = &pitchSlewState;
+f1pSlewStatePtr   = &f1pSlewState;
+f2pSlewStatePtr   = &f2pSlewState;
+f3pSlewStatePtr   = &f3pSlewState;
+f1aSlewStatePtr   = &f1aSlewState;
+f2aSlewStatePtr   = &f2aSlewState;
+f3aSlewStatePtr   = &f3aSlewState;
+fmSlewStatePtr    = &fmSlewState;
+
+// Phoneme bank select
+switch(attr_bank) {
+	case 0  :
+		phonemeTablePtr = &phonemes[0];
+		phonemeTableLen = 73;
+		break;
+	case 1  :
+		phonemeTablePtr = &vowels[0];
+		phonemeTableLen = 19;
+		break;
+	case 2  :
+		phonemeTablePtr = &consonants[0];
+		phonemeTableLen = 54;
+		break;
+	case 3  :
+		phonemeTablePtr = &noisy[0];
+		phonemeTableLen = 7;
+		break;
+};]]></code.init>
+      <code.krate><![CDATA[
+
+///////////////////////////
+// Process params/inlets //
+///////////////////////////
+
+// Phoneme selection
+phoneme = map(__USAT(param_phoneme + inlet_phoneme, 27), 0, 1<<27, 0, phonemeTableLen);
+
+// Shift/scale formant
+formantScale = (__USAT(param_formant + inlet_formant, 27) >> 20) +5;
+
+// Roughness
+roughness = __USAT(param_roughness + inlet_roughness, 27) >> 23;
+
+// Sample-rate divisor
+srateDivisor = srateTable[__USAT(param_srate + inlet_srate, 27) >> 24];
+
+// Glide-time
+glideTime = __USAT(param_glidetime + inlet_glidetime, 27);
+
+//////////////////////////////////
+// Read formant vals from table //
+//////////////////////////////////
+
+// Calculate formant phase-increment | amp | noise-mod
+// Pass result through slew function, with bit-shifting to/from 32-bit
+form1PhaseInc = slew((formantTable[phoneme][0]*formantScale)<<16,f1pSlewStatePtr,glideTime,inlet_glide)>>16;
+form2PhaseInc = slew((formantTable[phoneme][1]*formantScale)<<16,f2pSlewStatePtr,glideTime,inlet_glide)>>16;
+form3PhaseInc = slew((formantTable[phoneme][2]*formantScale)<<16,f3pSlewStatePtr,glideTime,inlet_glide)>>16;
+form1Amp = slew(formantTable[phoneme][3]<<24,f1aSlewStatePtr,glideTime,inlet_glide)>>24;
+form2Amp = slew(formantTable[phoneme][4]<<24,f2aSlewStatePtr,glideTime,inlet_glide)>>24;
+form3Amp = slew(formantTable[phoneme][5]<<24,f3aSlewStatePtr,glideTime,inlet_glide)>>24;
+noiseMod = slew(formantTable[phoneme][6]<<24,fmSlewStatePtr,glideTime,inlet_glide)>>24;
+
+// Calculate base pitch phase-increment
+MTOFEXTENDED(param_pitch + inlet_pitch, pitchPhaseInc);
+pitchPhaseInc = slew(pitchPhaseInc >> 2, pitchSlewStatePtr, param_glidetime, inlet_glide);
+
+////////////////////////
+// Fill Sample Buffer //
+////////////////////////
+
+for(uint8_t j = 0; j < BUFSIZE; j++) {
+	// Final sample value
+	int8_t value;
+
+	// Noise
+	int16_t phaseNoise = noise * (noiseMod + roughness);
+	noise += noise << 2;
+	noise++;
+
+	// Accululate formants
+	form1Phase += form1PhaseInc;
+	value  = sinCalc[(((form1Phase >> 8) & 0xf0) | form1Amp)];
+	form2Phase += form2PhaseInc;
+	value += sinCalc[(((form2Phase >> 8) & 0xf0) | form2Amp)];
+	form3Phase += form3PhaseInc;
+	value += sqrCalc[(((form3Phase >> 8) & 0xf0) | form3Amp)];
+
+	// Window formants with pitch phase-accumulator to calculate final sample value
+	value = (value * (0xff^(pitchPhase >> 24))) >> 8;
+	pitchPhase += pitchPhaseInc;
+
+	// Reset phase-increment for next loop iteration to simulate noise
+	// if phoneme definition requires
+	if ((pitchPhase + (phaseNoise << 16)) < pitchPhaseInc) {
+		form1Phase = 0;
+		form2Phase = 0;
+		form3Phase = 0;
+	};
+
+	// Sample-rate reduction
+	// (only update sample value if mod(counter, divisor) = 0)
+	if (srateCounter % srateDivisor == 0)
+		outValue = value;
+
+	// Write sample to buffer
+	outlet_wave[j] = outValue << 20;
+
+	// Increment render loop counter (for sample-rate reduction)
+	srateCounter++;
+};
+
+// Send out phoneme index
+
+outlet_pindex = phoneme;
+
+]]></code.krate>
+   </obj.normal>
+</objdefs>
