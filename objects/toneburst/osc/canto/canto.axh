@@ -8,11 +8,11 @@
    <obj type="toneburst/osc/canto/canto.axo" uuid="28df314d-5479-4383-b602-c3fb0939b767" name="canto.axo_1" x="224" y="126">
       <params>
          <frac32.s.map name="pitch" value="0.0"/>
-         <frac32.u.map name="phoneme" value="15.5"/>
+         <frac32.u.map name="phoneme" value="0.0"/>
          <frac32.u.map name="formant" value="31.0"/>
          <frac32.u.map name="roughness" value="0.0"/>
          <frac32.u.map name="srate" value="0.0"/>
-         <frac32.u.map name="glidetime" value="44.5"/>
+         <frac32.u.map name="glidetime" value="58.0"/>
       </params>
       <attribs>
          <combo attributeName="bank" selection="all phonemes"/>
