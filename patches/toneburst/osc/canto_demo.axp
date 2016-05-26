@@ -1,40 +1,38 @@
 <patch-1.0 appVersion="1.0.10">
-   <obj type="env/adsr" uuid="d1dbcc5fa6f87b98a6a91c87fd44acee5e690bac" name="adsr_1" x="420" y="126">
+   <obj type="env/ahd lin" uuid="4ed5fd29254747e71db6d1d4caa20a89a41740f0" name="ahd_1" x="252" y="70">
       <params>
          <frac32.s.map name="a" value="-64.0"/>
-         <frac32.s.map name="d" value="-64.0"/>
-         <frac32.u.map name="s" value="64.0"/>
-         <frac32.s.map name="r" value="0.0"/>
+         <frac32.s.map name="d" value="-6.0"/>
       </params>
       <attribs/>
    </obj>
-   <obj type="ctrl/dial p" uuid="cc5d2846c3d50e425f450c4b9851371b54f4d674" name="Volume" x="546" y="224">
+   <obj type="ctrl/dial p" uuid="cc5d2846c3d50e425f450c4b9851371b54f4d674" name="Volume" x="378" y="70">
       <params>
          <frac32.u.map name="value" value="37.0"/>
       </params>
       <attribs/>
    </obj>
-   <comment type="patch/comment" x="196" y="252" text="Velocity mapped to phoneme"/>
-   <obj type="midi/in/keyb zone touch" uuid="b50844801544a4d92e447c983cf5c3acafbbdf17" name="Keyboard" x="210" y="280">
+   <comment type="patch/comment" x="42" y="168" text="Velocity mapped to phoneme"/>
+   <obj type="gain/vca" uuid="a9f2dcd18043e2f47364e45cb8814f63c2a37c0d" name="vca_1" x="378" y="168">
+      <params/>
+      <attribs/>
+   </obj>
+   <obj type="math/*" uuid="3ac307b9f782049739ed62504081b96d580ea336" name="*_1" x="462" y="168">
+      <params/>
+      <attribs/>
+   </obj>
+   <obj type="audio/out stereo" uuid="a1ca7a567f535acc21055669829101d3ee7f0189" name="Output" x="532" y="168">
+      <params/>
+      <attribs/>
+   </obj>
+   <obj type="midi/in/keyb zone touch" uuid="b50844801544a4d92e447c983cf5c3acafbbdf17" name="Keyboard" x="56" y="196">
       <params/>
       <attribs>
          <spinner attributeName="startNote" value="24"/>
          <spinner attributeName="endNote" value="60"/>
       </attribs>
    </obj>
-   <obj type="gain/vca" uuid="a9f2dcd18043e2f47364e45cb8814f63c2a37c0d" name="vca_1" x="546" y="322">
-      <params/>
-      <attribs/>
-   </obj>
-   <obj type="math/*" uuid="3ac307b9f782049739ed62504081b96d580ea336" name="*_1" x="630" y="322">
-      <params/>
-      <attribs/>
-   </obj>
-   <obj type="audio/out stereo" uuid="a1ca7a567f535acc21055669829101d3ee7f0189" name="Output" x="700" y="322">
-      <params/>
-      <attribs/>
-   </obj>
-   <patchobj type="patch/object" uuid="50252309-aab7-4df7-a50a-fc53d8226d6a" name="canto.axo_1" x="378" y="336">
+   <patchobj type="patch/object" uuid="50252309-aab7-4df7-a50a-fc53d8226d6a" name="canto.axo_1" x="210" y="196">
       <params>
          <frac32.s.map name="pitch" value="0.0"/>
          <frac32.u.map name="phoneme" value="0.0"/>
@@ -277,16 +275,14 @@ __attribute__ ( ( always_inline ) ) __STATIC_INLINE int32_t slew(int32_t target,
 	};
 };
 
-// Scale input to range out_min > out_max
+// Scale input to 0 > out_max
 // Input range hard-coded to 0 > 134217727 (27 bits) for frac32.pos inlets / frac32.u.map params
 // WONT'T Work with bipolar input!
-__attribute__ ( ( always_inline ) ) __STATIC_INLINE int32_t range_pos(int32_t val, int32_t out_min, int32_t out_max) {
+__attribute__ ( ( always_inline ) ) __STATIC_INLINE int32_t range_pos(int32_t val, int32_t out_max) {
 	float x = (float)val;
-	float outMin = (float)out_min;
 	float outMax = (float)out_max;
-	return (int32_t)(x * (outMax - outMin) / 0x07FFFFFF + outMin);
+	return (int32_t)x * outMax / 0x07FFFFFF;
 };
-
 
 ]]></code.declaration>
          <code.init><![CDATA[
@@ -335,7 +331,7 @@ oldPhoneme = 1;]]></code.init>
 
 // Phoneme selection
 //if(oldPhoneme != phoneme) {
-	phoneme = range_pos(__USAT(param_phoneme + inlet_phoneme, 27), 0, phonemeTableLen);
+	phoneme = range_pos(__USAT(param_phoneme + inlet_phoneme, 27), phonemeTableLen);
 	phoneme = *(phonemeTablePtr + phoneme);
 	//oldPhoneme = phoneme;
 //};
@@ -423,28 +419,22 @@ outlet_pindex = phoneme;
 ]]></code.krate>
       </object>
    </patchobj>
-   <obj type="disp/scope 128 b" uuid="2b69f51a714fc276503ef10c349d6d253d1ae5e2" name="Waveform" x="546" y="392">
+   <obj type="disp/scope 128 b" uuid="2b69f51a714fc276503ef10c349d6d253d1ae5e2" name="Waveform" x="378" y="238">
       <params/>
       <attribs/>
    </obj>
-   <obj type="ctrl/toggle" uuid="42b8134fa729d54bfc8d62d6ef3fa99498c1de99" name="Glide" x="98" y="420">
-      <params>
-         <bool32.tgl name="b" value="0"/>
-      </params>
-      <attribs/>
-   </obj>
-   <obj type="midi/in/keyb note" uuid="ac0cd98e6c0373b7be73d25900342a62ebcf5f" name="Glide Enable" x="238" y="434">
+   <obj type="midi/in/keyb note" uuid="ac0cd98e6c0373b7be73d25900342a62ebcf5f" name="Glide Enable" x="84" y="350">
       <params/>
       <attribs>
          <spinner attributeName="note" value="23"/>
       </attribs>
    </obj>
-   <comment type="patch/comment" x="210" y="532" text="Enable glidewith note 23"/>
-   <obj type="disp/hex" uuid="87617898f70d90033f8add921438bf0d11721fdd" name="hex_1" x="546" y="602">
+   <comment type="patch/comment" x="56" y="448" text="Enable glidewith note 23"/>
+   <obj type="disp/hex" uuid="87617898f70d90033f8add921438bf0d11721fdd" name="hex_1" x="378" y="448">
       <params/>
       <attribs/>
    </obj>
-   <comment type="patch/comment" x="546" y="672" text="Index of phoneme in formant table (for debugging)"/>
+   <comment type="patch/comment" x="378" y="518" text="Index of phoneme in formant table (for debugging)"/>
    <nets>
       <net>
          <source obj="*_1" outlet="result"/>
@@ -469,10 +459,6 @@ outlet_pindex = phoneme;
          <dest obj="canto.axo_1" inlet="phoneme"/>
       </net>
       <net>
-         <source obj="adsr_1" outlet="env"/>
-         <dest obj="vca_1" inlet="v"/>
-      </net>
-      <net>
          <source obj="Volume" outlet="out"/>
          <dest obj="*_1" inlet="a"/>
       </net>
@@ -481,12 +467,16 @@ outlet_pindex = phoneme;
          <dest obj="*_1" inlet="b"/>
       </net>
       <net>
-         <source obj="Keyboard" outlet="gate"/>
-         <dest obj="adsr_1" inlet="gate"/>
-      </net>
-      <net>
          <source obj="Glide Enable" outlet="gate"/>
          <dest obj="canto.axo_1" inlet="glide"/>
+      </net>
+      <net>
+         <source obj="Keyboard" outlet="gate"/>
+         <dest obj="ahd_1" inlet="trig"/>
+      </net>
+      <net>
+         <source obj="ahd_1" outlet="env"/>
+         <dest obj="vca_1" inlet="v"/>
       </net>
    </nets>
    <settings>
@@ -494,9 +484,9 @@ outlet_pindex = phoneme;
    </settings>
    <notes><![CDATA[]]></notes>
    <windowPos>
-      <x>452</x>
-      <y>35</y>
-      <width>1698</width>
-      <height>1178</height>
+      <x>1421</x>
+      <y>316</y>
+      <width>795</width>
+      <height>792</height>
    </windowPos>
 </patch-1.0>
