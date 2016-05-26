@@ -61,9 +61,12 @@ uint8_t form1Amp,form2Amp,form3Amp;
 // Noise modulation
 uint8_t noiseMod;
 
-// Phoneme table pointer
-const int8_t *phonemeTablePtr;
+// Phoneme selection
+int8_t phoneme;
+int8_t oldPhoneme;
 int8_t phonemeTableLen;
+// Phoneme index table pointer
+const int8_t *phonemeTablePtr;
 
 // Formant shift param
 uint8_t formantScale;
@@ -73,10 +76,8 @@ uint8_t roughness;
 uint8_t srateDivisor;
 // Sample-rate counter (counts render loops)
 uint8_t srateCounter;
-// Phoneme-select param
-uint8_t phoneme;
 // Formant glide-time
-int32_t glideTime;
+uint32_t glideTime;
 // Stores 'noise' value for phase-reset in render loop
 int8_t noise;
 // Store final output value
@@ -109,11 +110,17 @@ __attribute__ ( ( always_inline ) ) __STATIC_INLINE int32_t slew(int32_t target,
 		*state = target;
 		return target;
 	};
-}
+};
 
-__attribute__ ( ( always_inline ) ) __STATIC_INLINE int32_t map(int32_t x, int32_t in_min, int32_t in_max, int32_t out_min, int32_t out_max) {
-	return (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
-}
+// Scale input to range out_min > out_max
+// Input range hard-coded to 0 > 134217727 (27 bits) for frac32.pos inlets / frac32.u.map params
+// WONT'T Work with bipolar input!
+__attribute__ ( ( always_inline ) ) __STATIC_INLINE int32_t range_pos(int32_t val, int32_t out_min, int32_t out_max) {
+	float x = (float)val;
+	float outMin = (float)out_min;
+	float outMax = (float)out_max;
+	return (int32_t)(x * (outMax - outMin) / 0x07FFFFFF + outMin);
+};
 
 
 ]]></code.declaration>
@@ -137,21 +144,24 @@ fmSlewStatePtr    = &fmSlewState;
 switch(attr_bank) {
 	case 0  :
 		phonemeTablePtr = &phonemes[0];
-		phonemeTableLen = 73;
+		phonemeTableLen = 72;
 		break;
 	case 1  :
 		phonemeTablePtr = &vowels[0];
-		phonemeTableLen = 19;
+		phonemeTableLen = 18;
 		break;
 	case 2  :
 		phonemeTablePtr = &consonants[0];
-		phonemeTableLen = 54;
+		phonemeTableLen = 53;
 		break;
 	case 3  :
 		phonemeTablePtr = &noisy[0];
-		phonemeTableLen = 7;
+		phonemeTableLen = 6;
 		break;
-};]]></code.init>
+};
+
+phoneme = 0;
+oldPhoneme = 1;]]></code.init>
       <code.krate><![CDATA[
 
 ///////////////////////////
@@ -159,7 +169,12 @@ switch(attr_bank) {
 ///////////////////////////
 
 // Phoneme selection
-phoneme = map(__USAT(param_phoneme + inlet_phoneme, 27), 0, 1<<27, 0, phonemeTableLen);
+//if(oldPhoneme != phoneme) {
+	phoneme = range_pos(__USAT(param_phoneme + inlet_phoneme, 27), 0, phonemeTableLen);
+	phoneme = *(phonemeTablePtr + phoneme);
+	//oldPhoneme = phoneme;
+//};
+
 
 // Shift/scale formant
 formantScale = (__USAT(param_formant + inlet_formant, 27) >> 20) +5;
