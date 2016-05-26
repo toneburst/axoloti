@@ -2,7 +2,7 @@
    <obj type="env/ahd lin" uuid="4ed5fd29254747e71db6d1d4caa20a89a41740f0" name="envelope" x="364" y="42">
       <params>
          <frac32.s.map name="a" value="-64.0"/>
-         <frac32.s.map name="d" value="-6.0"/>
+         <frac32.s.map name="d" value="-30.0"/>
       </params>
       <attribs/>
    </obj>
@@ -16,7 +16,7 @@
       <params/>
       <attribs/>
    </obj>
-   <obj type="math/*" uuid="3ac307b9f782049739ed62504081b96d580ea336" name="mainvolume" x="560" y="140">
+   <obj type="math/*" uuid="3ac307b9f782049739ed62504081b96d580ea336" name="mainvolume" x="546" y="140">
       <params/>
       <attribs/>
    </obj>
@@ -27,15 +27,15 @@
    <obj type="midi/in/keyb zone touch" uuid="b50844801544a4d92e447c983cf5c3acafbbdf17" name="keyboard" x="42" y="168">
       <params/>
       <attribs>
-         <spinner attributeName="startNote" value="12"/>
+         <spinner attributeName="startNote" value="24"/>
          <spinner attributeName="endNote" value="72"/>
       </attribs>
    </obj>
-   <patcher type="patch/patcher" uuid="329adbd1-21d8-41bd-bea9-c93c655782f2" name="phoneme sequence" x="182" y="168">
+   <patcher type="patch/patcher" uuid="f6d1c5d7-3aa6-47bb-aac1-99d31a2ab865" name="phoneme sequence" x="182" y="168">
       <params/>
       <attribs/>
       <subpatch appVersion="1.0.10">
-         <patchobj type="patch/object" uuid="f66cc471-dc97-4405-a864-a8ab2d0276cf" name="_" x="56" y="56">
+         <patchobj type="patch/object" uuid="f66cc471-dc97-4405-a864-a8ab2d0276cf" name="step 0" x="28" y="28">
             <params>
                <frac32.u.map name="glide" value="0.0"/>
             </params>
@@ -234,7 +234,7 @@ disp_step = inlet_trig;
 ]]></code.krate>
             </object>
          </patchobj>
-         <patchobj type="patch/object" uuid="f66cc471-dc97-4405-a864-a8ab2d0276cf" name="__" x="168" y="56">
+         <patchobj type="patch/object" uuid="f66cc471-dc97-4405-a864-a8ab2d0276cf" name="step 1" x="140" y="28">
             <params>
                <frac32.u.map name="glide" value="42.5"/>
             </params>
@@ -433,7 +433,7 @@ disp_step = inlet_trig;
 ]]></code.krate>
             </object>
          </patchobj>
-         <patchobj type="patch/object" uuid="f66cc471-dc97-4405-a864-a8ab2d0276cf" name="___" x="280" y="56">
+         <patchobj type="patch/object" uuid="f66cc471-dc97-4405-a864-a8ab2d0276cf" name="step 2" x="252" y="28">
             <params>
                <frac32.u.map name="glide" value="0.0"/>
             </params>
@@ -632,7 +632,7 @@ disp_step = inlet_trig;
 ]]></code.krate>
             </object>
          </patchobj>
-         <patchobj type="patch/object" uuid="f66cc471-dc97-4405-a864-a8ab2d0276cf" name="____" x="392" y="56">
+         <patchobj type="patch/object" uuid="f66cc471-dc97-4405-a864-a8ab2d0276cf" name="step 3" x="364" y="28">
             <params>
                <frac32.u.map name="glide" value="40.0"/>
             </params>
@@ -831,7 +831,7 @@ disp_step = inlet_trig;
 ]]></code.krate>
             </object>
          </patchobj>
-         <patchobj type="patch/object" uuid="f66cc471-dc97-4405-a864-a8ab2d0276cf" name="_____" x="504" y="56">
+         <patchobj type="patch/object" uuid="f66cc471-dc97-4405-a864-a8ab2d0276cf" name="step 4" x="476" y="28">
             <params>
                <frac32.u.map name="glide" value="9.0"/>
             </params>
@@ -1030,7 +1030,7 @@ disp_step = inlet_trig;
 ]]></code.krate>
             </object>
          </patchobj>
-         <patchobj type="patch/object" uuid="f66cc471-dc97-4405-a864-a8ab2d0276cf" name="______" x="616" y="56">
+         <patchobj type="patch/object" uuid="f66cc471-dc97-4405-a864-a8ab2d0276cf" name="step 5" x="588" y="28">
             <params>
                <frac32.u.map name="glide" value="0.0"/>
             </params>
@@ -1229,7 +1229,7 @@ disp_step = inlet_trig;
 ]]></code.krate>
             </object>
          </patchobj>
-         <patchobj type="patch/object" uuid="f66cc471-dc97-4405-a864-a8ab2d0276cf" name="_______" x="728" y="56">
+         <patchobj type="patch/object" uuid="f66cc471-dc97-4405-a864-a8ab2d0276cf" name="step 6" x="700" y="28">
             <params>
                <frac32.u.map name="glide" value="35.5"/>
             </params>
@@ -1428,7 +1428,7 @@ disp_step = inlet_trig;
 ]]></code.krate>
             </object>
          </patchobj>
-         <patchobj type="patch/object" uuid="f66cc471-dc97-4405-a864-a8ab2d0276cf" name="________" x="840" y="56">
+         <patchobj type="patch/object" uuid="f66cc471-dc97-4405-a864-a8ab2d0276cf" name="step 7" x="812" y="28">
             <params>
                <frac32.u.map name="glide" value="0.0"/>
             </params>
@@ -1627,161 +1627,2108 @@ disp_step = inlet_trig;
 ]]></code.krate>
             </object>
          </patchobj>
-         <obj type="ctrl/toggle" uuid="42b8134fa729d54bfc8d62d6ef3fa99498c1de99" name="toggle_1" x="210" y="224">
+         <patchobj type="patch/object" uuid="f66cc471-dc97-4405-a864-a8ab2d0276cf" name="step 8" x="28" y="182">
+            <params>
+               <frac32.u.map name="glide" value="0.0"/>
+            </params>
+            <attribs>
+               <combo attributeName="phoneme" selection="CHb"/>
+            </attribs>
+            <object id="patch/object" uuid="f66cc471-dc97-4405-a864-a8ab2d0276cf">
+               <sDescription>equal</sDescription>
+               <author>Johannes Taelman</author>
+               <license>BSD</license>
+               <helpPatch>math.axh</helpPatch>
+               <inlets>
+                  <bool32 name="trig"/>
+               </inlets>
+               <outlets>
+                  <frac32.positive name="phoneme" description="phoneme index"/>
+                  <frac32.positive name="glide" description="glide time"/>
+               </outlets>
+               <displays>
+                  <bool32 name="step"/>
+               </displays>
+               <params>
+                  <frac32.u.map name="glide" description="glide time"/>
+               </params>
+               <attribs>
+                  <combo name="phoneme">
+                     <MenuEntries>
+                        <string>IY</string>
+                        <string>IH</string>
+                        <string>EH</string>
+                        <string>AE</string>
+                        <string>AA</string>
+                        <string>AH</string>
+                        <string>AO</string>
+                        <string>UH</string>
+                        <string>AX</string>
+                        <string>IX</string>
+                        <string>ER</string>
+                        <string>UX</string>
+                        <string>OH</string>
+                        <string>RX</string>
+                        <string>LX</string>
+                        <string>WX</string>
+                        <string>YX</string>
+                        <string>WH</string>
+                        <string>R</string>
+                        <string>L</string>
+                        <string>W</string>
+                        <string>Y</string>
+                        <string>M</string>
+                        <string>N</string>
+                        <string>NX</string>
+                        <string>DX</string>
+                        <string>Q</string>
+                        <string>S</string>
+                        <string>SH</string>
+                        <string>F</string>
+                        <string>TH</string>
+                        <string>/H</string>
+                        <string>/X</string>
+                        <string>Z</string>
+                        <string>ZH</string>
+                        <string>V</string>
+                        <string>DH</string>
+                        <string>CHa</string>
+                        <string>CHb</string>
+                        <string>Ja</string>
+                        <string>Jb</string>
+                        <string>Jc</string>
+                        <string>Jd</string>
+                        <string>EY</string>
+                        <string>AY</string>
+                        <string>OY</string>
+                        <string>AW</string>
+                        <string>OW</string>
+                        <string>UW</string>
+                        <string>Ba</string>
+                        <string>Bb</string>
+                        <string>Bc</string>
+                        <string>Da</string>
+                        <string>Db</string>
+                        <string>Dc</string>
+                        <string>Ga</string>
+                        <string>Gb</string>
+                        <string>Gc</string>
+                        <string>GXa</string>
+                        <string>GXb</string>
+                        <string>GXa</string>
+                        <string>Pa</string>
+                        <string>Pb</string>
+                        <string>Pc</string>
+                        <string>Ta</string>
+                        <string>Tb</string>
+                        <string>Tc</string>
+                        <string>Ka</string>
+                        <string>Kb</string>
+                        <string>Kc</string>
+                        <string>KXa</string>
+                        <string>KXb</string>
+                        <string>KXc</string>
+                        <string>space</string>
+                        <string>.</string>
+                        <string>?</string>
+                        <string>,</string>
+                        <string>-</string>
+                     </MenuEntries>
+                     <CEntries>
+                        <string>0</string>
+                        <string>2097152</string>
+                        <string>4194304</string>
+                        <string>5242880</string>
+                        <string>7340032</string>
+                        <string>9437184</string>
+                        <string>10485760</string>
+                        <string>12582912</string>
+                        <string>14680064</string>
+                        <string>15728640</string>
+                        <string>17825792</string>
+                        <string>19922944</string>
+                        <string>20971520</string>
+                        <string>23068672</string>
+                        <string>25165824</string>
+                        <string>26214400</string>
+                        <string>28311552</string>
+                        <string>30408704</string>
+                        <string>31457280</string>
+                        <string>33554432</string>
+                        <string>35651584</string>
+                        <string>36700160</string>
+                        <string>38797312</string>
+                        <string>40894464</string>
+                        <string>41943040</string>
+                        <string>44040192</string>
+                        <string>46137344</string>
+                        <string>47185920</string>
+                        <string>49283072</string>
+                        <string>51380224</string>
+                        <string>52428800</string>
+                        <string>54525952</string>
+                        <string>56623104</string>
+                        <string>57671680</string>
+                        <string>59768832</string>
+                        <string>61865984</string>
+                        <string>62914560</string>
+                        <string>65011712</string>
+                        <string>67108864</string>
+                        <string>68157440</string>
+                        <string>70254592</string>
+                        <string>72351744</string>
+                        <string>73400320</string>
+                        <string>75497472</string>
+                        <string>77594624</string>
+                        <string>78643200</string>
+                        <string>80740352</string>
+                        <string>82837504</string>
+                        <string>83886080</string>
+                        <string>85983232</string>
+                        <string>88080384</string>
+                        <string>89128960</string>
+                        <string>91226112</string>
+                        <string>93323264</string>
+                        <string>94371840</string>
+                        <string>96468992</string>
+                        <string>98566144</string>
+                        <string>99614720</string>
+                        <string>101711872</string>
+                        <string>103809024</string>
+                        <string>104857600</string>
+                        <string>106954752</string>
+                        <string>109051904</string>
+                        <string>110100480</string>
+                        <string>112197632</string>
+                        <string>114294784</string>
+                        <string>115343360</string>
+                        <string>117440512</string>
+                        <string>119537664</string>
+                        <string>120586240</string>
+                        <string>122683392</string>
+                        <string>124780544</string>
+                        <string>125829120</string>
+                        <string>127926272</string>
+                        <string>130023424</string>
+                        <string>131072000</string>
+                        <string>133169152</string>
+                        <string>134217727 </string>
+                     </CEntries>
+                  </combo>
+               </attribs>
+               <includes/>
+               <code.krate><![CDATA[
+
+outlet_phoneme = attr_phoneme;
+outlet_glide = param_glide;
+disp_step = inlet_trig;
+
+]]></code.krate>
+            </object>
+         </patchobj>
+         <patchobj type="patch/object" uuid="f66cc471-dc97-4405-a864-a8ab2d0276cf" name="step 9" x="140" y="182">
+            <params>
+               <frac32.u.map name="glide" value="0.0"/>
+            </params>
+            <attribs>
+               <combo attributeName="phoneme" selection="AO"/>
+            </attribs>
+            <object id="patch/object" uuid="f66cc471-dc97-4405-a864-a8ab2d0276cf">
+               <sDescription>equal</sDescription>
+               <author>Johannes Taelman</author>
+               <license>BSD</license>
+               <helpPatch>math.axh</helpPatch>
+               <inlets>
+                  <bool32 name="trig"/>
+               </inlets>
+               <outlets>
+                  <frac32.positive name="phoneme" description="phoneme index"/>
+                  <frac32.positive name="glide" description="glide time"/>
+               </outlets>
+               <displays>
+                  <bool32 name="step"/>
+               </displays>
+               <params>
+                  <frac32.u.map name="glide" description="glide time"/>
+               </params>
+               <attribs>
+                  <combo name="phoneme">
+                     <MenuEntries>
+                        <string>IY</string>
+                        <string>IH</string>
+                        <string>EH</string>
+                        <string>AE</string>
+                        <string>AA</string>
+                        <string>AH</string>
+                        <string>AO</string>
+                        <string>UH</string>
+                        <string>AX</string>
+                        <string>IX</string>
+                        <string>ER</string>
+                        <string>UX</string>
+                        <string>OH</string>
+                        <string>RX</string>
+                        <string>LX</string>
+                        <string>WX</string>
+                        <string>YX</string>
+                        <string>WH</string>
+                        <string>R</string>
+                        <string>L</string>
+                        <string>W</string>
+                        <string>Y</string>
+                        <string>M</string>
+                        <string>N</string>
+                        <string>NX</string>
+                        <string>DX</string>
+                        <string>Q</string>
+                        <string>S</string>
+                        <string>SH</string>
+                        <string>F</string>
+                        <string>TH</string>
+                        <string>/H</string>
+                        <string>/X</string>
+                        <string>Z</string>
+                        <string>ZH</string>
+                        <string>V</string>
+                        <string>DH</string>
+                        <string>CHa</string>
+                        <string>CHb</string>
+                        <string>Ja</string>
+                        <string>Jb</string>
+                        <string>Jc</string>
+                        <string>Jd</string>
+                        <string>EY</string>
+                        <string>AY</string>
+                        <string>OY</string>
+                        <string>AW</string>
+                        <string>OW</string>
+                        <string>UW</string>
+                        <string>Ba</string>
+                        <string>Bb</string>
+                        <string>Bc</string>
+                        <string>Da</string>
+                        <string>Db</string>
+                        <string>Dc</string>
+                        <string>Ga</string>
+                        <string>Gb</string>
+                        <string>Gc</string>
+                        <string>GXa</string>
+                        <string>GXb</string>
+                        <string>GXa</string>
+                        <string>Pa</string>
+                        <string>Pb</string>
+                        <string>Pc</string>
+                        <string>Ta</string>
+                        <string>Tb</string>
+                        <string>Tc</string>
+                        <string>Ka</string>
+                        <string>Kb</string>
+                        <string>Kc</string>
+                        <string>KXa</string>
+                        <string>KXb</string>
+                        <string>KXc</string>
+                        <string>space</string>
+                        <string>.</string>
+                        <string>?</string>
+                        <string>,</string>
+                        <string>-</string>
+                     </MenuEntries>
+                     <CEntries>
+                        <string>0</string>
+                        <string>2097152</string>
+                        <string>4194304</string>
+                        <string>5242880</string>
+                        <string>7340032</string>
+                        <string>9437184</string>
+                        <string>10485760</string>
+                        <string>12582912</string>
+                        <string>14680064</string>
+                        <string>15728640</string>
+                        <string>17825792</string>
+                        <string>19922944</string>
+                        <string>20971520</string>
+                        <string>23068672</string>
+                        <string>25165824</string>
+                        <string>26214400</string>
+                        <string>28311552</string>
+                        <string>30408704</string>
+                        <string>31457280</string>
+                        <string>33554432</string>
+                        <string>35651584</string>
+                        <string>36700160</string>
+                        <string>38797312</string>
+                        <string>40894464</string>
+                        <string>41943040</string>
+                        <string>44040192</string>
+                        <string>46137344</string>
+                        <string>47185920</string>
+                        <string>49283072</string>
+                        <string>51380224</string>
+                        <string>52428800</string>
+                        <string>54525952</string>
+                        <string>56623104</string>
+                        <string>57671680</string>
+                        <string>59768832</string>
+                        <string>61865984</string>
+                        <string>62914560</string>
+                        <string>65011712</string>
+                        <string>67108864</string>
+                        <string>68157440</string>
+                        <string>70254592</string>
+                        <string>72351744</string>
+                        <string>73400320</string>
+                        <string>75497472</string>
+                        <string>77594624</string>
+                        <string>78643200</string>
+                        <string>80740352</string>
+                        <string>82837504</string>
+                        <string>83886080</string>
+                        <string>85983232</string>
+                        <string>88080384</string>
+                        <string>89128960</string>
+                        <string>91226112</string>
+                        <string>93323264</string>
+                        <string>94371840</string>
+                        <string>96468992</string>
+                        <string>98566144</string>
+                        <string>99614720</string>
+                        <string>101711872</string>
+                        <string>103809024</string>
+                        <string>104857600</string>
+                        <string>106954752</string>
+                        <string>109051904</string>
+                        <string>110100480</string>
+                        <string>112197632</string>
+                        <string>114294784</string>
+                        <string>115343360</string>
+                        <string>117440512</string>
+                        <string>119537664</string>
+                        <string>120586240</string>
+                        <string>122683392</string>
+                        <string>124780544</string>
+                        <string>125829120</string>
+                        <string>127926272</string>
+                        <string>130023424</string>
+                        <string>131072000</string>
+                        <string>133169152</string>
+                        <string>134217727 </string>
+                     </CEntries>
+                  </combo>
+               </attribs>
+               <includes/>
+               <code.krate><![CDATA[
+
+outlet_phoneme = attr_phoneme;
+outlet_glide = param_glide;
+disp_step = inlet_trig;
+
+]]></code.krate>
+            </object>
+         </patchobj>
+         <patchobj type="patch/object" uuid="f66cc471-dc97-4405-a864-a8ab2d0276cf" name="step 10" x="252" y="182">
+            <params>
+               <frac32.u.map name="glide" value="21.5"/>
+            </params>
+            <attribs>
+               <combo attributeName="phoneme" selection="ZH"/>
+            </attribs>
+            <object id="patch/object" uuid="f66cc471-dc97-4405-a864-a8ab2d0276cf">
+               <sDescription>equal</sDescription>
+               <author>Johannes Taelman</author>
+               <license>BSD</license>
+               <helpPatch>math.axh</helpPatch>
+               <inlets>
+                  <bool32 name="trig"/>
+               </inlets>
+               <outlets>
+                  <frac32.positive name="phoneme" description="phoneme index"/>
+                  <frac32.positive name="glide" description="glide time"/>
+               </outlets>
+               <displays>
+                  <bool32 name="step"/>
+               </displays>
+               <params>
+                  <frac32.u.map name="glide" description="glide time"/>
+               </params>
+               <attribs>
+                  <combo name="phoneme">
+                     <MenuEntries>
+                        <string>IY</string>
+                        <string>IH</string>
+                        <string>EH</string>
+                        <string>AE</string>
+                        <string>AA</string>
+                        <string>AH</string>
+                        <string>AO</string>
+                        <string>UH</string>
+                        <string>AX</string>
+                        <string>IX</string>
+                        <string>ER</string>
+                        <string>UX</string>
+                        <string>OH</string>
+                        <string>RX</string>
+                        <string>LX</string>
+                        <string>WX</string>
+                        <string>YX</string>
+                        <string>WH</string>
+                        <string>R</string>
+                        <string>L</string>
+                        <string>W</string>
+                        <string>Y</string>
+                        <string>M</string>
+                        <string>N</string>
+                        <string>NX</string>
+                        <string>DX</string>
+                        <string>Q</string>
+                        <string>S</string>
+                        <string>SH</string>
+                        <string>F</string>
+                        <string>TH</string>
+                        <string>/H</string>
+                        <string>/X</string>
+                        <string>Z</string>
+                        <string>ZH</string>
+                        <string>V</string>
+                        <string>DH</string>
+                        <string>CHa</string>
+                        <string>CHb</string>
+                        <string>Ja</string>
+                        <string>Jb</string>
+                        <string>Jc</string>
+                        <string>Jd</string>
+                        <string>EY</string>
+                        <string>AY</string>
+                        <string>OY</string>
+                        <string>AW</string>
+                        <string>OW</string>
+                        <string>UW</string>
+                        <string>Ba</string>
+                        <string>Bb</string>
+                        <string>Bc</string>
+                        <string>Da</string>
+                        <string>Db</string>
+                        <string>Dc</string>
+                        <string>Ga</string>
+                        <string>Gb</string>
+                        <string>Gc</string>
+                        <string>GXa</string>
+                        <string>GXb</string>
+                        <string>GXa</string>
+                        <string>Pa</string>
+                        <string>Pb</string>
+                        <string>Pc</string>
+                        <string>Ta</string>
+                        <string>Tb</string>
+                        <string>Tc</string>
+                        <string>Ka</string>
+                        <string>Kb</string>
+                        <string>Kc</string>
+                        <string>KXa</string>
+                        <string>KXb</string>
+                        <string>KXc</string>
+                        <string>space</string>
+                        <string>.</string>
+                        <string>?</string>
+                        <string>,</string>
+                        <string>-</string>
+                     </MenuEntries>
+                     <CEntries>
+                        <string>0</string>
+                        <string>2097152</string>
+                        <string>4194304</string>
+                        <string>5242880</string>
+                        <string>7340032</string>
+                        <string>9437184</string>
+                        <string>10485760</string>
+                        <string>12582912</string>
+                        <string>14680064</string>
+                        <string>15728640</string>
+                        <string>17825792</string>
+                        <string>19922944</string>
+                        <string>20971520</string>
+                        <string>23068672</string>
+                        <string>25165824</string>
+                        <string>26214400</string>
+                        <string>28311552</string>
+                        <string>30408704</string>
+                        <string>31457280</string>
+                        <string>33554432</string>
+                        <string>35651584</string>
+                        <string>36700160</string>
+                        <string>38797312</string>
+                        <string>40894464</string>
+                        <string>41943040</string>
+                        <string>44040192</string>
+                        <string>46137344</string>
+                        <string>47185920</string>
+                        <string>49283072</string>
+                        <string>51380224</string>
+                        <string>52428800</string>
+                        <string>54525952</string>
+                        <string>56623104</string>
+                        <string>57671680</string>
+                        <string>59768832</string>
+                        <string>61865984</string>
+                        <string>62914560</string>
+                        <string>65011712</string>
+                        <string>67108864</string>
+                        <string>68157440</string>
+                        <string>70254592</string>
+                        <string>72351744</string>
+                        <string>73400320</string>
+                        <string>75497472</string>
+                        <string>77594624</string>
+                        <string>78643200</string>
+                        <string>80740352</string>
+                        <string>82837504</string>
+                        <string>83886080</string>
+                        <string>85983232</string>
+                        <string>88080384</string>
+                        <string>89128960</string>
+                        <string>91226112</string>
+                        <string>93323264</string>
+                        <string>94371840</string>
+                        <string>96468992</string>
+                        <string>98566144</string>
+                        <string>99614720</string>
+                        <string>101711872</string>
+                        <string>103809024</string>
+                        <string>104857600</string>
+                        <string>106954752</string>
+                        <string>109051904</string>
+                        <string>110100480</string>
+                        <string>112197632</string>
+                        <string>114294784</string>
+                        <string>115343360</string>
+                        <string>117440512</string>
+                        <string>119537664</string>
+                        <string>120586240</string>
+                        <string>122683392</string>
+                        <string>124780544</string>
+                        <string>125829120</string>
+                        <string>127926272</string>
+                        <string>130023424</string>
+                        <string>131072000</string>
+                        <string>133169152</string>
+                        <string>134217727 </string>
+                     </CEntries>
+                  </combo>
+               </attribs>
+               <includes/>
+               <code.krate><![CDATA[
+
+outlet_phoneme = attr_phoneme;
+outlet_glide = param_glide;
+disp_step = inlet_trig;
+
+]]></code.krate>
+            </object>
+         </patchobj>
+         <patchobj type="patch/object" uuid="f66cc471-dc97-4405-a864-a8ab2d0276cf" name="step 11" x="364" y="182">
+            <params>
+               <frac32.u.map name="glide" value="33.5"/>
+            </params>
+            <attribs>
+               <combo attributeName="phoneme" selection="AX"/>
+            </attribs>
+            <object id="patch/object" uuid="f66cc471-dc97-4405-a864-a8ab2d0276cf">
+               <sDescription>equal</sDescription>
+               <author>Johannes Taelman</author>
+               <license>BSD</license>
+               <helpPatch>math.axh</helpPatch>
+               <inlets>
+                  <bool32 name="trig"/>
+               </inlets>
+               <outlets>
+                  <frac32.positive name="phoneme" description="phoneme index"/>
+                  <frac32.positive name="glide" description="glide time"/>
+               </outlets>
+               <displays>
+                  <bool32 name="step"/>
+               </displays>
+               <params>
+                  <frac32.u.map name="glide" description="glide time"/>
+               </params>
+               <attribs>
+                  <combo name="phoneme">
+                     <MenuEntries>
+                        <string>IY</string>
+                        <string>IH</string>
+                        <string>EH</string>
+                        <string>AE</string>
+                        <string>AA</string>
+                        <string>AH</string>
+                        <string>AO</string>
+                        <string>UH</string>
+                        <string>AX</string>
+                        <string>IX</string>
+                        <string>ER</string>
+                        <string>UX</string>
+                        <string>OH</string>
+                        <string>RX</string>
+                        <string>LX</string>
+                        <string>WX</string>
+                        <string>YX</string>
+                        <string>WH</string>
+                        <string>R</string>
+                        <string>L</string>
+                        <string>W</string>
+                        <string>Y</string>
+                        <string>M</string>
+                        <string>N</string>
+                        <string>NX</string>
+                        <string>DX</string>
+                        <string>Q</string>
+                        <string>S</string>
+                        <string>SH</string>
+                        <string>F</string>
+                        <string>TH</string>
+                        <string>/H</string>
+                        <string>/X</string>
+                        <string>Z</string>
+                        <string>ZH</string>
+                        <string>V</string>
+                        <string>DH</string>
+                        <string>CHa</string>
+                        <string>CHb</string>
+                        <string>Ja</string>
+                        <string>Jb</string>
+                        <string>Jc</string>
+                        <string>Jd</string>
+                        <string>EY</string>
+                        <string>AY</string>
+                        <string>OY</string>
+                        <string>AW</string>
+                        <string>OW</string>
+                        <string>UW</string>
+                        <string>Ba</string>
+                        <string>Bb</string>
+                        <string>Bc</string>
+                        <string>Da</string>
+                        <string>Db</string>
+                        <string>Dc</string>
+                        <string>Ga</string>
+                        <string>Gb</string>
+                        <string>Gc</string>
+                        <string>GXa</string>
+                        <string>GXb</string>
+                        <string>GXa</string>
+                        <string>Pa</string>
+                        <string>Pb</string>
+                        <string>Pc</string>
+                        <string>Ta</string>
+                        <string>Tb</string>
+                        <string>Tc</string>
+                        <string>Ka</string>
+                        <string>Kb</string>
+                        <string>Kc</string>
+                        <string>KXa</string>
+                        <string>KXb</string>
+                        <string>KXc</string>
+                        <string>space</string>
+                        <string>.</string>
+                        <string>?</string>
+                        <string>,</string>
+                        <string>-</string>
+                     </MenuEntries>
+                     <CEntries>
+                        <string>0</string>
+                        <string>2097152</string>
+                        <string>4194304</string>
+                        <string>5242880</string>
+                        <string>7340032</string>
+                        <string>9437184</string>
+                        <string>10485760</string>
+                        <string>12582912</string>
+                        <string>14680064</string>
+                        <string>15728640</string>
+                        <string>17825792</string>
+                        <string>19922944</string>
+                        <string>20971520</string>
+                        <string>23068672</string>
+                        <string>25165824</string>
+                        <string>26214400</string>
+                        <string>28311552</string>
+                        <string>30408704</string>
+                        <string>31457280</string>
+                        <string>33554432</string>
+                        <string>35651584</string>
+                        <string>36700160</string>
+                        <string>38797312</string>
+                        <string>40894464</string>
+                        <string>41943040</string>
+                        <string>44040192</string>
+                        <string>46137344</string>
+                        <string>47185920</string>
+                        <string>49283072</string>
+                        <string>51380224</string>
+                        <string>52428800</string>
+                        <string>54525952</string>
+                        <string>56623104</string>
+                        <string>57671680</string>
+                        <string>59768832</string>
+                        <string>61865984</string>
+                        <string>62914560</string>
+                        <string>65011712</string>
+                        <string>67108864</string>
+                        <string>68157440</string>
+                        <string>70254592</string>
+                        <string>72351744</string>
+                        <string>73400320</string>
+                        <string>75497472</string>
+                        <string>77594624</string>
+                        <string>78643200</string>
+                        <string>80740352</string>
+                        <string>82837504</string>
+                        <string>83886080</string>
+                        <string>85983232</string>
+                        <string>88080384</string>
+                        <string>89128960</string>
+                        <string>91226112</string>
+                        <string>93323264</string>
+                        <string>94371840</string>
+                        <string>96468992</string>
+                        <string>98566144</string>
+                        <string>99614720</string>
+                        <string>101711872</string>
+                        <string>103809024</string>
+                        <string>104857600</string>
+                        <string>106954752</string>
+                        <string>109051904</string>
+                        <string>110100480</string>
+                        <string>112197632</string>
+                        <string>114294784</string>
+                        <string>115343360</string>
+                        <string>117440512</string>
+                        <string>119537664</string>
+                        <string>120586240</string>
+                        <string>122683392</string>
+                        <string>124780544</string>
+                        <string>125829120</string>
+                        <string>127926272</string>
+                        <string>130023424</string>
+                        <string>131072000</string>
+                        <string>133169152</string>
+                        <string>134217727 </string>
+                     </CEntries>
+                  </combo>
+               </attribs>
+               <includes/>
+               <code.krate><![CDATA[
+
+outlet_phoneme = attr_phoneme;
+outlet_glide = param_glide;
+disp_step = inlet_trig;
+
+]]></code.krate>
+            </object>
+         </patchobj>
+         <patchobj type="patch/object" uuid="f66cc471-dc97-4405-a864-a8ab2d0276cf" name="step 12" x="476" y="182">
+            <params>
+               <frac32.u.map name="glide" value="0.0"/>
+            </params>
+            <attribs>
+               <combo attributeName="phoneme" selection="SH"/>
+            </attribs>
+            <object id="patch/object" uuid="f66cc471-dc97-4405-a864-a8ab2d0276cf">
+               <sDescription>equal</sDescription>
+               <author>Johannes Taelman</author>
+               <license>BSD</license>
+               <helpPatch>math.axh</helpPatch>
+               <inlets>
+                  <bool32 name="trig"/>
+               </inlets>
+               <outlets>
+                  <frac32.positive name="phoneme" description="phoneme index"/>
+                  <frac32.positive name="glide" description="glide time"/>
+               </outlets>
+               <displays>
+                  <bool32 name="step"/>
+               </displays>
+               <params>
+                  <frac32.u.map name="glide" description="glide time"/>
+               </params>
+               <attribs>
+                  <combo name="phoneme">
+                     <MenuEntries>
+                        <string>IY</string>
+                        <string>IH</string>
+                        <string>EH</string>
+                        <string>AE</string>
+                        <string>AA</string>
+                        <string>AH</string>
+                        <string>AO</string>
+                        <string>UH</string>
+                        <string>AX</string>
+                        <string>IX</string>
+                        <string>ER</string>
+                        <string>UX</string>
+                        <string>OH</string>
+                        <string>RX</string>
+                        <string>LX</string>
+                        <string>WX</string>
+                        <string>YX</string>
+                        <string>WH</string>
+                        <string>R</string>
+                        <string>L</string>
+                        <string>W</string>
+                        <string>Y</string>
+                        <string>M</string>
+                        <string>N</string>
+                        <string>NX</string>
+                        <string>DX</string>
+                        <string>Q</string>
+                        <string>S</string>
+                        <string>SH</string>
+                        <string>F</string>
+                        <string>TH</string>
+                        <string>/H</string>
+                        <string>/X</string>
+                        <string>Z</string>
+                        <string>ZH</string>
+                        <string>V</string>
+                        <string>DH</string>
+                        <string>CHa</string>
+                        <string>CHb</string>
+                        <string>Ja</string>
+                        <string>Jb</string>
+                        <string>Jc</string>
+                        <string>Jd</string>
+                        <string>EY</string>
+                        <string>AY</string>
+                        <string>OY</string>
+                        <string>AW</string>
+                        <string>OW</string>
+                        <string>UW</string>
+                        <string>Ba</string>
+                        <string>Bb</string>
+                        <string>Bc</string>
+                        <string>Da</string>
+                        <string>Db</string>
+                        <string>Dc</string>
+                        <string>Ga</string>
+                        <string>Gb</string>
+                        <string>Gc</string>
+                        <string>GXa</string>
+                        <string>GXb</string>
+                        <string>GXa</string>
+                        <string>Pa</string>
+                        <string>Pb</string>
+                        <string>Pc</string>
+                        <string>Ta</string>
+                        <string>Tb</string>
+                        <string>Tc</string>
+                        <string>Ka</string>
+                        <string>Kb</string>
+                        <string>Kc</string>
+                        <string>KXa</string>
+                        <string>KXb</string>
+                        <string>KXc</string>
+                        <string>space</string>
+                        <string>.</string>
+                        <string>?</string>
+                        <string>,</string>
+                        <string>-</string>
+                     </MenuEntries>
+                     <CEntries>
+                        <string>0</string>
+                        <string>2097152</string>
+                        <string>4194304</string>
+                        <string>5242880</string>
+                        <string>7340032</string>
+                        <string>9437184</string>
+                        <string>10485760</string>
+                        <string>12582912</string>
+                        <string>14680064</string>
+                        <string>15728640</string>
+                        <string>17825792</string>
+                        <string>19922944</string>
+                        <string>20971520</string>
+                        <string>23068672</string>
+                        <string>25165824</string>
+                        <string>26214400</string>
+                        <string>28311552</string>
+                        <string>30408704</string>
+                        <string>31457280</string>
+                        <string>33554432</string>
+                        <string>35651584</string>
+                        <string>36700160</string>
+                        <string>38797312</string>
+                        <string>40894464</string>
+                        <string>41943040</string>
+                        <string>44040192</string>
+                        <string>46137344</string>
+                        <string>47185920</string>
+                        <string>49283072</string>
+                        <string>51380224</string>
+                        <string>52428800</string>
+                        <string>54525952</string>
+                        <string>56623104</string>
+                        <string>57671680</string>
+                        <string>59768832</string>
+                        <string>61865984</string>
+                        <string>62914560</string>
+                        <string>65011712</string>
+                        <string>67108864</string>
+                        <string>68157440</string>
+                        <string>70254592</string>
+                        <string>72351744</string>
+                        <string>73400320</string>
+                        <string>75497472</string>
+                        <string>77594624</string>
+                        <string>78643200</string>
+                        <string>80740352</string>
+                        <string>82837504</string>
+                        <string>83886080</string>
+                        <string>85983232</string>
+                        <string>88080384</string>
+                        <string>89128960</string>
+                        <string>91226112</string>
+                        <string>93323264</string>
+                        <string>94371840</string>
+                        <string>96468992</string>
+                        <string>98566144</string>
+                        <string>99614720</string>
+                        <string>101711872</string>
+                        <string>103809024</string>
+                        <string>104857600</string>
+                        <string>106954752</string>
+                        <string>109051904</string>
+                        <string>110100480</string>
+                        <string>112197632</string>
+                        <string>114294784</string>
+                        <string>115343360</string>
+                        <string>117440512</string>
+                        <string>119537664</string>
+                        <string>120586240</string>
+                        <string>122683392</string>
+                        <string>124780544</string>
+                        <string>125829120</string>
+                        <string>127926272</string>
+                        <string>130023424</string>
+                        <string>131072000</string>
+                        <string>133169152</string>
+                        <string>134217727 </string>
+                     </CEntries>
+                  </combo>
+               </attribs>
+               <includes/>
+               <code.krate><![CDATA[
+
+outlet_phoneme = attr_phoneme;
+outlet_glide = param_glide;
+disp_step = inlet_trig;
+
+]]></code.krate>
+            </object>
+         </patchobj>
+         <patchobj type="patch/object" uuid="f66cc471-dc97-4405-a864-a8ab2d0276cf" name="step 13" x="588" y="182">
+            <params>
+               <frac32.u.map name="glide" value="44.0"/>
+            </params>
+            <attribs>
+               <combo attributeName="phoneme" selection="UX"/>
+            </attribs>
+            <object id="patch/object" uuid="f66cc471-dc97-4405-a864-a8ab2d0276cf">
+               <sDescription>equal</sDescription>
+               <author>Johannes Taelman</author>
+               <license>BSD</license>
+               <helpPatch>math.axh</helpPatch>
+               <inlets>
+                  <bool32 name="trig"/>
+               </inlets>
+               <outlets>
+                  <frac32.positive name="phoneme" description="phoneme index"/>
+                  <frac32.positive name="glide" description="glide time"/>
+               </outlets>
+               <displays>
+                  <bool32 name="step"/>
+               </displays>
+               <params>
+                  <frac32.u.map name="glide" description="glide time"/>
+               </params>
+               <attribs>
+                  <combo name="phoneme">
+                     <MenuEntries>
+                        <string>IY</string>
+                        <string>IH</string>
+                        <string>EH</string>
+                        <string>AE</string>
+                        <string>AA</string>
+                        <string>AH</string>
+                        <string>AO</string>
+                        <string>UH</string>
+                        <string>AX</string>
+                        <string>IX</string>
+                        <string>ER</string>
+                        <string>UX</string>
+                        <string>OH</string>
+                        <string>RX</string>
+                        <string>LX</string>
+                        <string>WX</string>
+                        <string>YX</string>
+                        <string>WH</string>
+                        <string>R</string>
+                        <string>L</string>
+                        <string>W</string>
+                        <string>Y</string>
+                        <string>M</string>
+                        <string>N</string>
+                        <string>NX</string>
+                        <string>DX</string>
+                        <string>Q</string>
+                        <string>S</string>
+                        <string>SH</string>
+                        <string>F</string>
+                        <string>TH</string>
+                        <string>/H</string>
+                        <string>/X</string>
+                        <string>Z</string>
+                        <string>ZH</string>
+                        <string>V</string>
+                        <string>DH</string>
+                        <string>CHa</string>
+                        <string>CHb</string>
+                        <string>Ja</string>
+                        <string>Jb</string>
+                        <string>Jc</string>
+                        <string>Jd</string>
+                        <string>EY</string>
+                        <string>AY</string>
+                        <string>OY</string>
+                        <string>AW</string>
+                        <string>OW</string>
+                        <string>UW</string>
+                        <string>Ba</string>
+                        <string>Bb</string>
+                        <string>Bc</string>
+                        <string>Da</string>
+                        <string>Db</string>
+                        <string>Dc</string>
+                        <string>Ga</string>
+                        <string>Gb</string>
+                        <string>Gc</string>
+                        <string>GXa</string>
+                        <string>GXb</string>
+                        <string>GXa</string>
+                        <string>Pa</string>
+                        <string>Pb</string>
+                        <string>Pc</string>
+                        <string>Ta</string>
+                        <string>Tb</string>
+                        <string>Tc</string>
+                        <string>Ka</string>
+                        <string>Kb</string>
+                        <string>Kc</string>
+                        <string>KXa</string>
+                        <string>KXb</string>
+                        <string>KXc</string>
+                        <string>space</string>
+                        <string>.</string>
+                        <string>?</string>
+                        <string>,</string>
+                        <string>-</string>
+                     </MenuEntries>
+                     <CEntries>
+                        <string>0</string>
+                        <string>2097152</string>
+                        <string>4194304</string>
+                        <string>5242880</string>
+                        <string>7340032</string>
+                        <string>9437184</string>
+                        <string>10485760</string>
+                        <string>12582912</string>
+                        <string>14680064</string>
+                        <string>15728640</string>
+                        <string>17825792</string>
+                        <string>19922944</string>
+                        <string>20971520</string>
+                        <string>23068672</string>
+                        <string>25165824</string>
+                        <string>26214400</string>
+                        <string>28311552</string>
+                        <string>30408704</string>
+                        <string>31457280</string>
+                        <string>33554432</string>
+                        <string>35651584</string>
+                        <string>36700160</string>
+                        <string>38797312</string>
+                        <string>40894464</string>
+                        <string>41943040</string>
+                        <string>44040192</string>
+                        <string>46137344</string>
+                        <string>47185920</string>
+                        <string>49283072</string>
+                        <string>51380224</string>
+                        <string>52428800</string>
+                        <string>54525952</string>
+                        <string>56623104</string>
+                        <string>57671680</string>
+                        <string>59768832</string>
+                        <string>61865984</string>
+                        <string>62914560</string>
+                        <string>65011712</string>
+                        <string>67108864</string>
+                        <string>68157440</string>
+                        <string>70254592</string>
+                        <string>72351744</string>
+                        <string>73400320</string>
+                        <string>75497472</string>
+                        <string>77594624</string>
+                        <string>78643200</string>
+                        <string>80740352</string>
+                        <string>82837504</string>
+                        <string>83886080</string>
+                        <string>85983232</string>
+                        <string>88080384</string>
+                        <string>89128960</string>
+                        <string>91226112</string>
+                        <string>93323264</string>
+                        <string>94371840</string>
+                        <string>96468992</string>
+                        <string>98566144</string>
+                        <string>99614720</string>
+                        <string>101711872</string>
+                        <string>103809024</string>
+                        <string>104857600</string>
+                        <string>106954752</string>
+                        <string>109051904</string>
+                        <string>110100480</string>
+                        <string>112197632</string>
+                        <string>114294784</string>
+                        <string>115343360</string>
+                        <string>117440512</string>
+                        <string>119537664</string>
+                        <string>120586240</string>
+                        <string>122683392</string>
+                        <string>124780544</string>
+                        <string>125829120</string>
+                        <string>127926272</string>
+                        <string>130023424</string>
+                        <string>131072000</string>
+                        <string>133169152</string>
+                        <string>134217727 </string>
+                     </CEntries>
+                  </combo>
+               </attribs>
+               <includes/>
+               <code.krate><![CDATA[
+
+outlet_phoneme = attr_phoneme;
+outlet_glide = param_glide;
+disp_step = inlet_trig;
+
+]]></code.krate>
+            </object>
+         </patchobj>
+         <patchobj type="patch/object" uuid="f66cc471-dc97-4405-a864-a8ab2d0276cf" name="step 14" x="700" y="182">
+            <params>
+               <frac32.u.map name="glide" value="0.0"/>
+            </params>
+            <attribs>
+               <combo attributeName="phoneme" selection="OH"/>
+            </attribs>
+            <object id="patch/object" uuid="f66cc471-dc97-4405-a864-a8ab2d0276cf">
+               <sDescription>equal</sDescription>
+               <author>Johannes Taelman</author>
+               <license>BSD</license>
+               <helpPatch>math.axh</helpPatch>
+               <inlets>
+                  <bool32 name="trig"/>
+               </inlets>
+               <outlets>
+                  <frac32.positive name="phoneme" description="phoneme index"/>
+                  <frac32.positive name="glide" description="glide time"/>
+               </outlets>
+               <displays>
+                  <bool32 name="step"/>
+               </displays>
+               <params>
+                  <frac32.u.map name="glide" description="glide time"/>
+               </params>
+               <attribs>
+                  <combo name="phoneme">
+                     <MenuEntries>
+                        <string>IY</string>
+                        <string>IH</string>
+                        <string>EH</string>
+                        <string>AE</string>
+                        <string>AA</string>
+                        <string>AH</string>
+                        <string>AO</string>
+                        <string>UH</string>
+                        <string>AX</string>
+                        <string>IX</string>
+                        <string>ER</string>
+                        <string>UX</string>
+                        <string>OH</string>
+                        <string>RX</string>
+                        <string>LX</string>
+                        <string>WX</string>
+                        <string>YX</string>
+                        <string>WH</string>
+                        <string>R</string>
+                        <string>L</string>
+                        <string>W</string>
+                        <string>Y</string>
+                        <string>M</string>
+                        <string>N</string>
+                        <string>NX</string>
+                        <string>DX</string>
+                        <string>Q</string>
+                        <string>S</string>
+                        <string>SH</string>
+                        <string>F</string>
+                        <string>TH</string>
+                        <string>/H</string>
+                        <string>/X</string>
+                        <string>Z</string>
+                        <string>ZH</string>
+                        <string>V</string>
+                        <string>DH</string>
+                        <string>CHa</string>
+                        <string>CHb</string>
+                        <string>Ja</string>
+                        <string>Jb</string>
+                        <string>Jc</string>
+                        <string>Jd</string>
+                        <string>EY</string>
+                        <string>AY</string>
+                        <string>OY</string>
+                        <string>AW</string>
+                        <string>OW</string>
+                        <string>UW</string>
+                        <string>Ba</string>
+                        <string>Bb</string>
+                        <string>Bc</string>
+                        <string>Da</string>
+                        <string>Db</string>
+                        <string>Dc</string>
+                        <string>Ga</string>
+                        <string>Gb</string>
+                        <string>Gc</string>
+                        <string>GXa</string>
+                        <string>GXb</string>
+                        <string>GXa</string>
+                        <string>Pa</string>
+                        <string>Pb</string>
+                        <string>Pc</string>
+                        <string>Ta</string>
+                        <string>Tb</string>
+                        <string>Tc</string>
+                        <string>Ka</string>
+                        <string>Kb</string>
+                        <string>Kc</string>
+                        <string>KXa</string>
+                        <string>KXb</string>
+                        <string>KXc</string>
+                        <string>space</string>
+                        <string>.</string>
+                        <string>?</string>
+                        <string>,</string>
+                        <string>-</string>
+                     </MenuEntries>
+                     <CEntries>
+                        <string>0</string>
+                        <string>2097152</string>
+                        <string>4194304</string>
+                        <string>5242880</string>
+                        <string>7340032</string>
+                        <string>9437184</string>
+                        <string>10485760</string>
+                        <string>12582912</string>
+                        <string>14680064</string>
+                        <string>15728640</string>
+                        <string>17825792</string>
+                        <string>19922944</string>
+                        <string>20971520</string>
+                        <string>23068672</string>
+                        <string>25165824</string>
+                        <string>26214400</string>
+                        <string>28311552</string>
+                        <string>30408704</string>
+                        <string>31457280</string>
+                        <string>33554432</string>
+                        <string>35651584</string>
+                        <string>36700160</string>
+                        <string>38797312</string>
+                        <string>40894464</string>
+                        <string>41943040</string>
+                        <string>44040192</string>
+                        <string>46137344</string>
+                        <string>47185920</string>
+                        <string>49283072</string>
+                        <string>51380224</string>
+                        <string>52428800</string>
+                        <string>54525952</string>
+                        <string>56623104</string>
+                        <string>57671680</string>
+                        <string>59768832</string>
+                        <string>61865984</string>
+                        <string>62914560</string>
+                        <string>65011712</string>
+                        <string>67108864</string>
+                        <string>68157440</string>
+                        <string>70254592</string>
+                        <string>72351744</string>
+                        <string>73400320</string>
+                        <string>75497472</string>
+                        <string>77594624</string>
+                        <string>78643200</string>
+                        <string>80740352</string>
+                        <string>82837504</string>
+                        <string>83886080</string>
+                        <string>85983232</string>
+                        <string>88080384</string>
+                        <string>89128960</string>
+                        <string>91226112</string>
+                        <string>93323264</string>
+                        <string>94371840</string>
+                        <string>96468992</string>
+                        <string>98566144</string>
+                        <string>99614720</string>
+                        <string>101711872</string>
+                        <string>103809024</string>
+                        <string>104857600</string>
+                        <string>106954752</string>
+                        <string>109051904</string>
+                        <string>110100480</string>
+                        <string>112197632</string>
+                        <string>114294784</string>
+                        <string>115343360</string>
+                        <string>117440512</string>
+                        <string>119537664</string>
+                        <string>120586240</string>
+                        <string>122683392</string>
+                        <string>124780544</string>
+                        <string>125829120</string>
+                        <string>127926272</string>
+                        <string>130023424</string>
+                        <string>131072000</string>
+                        <string>133169152</string>
+                        <string>134217727 </string>
+                     </CEntries>
+                  </combo>
+               </attribs>
+               <includes/>
+               <code.krate><![CDATA[
+
+outlet_phoneme = attr_phoneme;
+outlet_glide = param_glide;
+disp_step = inlet_trig;
+
+]]></code.krate>
+            </object>
+         </patchobj>
+         <patchobj type="patch/object" uuid="f66cc471-dc97-4405-a864-a8ab2d0276cf" name="step 15" x="812" y="182">
+            <params>
+               <frac32.u.map name="glide" value="0.0"/>
+            </params>
+            <attribs>
+               <combo attributeName="phoneme" selection="UX"/>
+            </attribs>
+            <object id="patch/object" uuid="f66cc471-dc97-4405-a864-a8ab2d0276cf">
+               <sDescription>equal</sDescription>
+               <author>Johannes Taelman</author>
+               <license>BSD</license>
+               <helpPatch>math.axh</helpPatch>
+               <inlets>
+                  <bool32 name="trig"/>
+               </inlets>
+               <outlets>
+                  <frac32.positive name="phoneme" description="phoneme index"/>
+                  <frac32.positive name="glide" description="glide time"/>
+               </outlets>
+               <displays>
+                  <bool32 name="step"/>
+               </displays>
+               <params>
+                  <frac32.u.map name="glide" description="glide time"/>
+               </params>
+               <attribs>
+                  <combo name="phoneme">
+                     <MenuEntries>
+                        <string>IY</string>
+                        <string>IH</string>
+                        <string>EH</string>
+                        <string>AE</string>
+                        <string>AA</string>
+                        <string>AH</string>
+                        <string>AO</string>
+                        <string>UH</string>
+                        <string>AX</string>
+                        <string>IX</string>
+                        <string>ER</string>
+                        <string>UX</string>
+                        <string>OH</string>
+                        <string>RX</string>
+                        <string>LX</string>
+                        <string>WX</string>
+                        <string>YX</string>
+                        <string>WH</string>
+                        <string>R</string>
+                        <string>L</string>
+                        <string>W</string>
+                        <string>Y</string>
+                        <string>M</string>
+                        <string>N</string>
+                        <string>NX</string>
+                        <string>DX</string>
+                        <string>Q</string>
+                        <string>S</string>
+                        <string>SH</string>
+                        <string>F</string>
+                        <string>TH</string>
+                        <string>/H</string>
+                        <string>/X</string>
+                        <string>Z</string>
+                        <string>ZH</string>
+                        <string>V</string>
+                        <string>DH</string>
+                        <string>CHa</string>
+                        <string>CHb</string>
+                        <string>Ja</string>
+                        <string>Jb</string>
+                        <string>Jc</string>
+                        <string>Jd</string>
+                        <string>EY</string>
+                        <string>AY</string>
+                        <string>OY</string>
+                        <string>AW</string>
+                        <string>OW</string>
+                        <string>UW</string>
+                        <string>Ba</string>
+                        <string>Bb</string>
+                        <string>Bc</string>
+                        <string>Da</string>
+                        <string>Db</string>
+                        <string>Dc</string>
+                        <string>Ga</string>
+                        <string>Gb</string>
+                        <string>Gc</string>
+                        <string>GXa</string>
+                        <string>GXb</string>
+                        <string>GXa</string>
+                        <string>Pa</string>
+                        <string>Pb</string>
+                        <string>Pc</string>
+                        <string>Ta</string>
+                        <string>Tb</string>
+                        <string>Tc</string>
+                        <string>Ka</string>
+                        <string>Kb</string>
+                        <string>Kc</string>
+                        <string>KXa</string>
+                        <string>KXb</string>
+                        <string>KXc</string>
+                        <string>space</string>
+                        <string>.</string>
+                        <string>?</string>
+                        <string>,</string>
+                        <string>-</string>
+                     </MenuEntries>
+                     <CEntries>
+                        <string>0</string>
+                        <string>2097152</string>
+                        <string>4194304</string>
+                        <string>5242880</string>
+                        <string>7340032</string>
+                        <string>9437184</string>
+                        <string>10485760</string>
+                        <string>12582912</string>
+                        <string>14680064</string>
+                        <string>15728640</string>
+                        <string>17825792</string>
+                        <string>19922944</string>
+                        <string>20971520</string>
+                        <string>23068672</string>
+                        <string>25165824</string>
+                        <string>26214400</string>
+                        <string>28311552</string>
+                        <string>30408704</string>
+                        <string>31457280</string>
+                        <string>33554432</string>
+                        <string>35651584</string>
+                        <string>36700160</string>
+                        <string>38797312</string>
+                        <string>40894464</string>
+                        <string>41943040</string>
+                        <string>44040192</string>
+                        <string>46137344</string>
+                        <string>47185920</string>
+                        <string>49283072</string>
+                        <string>51380224</string>
+                        <string>52428800</string>
+                        <string>54525952</string>
+                        <string>56623104</string>
+                        <string>57671680</string>
+                        <string>59768832</string>
+                        <string>61865984</string>
+                        <string>62914560</string>
+                        <string>65011712</string>
+                        <string>67108864</string>
+                        <string>68157440</string>
+                        <string>70254592</string>
+                        <string>72351744</string>
+                        <string>73400320</string>
+                        <string>75497472</string>
+                        <string>77594624</string>
+                        <string>78643200</string>
+                        <string>80740352</string>
+                        <string>82837504</string>
+                        <string>83886080</string>
+                        <string>85983232</string>
+                        <string>88080384</string>
+                        <string>89128960</string>
+                        <string>91226112</string>
+                        <string>93323264</string>
+                        <string>94371840</string>
+                        <string>96468992</string>
+                        <string>98566144</string>
+                        <string>99614720</string>
+                        <string>101711872</string>
+                        <string>103809024</string>
+                        <string>104857600</string>
+                        <string>106954752</string>
+                        <string>109051904</string>
+                        <string>110100480</string>
+                        <string>112197632</string>
+                        <string>114294784</string>
+                        <string>115343360</string>
+                        <string>117440512</string>
+                        <string>119537664</string>
+                        <string>120586240</string>
+                        <string>122683392</string>
+                        <string>124780544</string>
+                        <string>125829120</string>
+                        <string>127926272</string>
+                        <string>130023424</string>
+                        <string>131072000</string>
+                        <string>133169152</string>
+                        <string>134217727 </string>
+                     </CEntries>
+                  </combo>
+               </attribs>
+               <includes/>
+               <code.krate><![CDATA[
+
+outlet_phoneme = attr_phoneme;
+outlet_glide = param_glide;
+disp_step = inlet_trig;
+
+]]></code.krate>
+            </object>
+         </patchobj>
+         <obj type="ctrl/toggle" uuid="42b8134fa729d54bfc8d62d6ef3fa99498c1de99" name="toggle_1" x="168" y="350">
             <params>
                <bool32.tgl name="b" value="1"/>
             </params>
             <attribs/>
          </obj>
-         <obj type="demux/demux 8" uuid="85fd73bac9eaf2b2be20472a640b10c7135d95aa" name="step indicator" x="280" y="224">
+         <patchobj type="patch/object" uuid="6c8bfa5b-0285-4537-91c2-259fe4deb3d5" name="step indicator_" x="252" y="350">
+            <params/>
+            <attribs/>
+            <object id="patch/object" uuid="6c8bfa5b-0285-4537-91c2-259fe4deb3d5">
+               <sDescription>Demultiplexer. Connects inlet i to outlet number s. Other outlets copy their corresponding default inlets.</sDescription>
+               <author>Johannes Taelman</author>
+               <license>BSD</license>
+               <helpPatch>demux 3.axh</helpPatch>
+               <inlets>
+                  <bool32 name="i" description="input"/>
+                  <bool32 name="d0" description="default 0"/>
+                  <bool32 name="d1" description="default 1"/>
+                  <bool32 name="d2" description="default 2"/>
+                  <bool32 name="d3" description="default 3"/>
+                  <bool32 name="d4" description="default 4"/>
+                  <bool32 name="d5" description="default 5"/>
+                  <bool32 name="d6" description="default 6"/>
+                  <bool32 name="d7" description="default 7"/>
+                  <bool32 name="d8" description="default 8"/>
+                  <bool32 name="d9" description="default 9"/>
+                  <bool32 name="d10" description="default 10"/>
+                  <bool32 name="d11" description="default 11"/>
+                  <bool32 name="d12" description="default 12"/>
+                  <bool32 name="d13" description="default 13"/>
+                  <bool32 name="d14" description="default 14"/>
+                  <bool32 name="d15" description="default 15"/>
+                  <int32.positive name="s" description="index"/>
+               </inlets>
+               <outlets>
+                  <bool32 name="o0" description="output 0"/>
+                  <bool32 name="o1" description="output 1"/>
+                  <bool32 name="o2" description="output 2"/>
+                  <bool32 name="o3" description="output 3"/>
+                  <bool32 name="o4" description="output 4"/>
+                  <bool32 name="o5" description="output 5"/>
+                  <bool32 name="o6" description="output 6"/>
+                  <bool32 name="o7" description="output 7"/>
+                  <bool32 name="o8" description="output 8"/>
+                  <bool32 name="o9" description="output 9"/>
+                  <bool32 name="o10" description="output 10"/>
+                  <bool32 name="o11" description="output 11"/>
+                  <bool32 name="o12" description="output 12"/>
+                  <bool32 name="o13" description="output 13"/>
+                  <bool32 name="o14" description="output 14"/>
+                  <bool32 name="o15" description="output 15"/>
+               </outlets>
+               <displays/>
+               <params/>
+               <attribs/>
+               <includes/>
+               <code.krate><![CDATA[
+
+switch(inlet_s > 0 ? inlet_s : 0){
+	case 0: 
+		outlet_o0 = inlet_i;
+		outlet_o1 = inlet_d1;
+		outlet_o2 = inlet_d2;
+		outlet_o3 = inlet_d3;
+		outlet_o4 = inlet_d4;
+		outlet_o5 = inlet_d5;
+		outlet_o6 = inlet_d6;
+		outlet_o7 = inlet_d7;
+		outlet_o8 = inlet_d8;
+		outlet_o9 = inlet_d9;
+		outlet_o10 = inlet_d10;
+		outlet_o11 = inlet_d11;
+		outlet_o12 = inlet_d12;
+		outlet_o13 = inlet_d13;
+		outlet_o14 = inlet_d14;
+		outlet_o15 = inlet_d15;
+		break;
+	case 1: 
+		outlet_o0 = inlet_d0;
+		outlet_o1 = inlet_i;
+		outlet_o2 = inlet_d2;
+		outlet_o3 = inlet_d3;
+		outlet_o4 = inlet_d4;
+		outlet_o5 = inlet_d5;
+		outlet_o6 = inlet_d6;
+		outlet_o7 = inlet_d7;
+		outlet_o8 = inlet_d8;
+		outlet_o9 = inlet_d9;
+		outlet_o10 = inlet_d10;
+		outlet_o11 = inlet_d11;
+		outlet_o12 = inlet_d12;
+		outlet_o13 = inlet_d13;
+		outlet_o14 = inlet_d14;
+		outlet_o15 = inlet_d15;
+		break;
+	case 2: 
+		outlet_o0 = inlet_d0;
+		outlet_o1 = inlet_d1;
+		outlet_o2 = inlet_i;
+		outlet_o3 = inlet_d3;
+		outlet_o4 = inlet_d4;
+		outlet_o5 = inlet_d5;
+		outlet_o6 = inlet_d6;
+		outlet_o7 = inlet_d7;
+		outlet_o8 = inlet_d8;
+		outlet_o9 = inlet_d9;
+		outlet_o10 = inlet_d10;
+		outlet_o11 = inlet_d11;
+		outlet_o12 = inlet_d12;
+		outlet_o13 = inlet_d13;
+		outlet_o14 = inlet_d14;
+		outlet_o15 = inlet_d15;
+		break;
+	case 3: 
+		outlet_o0 = inlet_d0;
+		outlet_o1 = inlet_d1;
+		outlet_o2 = inlet_d2;
+		outlet_o3 = inlet_i;
+		outlet_o4 = inlet_d4;
+		outlet_o5 = inlet_d5;
+		outlet_o6 = inlet_d6;
+		outlet_o7 = inlet_d7;
+		outlet_o8 = inlet_d8;
+		outlet_o9 = inlet_d9;
+		outlet_o10 = inlet_d10;
+		outlet_o11 = inlet_d11;
+		outlet_o12 = inlet_d12;
+		outlet_o13 = inlet_d13;
+		outlet_o14 = inlet_d14;
+		outlet_o15 = inlet_d15;
+		break;
+	case 4: 
+		outlet_o0 = inlet_d0;
+		outlet_o1 = inlet_d1;
+		outlet_o2 = inlet_d2;
+		outlet_o3 = inlet_d3;
+		outlet_o4 = inlet_i;
+		outlet_o5 = inlet_d5;
+		outlet_o6 = inlet_d6;
+		outlet_o7 = inlet_d7;
+		outlet_o8 = inlet_d8;
+		outlet_o9 = inlet_d9;
+		outlet_o10 = inlet_d10;
+		outlet_o11 = inlet_d11;
+		outlet_o12 = inlet_d12;
+		outlet_o13 = inlet_d13;
+		outlet_o14 = inlet_d14;
+		outlet_o15 = inlet_d15;        
+		break;
+	case 5: 
+		outlet_o0 = inlet_d0;
+		outlet_o1 = inlet_d1;
+		outlet_o2 = inlet_d2;
+		outlet_o3 = inlet_d3;
+		outlet_o4 = inlet_d4;
+		outlet_o5 = inlet_i;
+		outlet_o6 = inlet_d6;
+		outlet_o7 = inlet_d7;
+		outlet_o8 = inlet_d8;
+		outlet_o9 = inlet_d9;
+		outlet_o10 = inlet_d10;
+		outlet_o11 = inlet_d11;
+		outlet_o12 = inlet_d12;
+		outlet_o13 = inlet_d13;
+		outlet_o14 = inlet_d14;
+		outlet_o15 = inlet_d15;
+		break;
+	case 6: 
+		outlet_o0 = inlet_d0;
+		outlet_o1 = inlet_d1;
+		outlet_o2 = inlet_d2;
+		outlet_o3 = inlet_d3;
+		outlet_o4 = inlet_d4;
+		outlet_o5 = inlet_d5;
+		outlet_o6 = inlet_i;
+		outlet_o7 = inlet_d7;
+		outlet_o8 = inlet_d8;
+		outlet_o9 = inlet_d9;
+		outlet_o10 = inlet_d10;
+		outlet_o11 = inlet_d11;
+		outlet_o12 = inlet_d12;
+		outlet_o13 = inlet_d13;
+		outlet_o14 = inlet_d14;
+		outlet_o15 = inlet_d15;  
+		break;
+	case 7: 
+		outlet_o0 = inlet_d0;
+		outlet_o1 = inlet_d1;
+		outlet_o2 = inlet_d2;
+		outlet_o3 = inlet_d3;
+		outlet_o4 = inlet_d4;
+		outlet_o5 = inlet_d5;
+		outlet_o6 = inlet_d6;
+		outlet_o7 = inlet_i;
+		outlet_o8 = inlet_d8;
+		outlet_o9 = inlet_d9;
+		outlet_o10 = inlet_d10;
+		outlet_o11 = inlet_d11;
+		outlet_o12 = inlet_d12;
+		outlet_o13 = inlet_d13;
+		outlet_o14 = inlet_d14;
+		outlet_o15 = inlet_d15;
+		break;
+	case 8: 
+		outlet_o0 = inlet_d0;
+		outlet_o1 = inlet_d1;
+		outlet_o2 = inlet_d2;
+		outlet_o3 = inlet_d3;
+		outlet_o4 = inlet_d4;
+		outlet_o5 = inlet_d5;
+		outlet_o6 = inlet_d6;
+		outlet_o7 = inlet_d7;
+		outlet_o8 = inlet_i;
+		outlet_o9 = inlet_d9;
+		outlet_o10 = inlet_d10;
+		outlet_o11 = inlet_d11;
+		outlet_o12 = inlet_d12;
+		outlet_o13 = inlet_d13;
+		outlet_o14 = inlet_d14;
+		outlet_o15 = inlet_d15;
+		break;
+	case 9: 
+		outlet_o0 = inlet_d0;
+		outlet_o1 = inlet_d1;
+		outlet_o2 = inlet_d2;
+		outlet_o3 = inlet_d3;
+		outlet_o4 = inlet_d4;
+		outlet_o5 = inlet_d5;
+		outlet_o6 = inlet_d6;
+		outlet_o7 = inlet_d7;
+		outlet_o8 = inlet_d8;
+		outlet_o9 = inlet_i;
+		outlet_o10 = inlet_d10;
+		outlet_o11 = inlet_d11;
+		outlet_o12 = inlet_d12;
+		outlet_o13 = inlet_d13;
+		outlet_o14 = inlet_d14;
+		outlet_o15 = inlet_d15;
+		break;      
+	case 10: 
+		outlet_o0 = inlet_d0;
+		outlet_o1 = inlet_d1;
+		outlet_o2 = inlet_d2;
+		outlet_o3 = inlet_d3;
+		outlet_o4 = inlet_d4;
+		outlet_o5 = inlet_d5;
+		outlet_o6 = inlet_d6;
+		outlet_o7 = inlet_d7;
+		outlet_o8 = inlet_d8;
+		outlet_o9 = inlet_d9;
+		outlet_o10 = inlet_i;
+		outlet_o11 = inlet_d11;
+		outlet_o12 = inlet_d12;
+		outlet_o13 = inlet_d13;
+		outlet_o14 = inlet_d14;
+		outlet_o15 = inlet_d15;
+		break;     
+	case 11: 
+		outlet_o0 = inlet_d0;
+		outlet_o1 = inlet_d1;
+		outlet_o2 = inlet_d2;
+		outlet_o3 = inlet_d3;
+		outlet_o4 = inlet_d4;
+		outlet_o5 = inlet_d5;
+		outlet_o6 = inlet_d6;
+		outlet_o7 = inlet_d7;
+		outlet_o8 = inlet_d8;
+		outlet_o9 = inlet_d9;
+		outlet_o10 = inlet_d10;
+		outlet_o11 = inlet_i;
+		outlet_o12 = inlet_d12;
+		outlet_o13 = inlet_d13;
+		outlet_o14 = inlet_d14;
+		outlet_o15 = inlet_d15;
+		break;
+	case 12: 
+		outlet_o0 = inlet_d0;
+		outlet_o1 = inlet_d1;
+		outlet_o2 = inlet_d2;
+		outlet_o3 = inlet_d3;
+		outlet_o4 = inlet_d4;
+		outlet_o5 = inlet_d5;
+		outlet_o6 = inlet_d6;
+		outlet_o7 = inlet_d7;
+		outlet_o8 = inlet_d8;
+		outlet_o9 = inlet_d9;
+		outlet_o10 = inlet_d10;
+		outlet_o11 = inlet_d11;
+		outlet_o12 = inlet_i;
+		outlet_o13 = inlet_d13;
+		outlet_o14 = inlet_d14;
+		outlet_o15 = inlet_d15;       
+		break; 
+	case 13: 
+		outlet_o0 = inlet_d0;
+		outlet_o1 = inlet_d1;
+		outlet_o2 = inlet_d2;
+		outlet_o3 = inlet_d3;
+		outlet_o4 = inlet_d4;
+		outlet_o5 = inlet_d5;
+		outlet_o6 = inlet_d6;
+		outlet_o7 = inlet_d7;
+		outlet_o8 = inlet_d8;
+		outlet_o9 = inlet_d9;
+		outlet_o10 = inlet_d10;
+		outlet_o11 = inlet_d11;
+		outlet_o12 = inlet_d12;
+		outlet_o13 = inlet_i;
+		outlet_o14 = inlet_d14;
+		outlet_o15 = inlet_d15;
+		break;
+	case 14: 
+		outlet_o0 = inlet_d0;
+		outlet_o1 = inlet_d1;
+		outlet_o2 = inlet_d2;
+		outlet_o3 = inlet_d3;
+		outlet_o4 = inlet_d4;
+		outlet_o5 = inlet_d5;
+		outlet_o6 = inlet_d6;
+		outlet_o7 = inlet_d7;
+		outlet_o8 = inlet_d8;
+		outlet_o9 = inlet_d9;
+		outlet_o10 = inlet_d10;
+		outlet_o11 = inlet_d11;
+		outlet_o12 = inlet_d12;
+		outlet_o13 = inlet_d13;
+		outlet_o14 = inlet_i;
+		outlet_o15 = inlet_d15;
+		break;
+	case 15: 
+		outlet_o0 = inlet_d0;
+		outlet_o1 = inlet_d1;
+		outlet_o2 = inlet_d2;
+		outlet_o3 = inlet_d3;
+		outlet_o4 = inlet_d4;
+		outlet_o5 = inlet_d5;
+		outlet_o6 = inlet_d6;
+		outlet_o7 = inlet_d7;
+		outlet_o8 = inlet_d8;
+		outlet_o9 = inlet_d9;
+		outlet_o10 = inlet_d10;
+		outlet_o11 = inlet_d11;
+		outlet_o12 = inlet_d12;
+		outlet_o13 = inlet_d13;
+		outlet_o14 = inlet_d14;
+		outlet_o15 = inlet_i;
+		break;
+	default:
+		outlet_o0 = inlet_d0;
+		outlet_o1 = inlet_d1;
+		outlet_o2 = inlet_d2;
+		outlet_o3 = inlet_d3;
+		outlet_o4 = inlet_d4;
+		outlet_o5 = inlet_d5;
+		outlet_o6 = inlet_d6;
+		outlet_o7 = inlet_d7;
+		outlet_o8 = inlet_d8;
+		outlet_o9 = inlet_d9;
+		outlet_o10 = inlet_d10;
+		outlet_o11 = inlet_d11;
+		outlet_o12 = inlet_d12;
+		outlet_o13 = inlet_d13;
+		outlet_o14 = inlet_d14;
+		outlet_o15 = inlet_d15;
+};
+
+]]></code.krate>
+            </object>
+         </patchobj>
+         <patchobj type="patch/object" uuid="f88c653a-3ff3-4b2e-ab41-6579466b2e40" name="phoneme index_" x="476" y="350">
+            <params/>
+            <attribs/>
+            <object id="patch/object" uuid="f88c653a-3ff3-4b2e-ab41-6579466b2e40">
+               <sDescription>input multiplexer. Output is i1 when s &lt; 1, i[i] when....</sDescription>
+               <author>Johannes Taelman</author>
+               <license>BSD</license>
+               <helpPatch>mux.axh</helpPatch>
+               <inlets>
+                  <frac32 name="i0" description="input 0"/>
+                  <frac32 name="i1" description="input 1"/>
+                  <frac32 name="i2" description="input 2"/>
+                  <frac32 name="i3" description="input 3"/>
+                  <frac32 name="i4" description="input 4"/>
+                  <frac32 name="i5" description="input 5"/>
+                  <frac32 name="i6" description="input 6"/>
+                  <frac32 name="i7" description="input 7"/>
+                  <frac32 name="i8" description="input 8"/>
+                  <frac32 name="i9" description="input 9"/>
+                  <frac32 name="i10" description="input 10"/>
+                  <frac32 name="i11" description="input 11"/>
+                  <frac32 name="i12" description="input 12"/>
+                  <frac32 name="i13" description="input 13"/>
+                  <frac32 name="i14" description="input 14"/>
+                  <frac32 name="i15" description="input 15"/>
+                  <int32.positive name="s" description="select"/>
+               </inlets>
+               <outlets>
+                  <frac32 name="o" description="output"/>
+               </outlets>
+               <displays/>
+               <params/>
+               <attribs/>
+               <includes/>
+               <code.krate><![CDATA[
+
+switch(inlet_s>0?inlet_s:0){
+	case 0: outlet_o= inlet_i0;break;
+	case 1: outlet_o= inlet_i1;break;
+	case 2: outlet_o= inlet_i2;break;
+	case 3: outlet_o= inlet_i3;break;
+	case 4: outlet_o= inlet_i4;break;
+	case 5: outlet_o= inlet_i5;break;
+	case 6: outlet_o= inlet_i6;break;
+	case 7: outlet_o= inlet_i7;break;
+	case 8: outlet_o= inlet_i8;break;
+	case 9: outlet_o= inlet_i9;break;
+	case 10: outlet_o= inlet_i10;break;
+	case 11: outlet_o= inlet_i11;break;
+	case 12: outlet_o= inlet_i12;break;
+	case 13: outlet_o= inlet_i13;break;
+	case 14: outlet_o= inlet_i14;break;
+	case 15: outlet_o= inlet_i15;break;
+	default: outlet_o= inlet_i7;break;
+};
+
+]]></code.krate>
+            </object>
+         </patchobj>
+         <obj type="patch/outlet f" uuid="d18a9a550bcaaebac94e25983bd0e27dbfd7233c" name="phoname" x="574" y="350">
             <params/>
             <attribs/>
          </obj>
-         <obj type="mux/mux 8" uuid="de5167d9da39b04039376e8cc620ea2afc22e28a" name="phoneme index" x="504" y="224">
+         <patchobj type="patch/object" uuid="f88c653a-3ff3-4b2e-ab41-6579466b2e40" name="glide time" x="700" y="350">
+            <params/>
+            <attribs/>
+            <object id="patch/object" uuid="f88c653a-3ff3-4b2e-ab41-6579466b2e40">
+               <sDescription>input multiplexer. Output is i1 when s &lt; 1, i[i] when....</sDescription>
+               <author>Johannes Taelman</author>
+               <license>BSD</license>
+               <helpPatch>mux.axh</helpPatch>
+               <inlets>
+                  <frac32 name="i0" description="input 0"/>
+                  <frac32 name="i1" description="input 1"/>
+                  <frac32 name="i2" description="input 2"/>
+                  <frac32 name="i3" description="input 3"/>
+                  <frac32 name="i4" description="input 4"/>
+                  <frac32 name="i5" description="input 5"/>
+                  <frac32 name="i6" description="input 6"/>
+                  <frac32 name="i7" description="input 7"/>
+                  <frac32 name="i8" description="input 8"/>
+                  <frac32 name="i9" description="input 9"/>
+                  <frac32 name="i10" description="input 10"/>
+                  <frac32 name="i11" description="input 11"/>
+                  <frac32 name="i12" description="input 12"/>
+                  <frac32 name="i13" description="input 13"/>
+                  <frac32 name="i14" description="input 14"/>
+                  <frac32 name="i15" description="input 15"/>
+                  <int32.positive name="s" description="select"/>
+               </inlets>
+               <outlets>
+                  <frac32 name="o" description="output"/>
+               </outlets>
+               <displays/>
+               <params/>
+               <attribs/>
+               <includes/>
+               <code.krate><![CDATA[
+
+switch(inlet_s>0?inlet_s:0){
+	case 0: outlet_o= inlet_i0;break;
+	case 1: outlet_o= inlet_i1;break;
+	case 2: outlet_o= inlet_i2;break;
+	case 3: outlet_o= inlet_i3;break;
+	case 4: outlet_o= inlet_i4;break;
+	case 5: outlet_o= inlet_i5;break;
+	case 6: outlet_o= inlet_i6;break;
+	case 7: outlet_o= inlet_i7;break;
+	case 8: outlet_o= inlet_i8;break;
+	case 9: outlet_o= inlet_i9;break;
+	case 10: outlet_o= inlet_i10;break;
+	case 11: outlet_o= inlet_i11;break;
+	case 12: outlet_o= inlet_i12;break;
+	case 13: outlet_o= inlet_i13;break;
+	case 14: outlet_o= inlet_i14;break;
+	case 15: outlet_o= inlet_i15;break;
+	default: outlet_o= inlet_i7;break;
+};
+
+]]></code.krate>
+            </object>
+         </patchobj>
+         <obj type="patch/outlet f" uuid="d18a9a550bcaaebac94e25983bd0e27dbfd7233c" name="glide" x="798" y="350">
             <params/>
             <attribs/>
          </obj>
-         <obj type="patch/outlet f" uuid="d18a9a550bcaaebac94e25983bd0e27dbfd7233c" name="phoname" x="588" y="224">
+         <obj type="patch/inlet b" uuid="3b0d3eacb5bb978cb05d1372aa2714d5a4790844" name="clock" x="56" y="392">
             <params/>
             <attribs/>
          </obj>
-         <obj type="mux/mux 8" uuid="de5167d9da39b04039376e8cc620ea2afc22e28a" name="glide time" x="728" y="224">
-            <params/>
-            <attribs/>
-         </obj>
-         <obj type="patch/outlet f" uuid="d18a9a550bcaaebac94e25983bd0e27dbfd7233c" name="glide" x="812" y="224">
-            <params/>
-            <attribs/>
-         </obj>
-         <obj type="patch/inlet b" uuid="3b0d3eacb5bb978cb05d1372aa2714d5a4790844" name="clock" x="98" y="266">
-            <params/>
-            <attribs/>
-         </obj>
-         <obj type="logic/counter" uuid="7a141ba82230e54e5f5cd12da5dbe5a74ba854a5" name="counter_1" x="182" y="294">
+         <obj type="logic/counter" uuid="7a141ba82230e54e5f5cd12da5dbe5a74ba854a5" name="counter_1" x="154" y="420">
             <params>
-               <int32 name="maximum" value="8"/>
+               <int32 name="maximum" value="16"/>
             </params>
             <attribs/>
          </obj>
-         <obj type="patch/inlet b" uuid="3b0d3eacb5bb978cb05d1372aa2714d5a4790844" name="reset" x="98" y="322">
+         <obj type="patch/inlet b" uuid="3b0d3eacb5bb978cb05d1372aa2714d5a4790844" name="reset" x="56" y="448">
             <params/>
             <attribs/>
          </obj>
          <nets>
-            <net>
-               <source obj="counter_1" outlet="o"/>
-               <dest obj="phoneme index" inlet="s"/>
-               <dest obj="step indicator" inlet="s"/>
-               <dest obj="glide time" inlet="s"/>
-            </net>
-            <net>
-               <source obj="phoneme index" outlet="o"/>
-               <dest obj="phoname" inlet="outlet"/>
-            </net>
-            <net>
-               <source obj="_" outlet="phoneme"/>
-               <dest obj="phoneme index" inlet="i0"/>
-            </net>
-            <net>
-               <source obj="_" outlet="glide"/>
-               <dest obj="glide time" inlet="i0"/>
-            </net>
-            <net>
-               <source obj="step indicator" outlet="o0"/>
-               <dest obj="_" inlet="trig"/>
-            </net>
-            <net>
-               <source obj="toggle_1" outlet="o"/>
-               <dest obj="step indicator" inlet="i"/>
-            </net>
-            <net>
-               <source obj="step indicator" outlet="o1"/>
-               <dest obj="__" inlet="trig"/>
-            </net>
-            <net>
-               <source obj="step indicator" outlet="o2"/>
-               <dest obj="___" inlet="trig"/>
-            </net>
-            <net>
-               <source obj="step indicator" outlet="o3"/>
-               <dest obj="____" inlet="trig"/>
-            </net>
-            <net>
-               <source obj="step indicator" outlet="o4"/>
-               <dest obj="_____" inlet="trig"/>
-            </net>
-            <net>
-               <source obj="step indicator" outlet="o5"/>
-               <dest obj="______" inlet="trig"/>
-            </net>
-            <net>
-               <source obj="step indicator" outlet="o6"/>
-               <dest obj="_______" inlet="trig"/>
-            </net>
-            <net>
-               <source obj="step indicator" outlet="o7"/>
-               <dest obj="________" inlet="trig"/>
-            </net>
-            <net>
-               <source obj="__" outlet="phoneme"/>
-               <dest obj="phoneme index" inlet="i1"/>
-            </net>
-            <net>
-               <source obj="___" outlet="phoneme"/>
-               <dest obj="phoneme index" inlet="i2"/>
-            </net>
-            <net>
-               <source obj="____" outlet="phoneme"/>
-               <dest obj="phoneme index" inlet="i3"/>
-            </net>
-            <net>
-               <source obj="_____" outlet="phoneme"/>
-               <dest obj="phoneme index" inlet="i4"/>
-            </net>
-            <net>
-               <source obj="______" outlet="phoneme"/>
-               <dest obj="phoneme index" inlet="i5"/>
-            </net>
-            <net>
-               <source obj="_______" outlet="phoneme"/>
-               <dest obj="phoneme index" inlet="i6"/>
-            </net>
-            <net>
-               <source obj="________" outlet="phoneme"/>
-               <dest obj="phoneme index" inlet="i7"/>
-            </net>
-            <net>
-               <source obj="__" outlet="glide"/>
-               <dest obj="glide time" inlet="i1"/>
-            </net>
-            <net>
-               <source obj="___" outlet="glide"/>
-               <dest obj="glide time" inlet="i2"/>
-            </net>
-            <net>
-               <source obj="____" outlet="glide"/>
-               <dest obj="glide time" inlet="i3"/>
-            </net>
-            <net>
-               <source obj="_____" outlet="glide"/>
-               <dest obj="glide time" inlet="i4"/>
-            </net>
-            <net>
-               <source obj="______" outlet="glide"/>
-               <dest obj="glide time" inlet="i5"/>
-            </net>
-            <net>
-               <source obj="_______" outlet="glide"/>
-               <dest obj="glide time" inlet="i6"/>
-            </net>
-            <net>
-               <source obj="________" outlet="glide"/>
-               <dest obj="glide time" inlet="i7"/>
-            </net>
-            <net>
-               <source obj="glide time" outlet="o"/>
-               <dest obj="glide" inlet="outlet"/>
-            </net>
             <net>
                <source obj="clock" outlet="inlet"/>
                <dest obj="counter_1" inlet="trig"/>
@@ -1790,18 +3737,234 @@ disp_step = inlet_trig;
                <source obj="reset" outlet="inlet"/>
                <dest obj="counter_1" inlet="r"/>
             </net>
+            <net>
+               <source obj="glide time" outlet="o"/>
+               <dest obj="glide" inlet="outlet"/>
+            </net>
+            <net>
+               <source obj="phoneme index_" outlet="o"/>
+               <dest obj="phoname" inlet="outlet"/>
+            </net>
+            <net>
+               <source obj="counter_1" outlet="o"/>
+               <dest obj="phoneme index_" inlet="s"/>
+               <dest obj="glide time" inlet="s"/>
+               <dest obj="step indicator_" inlet="s"/>
+            </net>
+            <net>
+               <source obj="toggle_1" outlet="o"/>
+               <dest obj="step indicator_" inlet="i"/>
+            </net>
+            <net>
+               <source obj="step indicator_" outlet="o0"/>
+               <dest obj="step 0" inlet="trig"/>
+            </net>
+            <net>
+               <source obj="step indicator_" outlet="o1"/>
+               <dest obj="step 1" inlet="trig"/>
+            </net>
+            <net>
+               <source obj="step indicator_" outlet="o2"/>
+               <dest obj="step 2" inlet="trig"/>
+            </net>
+            <net>
+               <source obj="step indicator_" outlet="o3"/>
+               <dest obj="step 3" inlet="trig"/>
+            </net>
+            <net>
+               <source obj="step indicator_" outlet="o4"/>
+               <dest obj="step 4" inlet="trig"/>
+            </net>
+            <net>
+               <source obj="step indicator_" outlet="o5"/>
+               <dest obj="step 5" inlet="trig"/>
+            </net>
+            <net>
+               <source obj="step indicator_" outlet="o6"/>
+               <dest obj="step 6" inlet="trig"/>
+            </net>
+            <net>
+               <source obj="step indicator_" outlet="o7"/>
+               <dest obj="step 7" inlet="trig"/>
+            </net>
+            <net>
+               <source obj="step indicator_" outlet="o8"/>
+               <dest obj="step 8" inlet="trig"/>
+            </net>
+            <net>
+               <source obj="step indicator_" outlet="o9"/>
+               <dest obj="step 9" inlet="trig"/>
+            </net>
+            <net>
+               <source obj="step indicator_" outlet="o10"/>
+               <dest obj="step 10" inlet="trig"/>
+            </net>
+            <net>
+               <source obj="step indicator_" outlet="o11"/>
+               <dest obj="step 11" inlet="trig"/>
+            </net>
+            <net>
+               <source obj="step indicator_" outlet="o12"/>
+               <dest obj="step 12" inlet="trig"/>
+            </net>
+            <net>
+               <source obj="step indicator_" outlet="o13"/>
+               <dest obj="step 13" inlet="trig"/>
+            </net>
+            <net>
+               <source obj="step indicator_" outlet="o14"/>
+               <dest obj="step 14" inlet="trig"/>
+            </net>
+            <net>
+               <source obj="step indicator_" outlet="o15"/>
+               <dest obj="step 15" inlet="trig"/>
+            </net>
+            <net>
+               <source obj="step 0" outlet="phoneme"/>
+               <dest obj="phoneme index_" inlet="i0"/>
+            </net>
+            <net>
+               <source obj="step 1" outlet="phoneme"/>
+               <dest obj="phoneme index_" inlet="i1"/>
+            </net>
+            <net>
+               <source obj="step 2" outlet="phoneme"/>
+               <dest obj="phoneme index_" inlet="i2"/>
+            </net>
+            <net>
+               <source obj="step 3" outlet="phoneme"/>
+               <dest obj="phoneme index_" inlet="i3"/>
+            </net>
+            <net>
+               <source obj="step 4" outlet="phoneme"/>
+               <dest obj="phoneme index_" inlet="i4"/>
+            </net>
+            <net>
+               <source obj="step 5" outlet="phoneme"/>
+               <dest obj="phoneme index_" inlet="i5"/>
+            </net>
+            <net>
+               <source obj="step 6" outlet="phoneme"/>
+               <dest obj="phoneme index_" inlet="i6"/>
+            </net>
+            <net>
+               <source obj="step 7" outlet="phoneme"/>
+               <dest obj="phoneme index_" inlet="i7"/>
+            </net>
+            <net>
+               <source obj="step 8" outlet="phoneme"/>
+               <dest obj="phoneme index_" inlet="i8"/>
+            </net>
+            <net>
+               <source obj="step 9" outlet="phoneme"/>
+               <dest obj="phoneme index_" inlet="i9"/>
+            </net>
+            <net>
+               <source obj="step 10" outlet="phoneme"/>
+               <dest obj="phoneme index_" inlet="i10"/>
+            </net>
+            <net>
+               <source obj="step 11" outlet="phoneme"/>
+               <dest obj="phoneme index_" inlet="i11"/>
+            </net>
+            <net>
+               <source obj="step 12" outlet="phoneme"/>
+               <dest obj="phoneme index_" inlet="i12"/>
+            </net>
+            <net>
+               <source obj="step 13" outlet="phoneme"/>
+               <dest obj="phoneme index_" inlet="i13"/>
+            </net>
+            <net>
+               <source obj="step 14" outlet="phoneme"/>
+               <dest obj="phoneme index_" inlet="i14"/>
+            </net>
+            <net>
+               <source obj="step 15" outlet="phoneme"/>
+               <dest obj="phoneme index_" inlet="i15"/>
+            </net>
+            <net>
+               <source obj="step 0" outlet="glide"/>
+               <dest obj="glide time" inlet="i0"/>
+            </net>
+            <net>
+               <source obj="step 1" outlet="glide"/>
+               <dest obj="glide time" inlet="i1"/>
+            </net>
+            <net>
+               <source obj="step 2" outlet="glide"/>
+               <dest obj="glide time" inlet="i2"/>
+            </net>
+            <net>
+               <source obj="step 3" outlet="glide"/>
+               <dest obj="glide time" inlet="i3"/>
+            </net>
+            <net>
+               <source obj="step 4" outlet="glide"/>
+               <dest obj="glide time" inlet="i4"/>
+            </net>
+            <net>
+               <source obj="step 5" outlet="glide"/>
+               <dest obj="glide time" inlet="i5"/>
+            </net>
+            <net>
+               <source obj="step 6" outlet="glide"/>
+               <dest obj="glide time" inlet="i6"/>
+            </net>
+            <net>
+               <source obj="step 7" outlet="glide"/>
+               <dest obj="glide time" inlet="i7"/>
+            </net>
+            <net>
+               <source obj="step 8" outlet="glide"/>
+               <dest obj="glide time" inlet="i8"/>
+            </net>
+            <net>
+               <source obj="step 9" outlet="glide"/>
+               <dest obj="glide time" inlet="i9"/>
+            </net>
+            <net>
+               <source obj="step 10" outlet="glide"/>
+               <dest obj="glide time" inlet="i10"/>
+            </net>
+            <net>
+               <source obj="step 11" outlet="glide"/>
+               <dest obj="glide time" inlet="i11"/>
+            </net>
+            <net>
+               <source obj="step 12" outlet="glide"/>
+               <dest obj="glide time" inlet="i12"/>
+            </net>
+            <net>
+               <source obj="step 13" outlet="glide"/>
+               <dest obj="glide time" inlet="i13"/>
+            </net>
+            <net>
+               <source obj="step 14" outlet="glide"/>
+               <dest obj="glide time" inlet="i14"/>
+            </net>
+            <net>
+               <source obj="step 15" outlet="glide"/>
+               <dest obj="glide time" inlet="i15"/>
+            </net>
          </nets>
          <settings>
             <subpatchmode>no</subpatchmode>
          </settings>
          <notes><![CDATA[]]></notes>
+         <windowPos>
+            <x>0</x>
+            <y>23</y>
+            <width>1200</width>
+            <height>763</height>
+         </windowPos>
       </subpatch>
    </patcher>
    <patchobj type="patch/object" uuid="50252309-aab7-4df7-a50a-fc53d8226d6a" name="canto" x="322" y="168">
       <params>
          <frac32.s.map name="pitch" value="0.0"/>
          <frac32.u.map name="phoneme" value="0.0"/>
-         <frac32.u.map name="formant" value="19.5"/>
+         <frac32.u.map name="formant" value="24.5"/>
          <frac32.u.map name="roughness" value="1.0"/>
          <frac32.u.map name="srate" value="0.0"/>
          <frac32.u.map name="glidetime" value="0.0"/>
@@ -2199,7 +4362,7 @@ outlet_pindex = phoneme;
    <obj type="midi/in/keyb note" uuid="ac0cd98e6c0373b7be73d25900342a62ebcf5f" name="reset sequence" x="70" y="322">
       <params/>
       <attribs>
-         <spinner attributeName="note" value="11"/>
+         <spinner attributeName="note" value="23"/>
       </attribs>
    </obj>
    <obj type="disp/hex" uuid="87617898f70d90033f8add921438bf0d11721fdd" name="hex_1" x="476" y="420">
@@ -2274,8 +4437,8 @@ outlet_pindex = phoneme;
    </settings>
    <notes><![CDATA[]]></notes>
    <windowPos>
-      <x>177</x>
-      <y>23</y>
+      <x>155</x>
+      <y>58</y>
       <width>1039</width>
       <height>678</height>
    </windowPos>
