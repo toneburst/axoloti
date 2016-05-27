@@ -12,6 +12,7 @@
       </params>
       <attribs/>
    </obj>
+   <comment type="patch/comment" x="182" y="140" text="Edit sequence in here"/>
    <obj type="gain/vca" uuid="a9f2dcd18043e2f47364e45cb8814f63c2a37c0d" name="vca" x="476" y="140">
       <params/>
       <attribs/>
@@ -4365,6 +4366,7 @@ outlet_pindex = phoneme;
          <spinner attributeName="note" value="23"/>
       </attribs>
    </obj>
+   <comment type="patch/comment" x="56" y="420" text="key 23 resets sequence"/>
    <obj type="disp/hex" uuid="87617898f70d90033f8add921438bf0d11721fdd" name="hex_1" x="476" y="420">
       <params/>
       <attribs/>
