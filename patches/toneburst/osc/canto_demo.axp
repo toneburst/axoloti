@@ -32,7 +32,7 @@
          <spinner attributeName="endNote" value="72"/>
       </attribs>
    </obj>
-   <patcher type="patch/patcher" uuid="f6d1c5d7-3aa6-47bb-aac1-99d31a2ab865" name="phoneme sequence" x="182" y="168">
+   <patcher type="patch/patcher" uuid="09ed7f11-bc48-4971-9ca8-0d195b127e0d" name="phoneme sequence" x="182" y="168">
       <params/>
       <attribs/>
       <subpatch appVersion="1.0.10">
@@ -3965,7 +3965,7 @@ switch(inlet_s>0?inlet_s:0){
       <params>
          <frac32.s.map name="pitch" value="0.0"/>
          <frac32.u.map name="phoneme" value="0.0"/>
-         <frac32.u.map name="formant" value="24.5"/>
+         <frac32.u.map name="formant" value="32.0"/>
          <frac32.u.map name="roughness" value="1.0"/>
          <frac32.u.map name="srate" value="0.0"/>
          <frac32.u.map name="glidetime" value="0.0"/>
@@ -4156,8 +4156,8 @@ uint8_t noiseMod;
 
 // Phoneme selection
 int8_t phoneme;
-int8_t oldPhoneme;
 int8_t phonemeTableLen;
+float tIncr;
 // Phoneme index table pointer
 const int8_t *phonemeTablePtr;
 
@@ -4206,12 +4206,8 @@ __attribute__ ( ( always_inline ) ) __STATIC_INLINE int32_t slew(int32_t target,
 };
 
 // Scale input to 0 > out_max
-// Input range hard-coded to 0 > 134217727 (27 bits) for frac32.pos inlets / frac32.u.map params
-// WONT'T Work with bipolar input!
-__attribute__ ( ( always_inline ) ) __STATIC_INLINE int32_t range_pos(int32_t val, int32_t out_max) {
-	float x = (float)val;
-	float outMax = (float)out_max;
-	return (int32_t)x * outMax / 0x07FFFFFF;
+__attribute__ ( ( always_inline ) ) __STATIC_INLINE int32_t range_pos(int32_t val, float incr) {
+	return incr * (float)val;
 };
 
 ]]></code.declaration>
@@ -4252,7 +4248,11 @@ switch(attr_bank) {
 };
 
 phoneme = 0;
-oldPhoneme = 1;]]></code.init>
+
+// Table phonene table increment
+tIncr = (float)phonemeTableLen / 0x07FFFFFF;
+
+]]></code.init>
          <code.krate><![CDATA[
 
 ///////////////////////////
@@ -4260,12 +4260,8 @@ oldPhoneme = 1;]]></code.init>
 ///////////////////////////
 
 // Phoneme selection
-//if(oldPhoneme != phoneme) {
-	phoneme = range_pos(__USAT(param_phoneme + inlet_phoneme, 27), phonemeTableLen);
-	phoneme = *(phonemeTablePtr + phoneme);
-	//oldPhoneme = phoneme;
-//};
-
+phoneme = range_pos(__USAT(param_phoneme + inlet_phoneme, 27), tIncr);
+phoneme = *(phonemeTablePtr + phoneme);
 
 // Shift/scale formant
 formantScale = (__USAT(param_formant + inlet_formant, 27) >> 20) +5;
