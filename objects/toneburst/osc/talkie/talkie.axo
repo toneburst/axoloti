@@ -1,0 +1,19 @@
+<objdefs appVersion="1.0.10">
+   <obj.normal id="talkie" uuid="3b6ac4ce-e7fd-4606-b572-72c5d7208770">
+      <sDescription>talkie</sDescription>
+      <author>toneburst</author>
+      <license>BSD</license>
+      <inlets>
+         <bool32.risingfalling name="trig" description="trigger"/>
+      </inlets>
+      <outlets>
+         <frac32buffer name="out" description="audio output"/>
+      </outlets>
+      <displays/>
+      <params/>
+      <attribs/>
+      <includes>
+         <include>./talkie_axo.cpp</include>
+      </includes>
+   </obj.normal>
+</objdefs>

@@ -28,3 +28,145 @@ void Talkie::setPtr(uint8_t* addr) {
 	ptrAddr = addr;
 	ptrBit = 0;
 }
+
+// The ROMs used with the TI speech were serial, not byte wide.
+// Here's a handy routine to flip ROM data which is usually reversed.
+uint8_t Talkie::rev(uint8_t a) {
+	// 76543210
+	a = (a>>4) | (a<<4); // Swap in groups of 4
+	// 32107654
+	a = ((a & 0xcc)>>2) | ((a & 0x33)<<2); // Swap in groups of 2
+	// 10325476
+	a = ((a & 0xaa)>>1) | ((a & 0x55)<<1); // Swap bit pairs
+	// 01234567
+	return a;
+}
+
+uint8_t Talkie::getBits(uint8_t bits) {
+	uint8_t value;
+	uint16_t data;
+	data = rev(*(ptrAddr))<<8;
+	if (ptrBit+bits > 8) {
+		data |= rev(*(ptrAddr+1));
+	}
+	data <<= ptrBit;
+	value = data >> (16-bits);
+	ptrBit += bits;
+	if (ptrBit >= 8) {
+		ptrBit -= 8;
+		ptrAddr++;
+	}
+	return value;
+}
+
+void Talkie::say(uint8_t* addr) {
+	uint8_t energy;
+
+	setPtr(addr);
+	do {
+		uint8_t repeat;
+
+		// Read speech data, processing the variable size frames.
+		
+		energy = getBits(4);
+		if (energy == 0) {
+			// Energy = 0: rest frame
+			synthEnergy = 0;
+		} else if (energy == 0xf) {
+			// Energy = 15: stop frame. Silence the synthesiser.
+			synthEnergy = 0;
+			synthK1 = 0;
+			synthK2 = 0;
+			synthK3 = 0;
+			synthK4 = 0;
+			synthK5 = 0;
+			synthK6 = 0;
+			synthK7 = 0;
+			synthK8 = 0;
+			synthK9 = 0;
+			synthK10 = 0;
+		} else {
+			synthEnergy = tmsEnergy[energy];
+			repeat = getBits(1);
+			synthPeriod = tmsPeriod[getBits(6)];
+			// A repeat frame uses the last coefficients
+			if (!repeat) {
+				// All frames use the first 4 coefficients
+				synthK1 = tmsK1[getBits(5)];
+				synthK2 = tmsK2[getBits(5)];
+				synthK3 = tmsK3[getBits(4)];
+				synthK4 = tmsK4[getBits(4)];
+				if (synthPeriod) {
+					// Voiced frames use 6 extra coefficients.
+					synthK5 = tmsK5[getBits(4)];
+					synthK6 = tmsK6[getBits(4)];
+					synthK7 = tmsK7[getBits(4)];
+					synthK8 = tmsK8[getBits(3)];
+					synthK9 = tmsK9[getBits(3)];
+					synthK10 = tmsK10[getBits(3)];
+				}
+			}
+		}
+		//delay(25);
+	} while (energy != 0xf);
+}
+
+#define CHIRP_SIZE 41
+int8_t chirp[CHIRP_SIZE] = {0x00,0x2a,0xd4,0x32,0xb2,0x12,0x25,0x14,0x02,0xe1,0xc5,0x02,0x5f,0x5a,0x05,0x0f,0x26,0xfc,0xa5,0xa5,0xd6,0xdd,0xdc,0xfc,0x25,0x2b,0x22,0x21,0x0f,0xff,0xf8,0xee,0xed,0xef,0xf7,0xf6,0xfa,0x00,0x03,0x02,0x01};
+
+/*ISR(TIMER1_COMPA_vect) {
+  static uint8_t nextPwm;
+  static uint8_t periodCounter;
+  static int16_t x0,x1,x2,x3,x4,x5,x6,x7,x8,x9,x10;
+  int16_t u0,u1,u2,u3,u4,u5,u6,u7,u8,u9,u10;
+
+  OCR2B = nextPwm;
+  sei();
+  if (synthPeriod) {
+    // Voiced source
+    if (periodCounter < synthPeriod) {
+      periodCounter++;
+    } else {
+      periodCounter = 0;
+    }
+    if (periodCounter < CHIRP_SIZE) {
+      u10 = ((chirp[periodCounter]) * (uint32_t) synthEnergy) >> 8;
+    } else {
+      u10 = 0;
+    }
+  } else {
+    // Unvoiced source
+    static uint16_t synthRand = 1;
+    synthRand = (synthRand >> 1) ^ ((synthRand & 1) ? 0xB800 : 0);
+    u10 = (synthRand & 1) ? synthEnergy : -synthEnergy;
+  }
+  // Lattice filter forward path
+  u9 = u10 - (((int16_t)synthK10*x9) >> 7);
+  u8 = u9 - (((int16_t)synthK9*x8) >> 7);
+  u7 = u8 - (((int16_t)synthK8*x7) >> 7);
+  u6 = u7 - (((int16_t)synthK7*x6) >> 7);
+  u5 = u6 - (((int16_t)synthK6*x5) >> 7);
+  u4 = u5 - (((int16_t)synthK5*x4) >> 7);
+  u3 = u4 - (((int16_t)synthK4*x3) >> 7);
+  u2 = u3 - (((int16_t)synthK3*x2) >> 7);
+  u1 = u2 - (((int32_t)synthK2*x1) >> 15);
+  u0 = u1 - (((int32_t)synthK1*x0) >> 15);
+
+  // Output clamp
+  if (u0 > 511) u0 = 511;
+  if (u0 < -512) u0 = -512;
+  
+  // Lattice filter reverse path
+  x9 = x8 + (((int16_t)synthK9*u8) >> 7);
+  x8 = x7 + (((int16_t)synthK8*u7) >> 7);
+  x7 = x6 + (((int16_t)synthK7*u6) >> 7);
+  x6 = x5 + (((int16_t)synthK6*u5) >> 7);
+  x5 = x4 + (((int16_t)synthK5*u4) >> 7);
+  x4 = x3 + (((int16_t)synthK4*u3) >> 7);
+  x3 = x2 + (((int16_t)synthK3*u2) >> 7);
+  x2 = x1 + (((int32_t)synthK2*u1) >> 15);
+  x1 = x0 + (((int32_t)synthK1*u0) >> 15);
+  x0 = u0;
+
+  nextPwm = (u0>>2)+0x80;
+}*/
