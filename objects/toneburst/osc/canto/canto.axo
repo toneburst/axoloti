@@ -103,7 +103,7 @@ int32_t fmSlewState;	int32_t *fmSlewStatePtr  = NULL;
 
 // Slew function, with pointer to state variable
 __attribute__ ( ( always_inline ) ) __STATIC_INLINE int32_t slew(int32_t target, int32_t *state, int32_t slewTime, bool enable) {
-	if (enable) {
+	if (enable && slewTime > 0) {
 		*state = ___SMMLA(*state - target, (-1 << 26) + (slewTime >> 1), *state);
 		return *state;
 	} else {
