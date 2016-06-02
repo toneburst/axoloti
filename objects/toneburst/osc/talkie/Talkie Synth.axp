@@ -1,7 +1,7 @@
 <patch-1.0 appVersion="1.0.10">
-   <patcher type="patch/patcher" uuid="04937fd2-4e9c-45d7-98c5-5562a81e84d6" name="K1" x="280" y="14">
+   <patcher type="patch/patcher" uuid="01b78eba-8d36-49ce-8b2b-2462553a40eb" name="K1" x="280" y="14">
       <params>
-         <frac32.u.map name="Value" value="20.0"/>
+         <frac32.u.map name="Value" value="27.5"/>
       </params>
       <attribs/>
       <subpatch appVersion="1.0.10">
@@ -92,15 +92,15 @@ outlet_int = range_pos(__USAT(inlet_val, 27), param_max);
          <notes><![CDATA[]]></notes>
       </subpatch>
    </patcher>
-   <obj type="ctrl/dial p" uuid="cc5d2846c3d50e425f450c4b9851371b54f4d674" name="Volume" x="602" y="28">
+   <obj type="ctrl/dial p" uuid="cc5d2846c3d50e425f450c4b9851371b54f4d674" name="Volume" x="588" y="28">
       <params>
-         <frac32.u.map name="value" value="17.5"/>
+         <frac32.u.map name="value" value="37.5"/>
       </params>
       <attribs/>
    </obj>
-   <patcher type="patch/patcher" uuid="e10de57f-dcd5-437e-8e3f-7bd2041c9f65" name="K2" x="378" y="42">
+   <patcher type="patch/patcher" uuid="3cdfdb64-fa0b-42a5-9fa4-0c4291aabdb1" name="K2" x="378" y="42">
       <params>
-         <frac32.u.map name="Value" value="30.0"/>
+         <frac32.u.map name="Value" value="28.5"/>
       </params>
       <attribs/>
       <subpatch appVersion="1.0.10">
@@ -207,13 +207,15 @@ outlet_int = range_pos(__USAT(inlet_val, 27), param_max);
    </obj>
    <patchobj type="patch/object" uuid="2e3b980b-4415-428f-b6ca-29f283183066" name="==_1" x="504" y="126">
       <params>
-         <frac32.s.map name="pitch" value="-11.0"/>
-         <frac32.u.map name="noise" value="0.0"/>
+         <frac32.u.map name="noise" value="1.0"/>
          <frac32.u.map name="crush" value="0.0"/>
+         <frac32.u.map name="smear" value="0.0"/>
       </params>
-      <attribs/>
+      <attribs>
+         <combo attributeName="chirp"/>
+      </attribs>
       <object id="patch/object" uuid="2e3b980b-4415-428f-b6ca-29f283183066">
-         <sDescription>equal</sDescription>
+         <sDescription>Talkie Synth</sDescription>
          <author>Johannes Taelman</author>
          <license>BSD</license>
          <helpPatch>math.axh</helpPatch>
@@ -235,18 +237,24 @@ outlet_int = range_pos(__USAT(inlet_val, 27), param_max);
             <frac32.positive name="crush"/>
             <frac32.bipolar name="pitch"/>
             <frac32buffer.bipolar name="osc"/>
+            <frac32.bipolar name="note" description="midi note in"/>
          </inlets>
          <outlets>
             <frac32buffer.bipolar name="out"/>
-            <int32 name="debugINT"/>
+            <frac32.bipolar name="debug"/>
          </outlets>
          <displays/>
          <params>
-            <frac32.s.map.pitch name="pitch"/>
             <frac32.u.map name="noise"/>
             <frac32.u.map name="crush"/>
+            <frac32.u.map name="smear"/>
          </params>
-         <attribs/>
+         <attribs>
+            <combo name="chirp" description="chirp table">
+               <MenuEntries>"TI 2801", "TI 2802", "TI LATER"</MenuEntries>
+               <CEntries>"0", "1", "2"</CEntries>
+            </combo>
+         </attribs>
          <includes/>
          <code.declaration><![CDATA[
 
@@ -267,15 +275,25 @@ const int8_t tmsK8[0x08]      = {0xC0,0xD8,0xF0,0x07,0x1F,0x37,0x4F,0x66};
 const int8_t tmsK9[0x08]      = {0xC0,0xD4,0xE8,0xFC,0x10,0x25,0x39,0x4D};
 const int8_t tmsK10[0x08]     = {0xCD,0xDF,0xF1,0x04,0x16,0x20,0x3B,0x4D};
 
-#define CHIRP_SIZE 41
-const int8_t chirp[CHIRP_SIZE] = {0x00,0x2a,0xd4,0x32,0xb2,0x12,0x25,0x14,0x02,0xe1,0xc5,0x02,0x5f,0x5a,0x05,0x0f,0x26,0xfc,0xa5,0xa5,0xd6,0xdd,0xdc,0xfc,0x25,0x2b,0x22,0x21,0x0f,0xff,0xf8,0xee,0xed,0xef,0xf7,0xf6,0xfa,0x00,0x03,0x02,0x01};
+#define CHIRP_SIZE 52
+const int8_t chirpTables[3][CHIRP_SIZE] = {
+	// TI 2801 CHIRP
+	{0x00,0x2b,0xd4,0x33,0xb3,0x12,0x25,0x14,0x02,0xe2,0xc6,0x03,0x60,0x5b,0x05,0x0f,0x26,0xfc,0xa6,0xa5,0xd6,0xdd,0xdd,0xfd,0x25,0x2b,0x23,0x22,0x0f,0xff,0xf8,0xef,0xed,0xef,0xf7,0xf7,0xfa,0x01,0x04,0x03,0x01,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00},
+	// TI 2802 CHIRP
+	{0x00,0xa5,0xbd,0xee,0x34,0x73,0x7e,0x3d,0xe8,0xea,0x34,0x24,0xd1,0x01,0x13,0xc3,0x0c,0xd2,0xe7,0xdd,0xd9,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00},
+	// TI LATER CHIRP
+	{0x00,0x03,0x0f,0x28,0x4c,0x6c,0x71,0x50,0x25,0x26,0x4c,0x44,0x1a,0x32,0x3b,0x13,0x37,0x1a,0x25,0x1f,0x1d,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00}
+};
+
+// 8000Hz cycle counts to MIDI notes (ish)
+const uint8_t midiNotes[37] = {122,116,109,103,97,92,87,82,77,73,69,65,61,58,55,51,49,46,43,41,38,36,34,32,31,29,27,26,24,23,22,20,19,18,17,16,15};
+
 
 uint8_t synthPeriod;
 uint16_t synthEnergy;
 int16_t synthK1,synthK2;
 int8_t synthK3,synthK4,synthK5,synthK6,synthK7,synthK8,synthK9,synthK10;
 uint8_t periodCounter;
-
 int16_t x0,x1,x2,x3,x4,x5,x6,x7,x8,x9,x10;
 
 //////////////////
@@ -285,24 +303,21 @@ int16_t x0,x1,x2,x3,x4,x5,x6,x7,x8,x9,x10;
 int8_t tk_renderVoice() {
 	int16_t u0,u1,u2,u3,u4,u5,u6,u7,u8,u9,u10;
 
-	synthPeriod = tmsPeriod[u8mix(synthPeriod, 65 - (pitch >> 21), 255)];
+	synthPeriod = tmsPeriod[synthPeriod];
 	
 	// Generate voiced source
 	static int16_t voicedSource;
 
-	// Scan index 0 > 31 of chirp table with no interpolation
-	voicedSource = chirp[oscPhase >> 27];
-    	
-    	/*if (periodCounter < synthPeriod) {
+    	if (periodCounter < midiPeriod) {
     		periodCounter++;
     	} else {
     		periodCounter = 0;
     	}
     	if (periodCounter < CHIRP_SIZE) {
-    		voicedSource = ((chirp[periodCounter]) * (uint32_t) synthEnergy) >> 8;
+    		voicedSource = ((chirpTables[chirp][periodCounter]) * (uint32_t) synthEnergy) >> 8;
     	} else {
     		voicedSource = 0;
-    	}*/
+    	}
 
 	// Generate unvoiced noise source
 	static int16_t unvoicedSource;
@@ -312,7 +327,7 @@ int8_t tk_renderVoice() {
 
     	// Switch voiced/unvoiced source
 	if (synthPeriod) {
-		u10 = voicedSource;//u8mix(voicedSource, unvoicedSource, noise);
+		u10 = u8mix(voicedSource, unvoicedSource, noise);
     	} else {
     		u10 = unvoicedSource;
     	}
@@ -345,7 +360,7 @@ int8_t tk_renderVoice() {
 	x0 = u0;
 
 	// Bit-shift return value to -255 to 254 range
-	return u10;//u0 >> 1;
+	return u0 >> 1;
 }
 
 ///////////////////////
@@ -371,6 +386,7 @@ __attribute__ ( ( always_inline ) ) __STATIC_INLINE int8_t u8mix(int8_t a, int8_
 uint32_t pitch;
 uint32_t crush;
 uint8_t noise;
+uint8_t chirp;
 
 int32_t sample;
 int8_t extOsc;
@@ -378,6 +394,7 @@ int32_t oscPhase;
 
 uint8_t renderCounter;
 uint8_t renderInterval;
+int8_t midiPeriod;
 
 ]]></code.declaration>
          <code.init><![CDATA[
@@ -395,18 +412,10 @@ extOsc = 0;
 pitch = 0;
 crush = 9;
 noise = 0;
-
-oscPhase = 0;
+chirp = 0;
 
 ]]></code.init>
          <code.krate><![CDATA[
-
-uint32_t freq;
-MTOFEXTENDED(param_pitch + inlet_pitch, freq);
-freq = __USAT(freq * 3, 30);
-oscPhase += freq;
-outlet_debugINT = freq;
-
 
 synthPeriod = __USAT(inlet_synthPeriod, 8);
 synthEnergy = __USAT(inlet_synthEnergy, 16);
@@ -425,9 +434,19 @@ synthK10 = __SSAT(inlet_synthK10, 8);
 // Params/Inlets //
 ///////////////////
 
-pitch = __USAT(param_pitch + inlet_pitch, 27);
+// Noise/chirp mix
 noise = __USAT(param_noise + inlet_noise, 27) >> 19;
+// Bitcrush
 crush = range_pos(__USAT(param_crush + inlet_crush, 27), 0, 7);
+// MIDI note period
+midiPeriod = (inlet_note >> 21) + 28;
+if(midiPeriod < 0)
+	midiPeriod = 0;
+if(midiPeriod > 36)
+	midiPeriod = 36;
+midiPeriod = midiNotes[midiPeriod];
+// Chirp table
+chirp = attr_chirp;
 
 /////////////////
 // Render Loop //
@@ -695,9 +714,9 @@ for(uint8_t j = 0; j < BUFSIZE; j++) {
 ]]></code.krate>
       </object>
    </patchobj>
-   <patcher type="patch/patcher" uuid="c510461a-5b88-4723-8352-3ab64e4907c8" name="K3" x="280" y="140">
+   <patcher type="patch/patcher" uuid="bb4fc26c-60b6-4a70-b6eb-06899980227c" name="K3" x="280" y="140">
       <params>
-         <frac32.u.map name="Value" value="30.5"/>
+         <frac32.u.map name="Value" value="37.5"/>
       </params>
       <attribs/>
       <subpatch appVersion="1.0.10">
@@ -788,9 +807,9 @@ outlet_int = range_pos(__USAT(inlet_val, 27), param_max);
          <notes><![CDATA[]]></notes>
       </subpatch>
    </patcher>
-   <obj type="ctrl/dial p" uuid="cc5d2846c3d50e425f450c4b9851371b54f4d674" name="Volume_" x="70" y="154">
+   <obj type="ctrl/dial p" uuid="cc5d2846c3d50e425f450c4b9851371b54f4d674" name="Volume_" x="56" y="154">
       <params>
-         <frac32.u.map name="value" value="0.0"/>
+         <frac32.u.map name="value" value="8.5"/>
       </params>
       <attribs/>
    </obj>
@@ -837,9 +856,9 @@ outlet_int = range_pos(__USAT(inlet_val, 27), param_max);
 ]]></code.krate>
       </object>
    </patchobj>
-   <patcher type="patch/patcher" uuid="dea5f0df-b215-465d-943d-8674b900f889" name="K4" x="378" y="168">
+   <patcher type="patch/patcher" uuid="7aa82b99-37b5-438f-8984-29470248be67" name="K4" x="378" y="168">
       <params>
-         <frac32.u.map name="Value" value="30.5"/>
+         <frac32.u.map name="Value" value="32.0"/>
       </params>
       <attribs/>
       <subpatch appVersion="1.0.10">
@@ -930,11 +949,15 @@ outlet_int = range_pos(__USAT(inlet_val, 27), param_max);
          <notes><![CDATA[]]></notes>
       </subpatch>
    </patcher>
-   <obj type="disp/i" uuid="5e35fd0c62d81e70017289250cf28edd26e19e4a" name="i_2" x="672" y="182">
+   <obj type="disp/hex" uuid="87617898f70d90033f8add921438bf0d11721fdd" name="hex_1" x="658" y="182">
       <params/>
       <attribs/>
    </obj>
-   <patcher type="patch/patcher" uuid="e1026c81-96b1-4516-8150-53d5b7fa7927" name="K5" x="280" y="266">
+   <obj type="disp/i" uuid="5e35fd0c62d81e70017289250cf28edd26e19e4a" name="i_4" x="658" y="252">
+      <params/>
+      <attribs/>
+   </obj>
+   <patcher type="patch/patcher" uuid="b48bc57d-031e-4214-85db-38febc5fd2bf" name="K5" x="280" y="266">
       <params>
          <frac32.u.map name="Value" value="41.5"/>
       </params>
@@ -1027,9 +1050,9 @@ outlet_int = range_pos(__USAT(inlet_val, 27), param_max);
          <notes><![CDATA[]]></notes>
       </subpatch>
    </patcher>
-   <patcher type="patch/patcher" uuid="492a436d-68d9-449e-b527-85d0bb7763ca" name="K6" x="378" y="294">
+   <patcher type="patch/patcher" uuid="e1aa2bd1-28e9-4534-a6a9-9e6bdf1db031" name="K6" x="378" y="294">
       <params>
-         <frac32.u.map name="Value" value="40.5"/>
+         <frac32.u.map name="Value" value="33.0"/>
       </params>
       <attribs/>
       <subpatch appVersion="1.0.10">
@@ -1120,9 +1143,13 @@ outlet_int = range_pos(__USAT(inlet_val, 27), param_max);
          <notes><![CDATA[]]></notes>
       </subpatch>
    </patcher>
-   <patcher type="patch/patcher" uuid="802b9719-fbae-4f76-bc8e-63e85a720d93" name="K7" x="280" y="392">
+   <obj type="midi/in/keyb mod" uuid="abcd509d15e7d13d5381203fd2b4d0ac6fe57bb3" name="keyb_1" x="98" y="350">
+      <params/>
+      <attribs/>
+   </obj>
+   <patcher type="patch/patcher" uuid="3ce130a8-154e-42c0-85fb-4ccc1f759f62" name="K7" x="280" y="392">
       <params>
-         <frac32.u.map name="Value" value="25.5"/>
+         <frac32.u.map name="Value" value="38.5"/>
       </params>
       <attribs/>
       <subpatch appVersion="1.0.10">
@@ -1213,9 +1240,9 @@ outlet_int = range_pos(__USAT(inlet_val, 27), param_max);
          <notes><![CDATA[]]></notes>
       </subpatch>
    </patcher>
-   <patcher type="patch/patcher" uuid="164c5540-1418-4960-ba00-b293417eea16" name="K8" x="378" y="420">
+   <patcher type="patch/patcher" uuid="6b25b5b3-4037-4d89-969b-f067dbb81375" name="K8" x="378" y="420">
       <params>
-         <frac32.u.map name="Value" value="34.0"/>
+         <frac32.u.map name="Value" value="38.5"/>
       </params>
       <attribs/>
       <subpatch appVersion="1.0.10">
@@ -1306,9 +1333,13 @@ outlet_int = range_pos(__USAT(inlet_val, 27), param_max);
          <notes><![CDATA[]]></notes>
       </subpatch>
    </patcher>
-   <patcher type="patch/patcher" uuid="7a49c37b-b7d3-4f8d-98a8-bdbdc3f0d54e" name="K9" x="280" y="518">
+   <obj type="disp/i" uuid="5e35fd0c62d81e70017289250cf28edd26e19e4a" name="i_3" x="140" y="476">
+      <params/>
+      <attribs/>
+   </obj>
+   <patcher type="patch/patcher" uuid="8e02c8ea-38a6-41eb-8fab-b98935b552f0" name="K9" x="280" y="518">
       <params>
-         <frac32.u.map name="Value" value="42.5"/>
+         <frac32.u.map name="Value" value="36.0"/>
       </params>
       <attribs/>
       <subpatch appVersion="1.0.10">
@@ -1399,9 +1430,9 @@ outlet_int = range_pos(__USAT(inlet_val, 27), param_max);
          <notes><![CDATA[]]></notes>
       </subpatch>
    </patcher>
-   <patcher type="patch/patcher" uuid="f138453b-19cc-4f97-9be2-93878b1f5492" name="K10" x="378" y="546">
+   <patcher type="patch/patcher" uuid="006a0774-bd2f-4d2f-a6fd-62795a127453" name="K10" x="378" y="546">
       <params>
-         <frac32.u.map name="Value" value="34.0"/>
+         <frac32.u.map name="Value" value="28.0"/>
       </params>
       <attribs/>
       <subpatch appVersion="1.0.10">
@@ -1559,8 +1590,14 @@ outlet_int = range_pos(__USAT(inlet_val, 27), param_max);
          <dest obj="==_1" inlet="synthK9"/>
       </net>
       <net>
-         <source obj="==_1" outlet="debugINT"/>
-         <dest obj="i_2" inlet="in"/>
+         <source obj="keyb_1" outlet="note"/>
+         <dest obj="i_3" inlet="in"/>
+         <dest obj="==_1" inlet="note"/>
+      </net>
+      <net>
+         <source obj="==_1" outlet="debug"/>
+         <dest obj="i_4" inlet="in"/>
+         <dest obj="hex_1" inlet="in"/>
       </net>
    </nets>
    <settings>
