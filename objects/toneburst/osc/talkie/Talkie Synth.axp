@@ -1,7 +1,7 @@
 <patch-1.0 appVersion="1.0.10">
-   <patcher type="patch/patcher" uuid="01b78eba-8d36-49ce-8b2b-2462553a40eb" name="K1" x="280" y="14">
+   <patcher type="patch/patcher" uuid="9534a546-b8a8-49fd-aee2-71f00818cd62" name="K1" x="280" y="14">
       <params>
-         <frac32.u.map name="Value" value="27.5"/>
+         <frac32.u.map name="Value" value="38.5"/>
       </params>
       <attribs/>
       <subpatch appVersion="1.0.10">
@@ -92,15 +92,15 @@ outlet_int = range_pos(__USAT(inlet_val, 27), param_max);
          <notes><![CDATA[]]></notes>
       </subpatch>
    </patcher>
-   <obj type="ctrl/dial p" uuid="cc5d2846c3d50e425f450c4b9851371b54f4d674" name="Volume" x="588" y="28">
+   <obj type="ctrl/dial p" uuid="cc5d2846c3d50e425f450c4b9851371b54f4d674" name="Volume" x="574" y="28">
       <params>
          <frac32.u.map name="value" value="37.5"/>
       </params>
       <attribs/>
    </obj>
-   <patcher type="patch/patcher" uuid="3cdfdb64-fa0b-42a5-9fa4-0c4291aabdb1" name="K2" x="378" y="42">
+   <patcher type="patch/patcher" uuid="03d9723c-c68b-4d83-993f-03d27d4cacbc" name="K2" x="378" y="42">
       <params>
-         <frac32.u.map name="Value" value="28.5"/>
+         <frac32.u.map name="Value" value="48.5"/>
       </params>
       <attribs/>
       <subpatch appVersion="1.0.10">
@@ -197,11 +197,11 @@ outlet_int = range_pos(__USAT(inlet_val, 27), param_max);
          <spinner attributeName="value" value="128"/>
       </attribs>
    </obj>
-   <obj type="math/*" uuid="3ac307b9f782049739ed62504081b96d580ea336" name="*_1" x="672" y="112">
+   <obj type="math/*" uuid="3ac307b9f782049739ed62504081b96d580ea336" name="*_1" x="658" y="112">
       <params/>
       <attribs/>
    </obj>
-   <obj type="audio/out stereo" uuid="a1ca7a567f535acc21055669829101d3ee7f0189" name="out_1" x="742" y="112">
+   <obj type="audio/out stereo" uuid="a1ca7a567f535acc21055669829101d3ee7f0189" name="out_1" x="728" y="112">
       <params/>
       <attribs/>
    </obj>
@@ -212,7 +212,7 @@ outlet_int = range_pos(__USAT(inlet_val, 27), param_max);
          <frac32.u.map name="smear" value="0.0"/>
       </params>
       <attribs>
-         <combo attributeName="chirp"/>
+         <combo attributeName="chirp" selection="TI 2801"/>
       </attribs>
       <object id="patch/object" uuid="2e3b980b-4415-428f-b6ca-29f283183066">
          <sDescription>Talkie Synth</sDescription>
@@ -251,8 +251,17 @@ outlet_int = range_pos(__USAT(inlet_val, 27), param_max);
          </params>
          <attribs>
             <combo name="chirp" description="chirp table">
-               <MenuEntries>"TI 2801", "TI 2802", "TI LATER"</MenuEntries>
-               <CEntries>"0", "1", "2"</CEntries>
+               <MenuEntries>
+                  <string>TI 2801</string>
+                  <string>TI 2802</string>
+                  <string>TI LATER</string>
+               </MenuEntries>
+               <CEntries>
+                  <string>0</string>
+                  <string>1</string>
+                  <string>2</string>
+                  <string>3</string>
+               </CEntries>
             </combo>
          </attribs>
          <includes/>
@@ -295,6 +304,20 @@ int16_t synthK1,synthK2;
 int8_t synthK3,synthK4,synthK5,synthK6,synthK7,synthK8,synthK9,synthK10;
 uint8_t periodCounter;
 int16_t x0,x1,x2,x3,x4,x5,x6,x7,x8,x9,x10;
+
+int32_t synthK1SlewState,synthK2SlewState;
+int32_t *synthK1SlewStatePtr = NULL;
+int32_t *synthK2SlewStatePtr = NULL;
+
+int32_t synthK3SlewState,synthK4SlewState,synthK5SlewState,synthK6SlewState,synthK7SlewState,synthK8SlewState,synthK9SlewState,synthK10SlewState;
+int32_t *synthK3SlewStatePtr = NULL;
+int32_t *synthK4SlewStatePtr = NULL;
+int32_t *synthK5SlewStatePtr = NULL;
+int32_t *synthK6SlewStatePtr = NULL;
+int32_t *synthK7SlewStatePtr = NULL;
+int32_t *synthK8SlewStatePtr = NULL;
+int32_t *synthK9SlewStatePtr = NULL;
+int32_t *synthK10SlewStatePtr = NULL;
 
 //////////////////
 // Render Audio //
@@ -379,6 +402,17 @@ __attribute__ ( ( always_inline ) ) __STATIC_INLINE int8_t u8mix(int8_t a, int8_
 	return x * b + (255 - x) * a >> 8;
 }
 
+// Slew function, with pointer to state variable
+__attribute__ ( ( always_inline ) ) __STATIC_INLINE int32_t slew(int32_t target, int32_t *state, int32_t slewTime, bool enable) {
+	if (enable && slewTime > 0) {
+		*state = ___SMMLA(*state - target, (-1 << 26) + (slewTime >> 1), *state);
+		return *state;
+	} else {
+		*state = target;
+		return target;
+	};
+};
+
 ///////////////////
 // Params/Inlets //
 ///////////////////
@@ -386,6 +420,7 @@ __attribute__ ( ( always_inline ) ) __STATIC_INLINE int8_t u8mix(int8_t a, int8_
 uint32_t pitch;
 uint32_t crush;
 uint8_t noise;
+uint32_t smear;
 uint8_t chirp;
 
 int32_t sample;
@@ -412,23 +447,36 @@ extOsc = 0;
 pitch = 0;
 crush = 9;
 noise = 0;
+smear = 0;
 chirp = 0;
+
+synthK1SlewStatePtr = &synthK1SlewState;
+synthK2SlewStatePtr = &synthK2SlewState;
+synthK3SlewStatePtr = &synthK3SlewState;
+synthK4SlewStatePtr = &synthK4SlewState;
+synthK5SlewStatePtr = &synthK5SlewState;
+synthK6SlewStatePtr = &synthK6SlewState;
+synthK7SlewStatePtr = &synthK7SlewState;
+synthK8SlewStatePtr = &synthK8SlewState;
+synthK9SlewStatePtr = &synthK9SlewState;
+synthK10SlewStatePtr = &synthK10SlewState;
 
 ]]></code.init>
          <code.krate><![CDATA[
 
 synthPeriod = __USAT(inlet_synthPeriod, 8);
 synthEnergy = __USAT(inlet_synthEnergy, 16);
-synthK1  = __SSAT(inlet_synthK1, 16);
-synthK2  = __SSAT(inlet_synthK2, 16);
-synthK3  = __SSAT(inlet_synthK3,  8);
-synthK4  = __SSAT(inlet_synthK4,  8);
-synthK5  = __SSAT(inlet_synthK5,  8);
-synthK6  = __SSAT(inlet_synthK6,  8);
-synthK7  = __SSAT(inlet_synthK7,  8);
-synthK8  = __SSAT(inlet_synthK8,  8);
-synthK9  = __SSAT(inlet_synthK9,  8);
-synthK10 = __SSAT(inlet_synthK10, 8);
+// Apply slew to coefficients
+synthK1  = slew(__SSAT(inlet_synthK1, 16) <<16,synthK1SlewStatePtr, smear, TRUE)>>16;
+synthK2  = slew(__SSAT(inlet_synthK2, 16) <<16,synthK2SlewStatePtr, smear, TRUE)>>16;
+synthK3  = slew(__SSAT(inlet_synthK3,  8) <<24,synthK3SlewStatePtr, smear, TRUE)>>24;
+synthK4  = slew(__SSAT(inlet_synthK4,  8) <<24,synthK4SlewStatePtr, smear, TRUE)>>24;
+synthK5  = slew(__SSAT(inlet_synthK5,  8) <<24,synthK5SlewStatePtr, smear, TRUE)>>24;
+synthK6  = slew(__SSAT(inlet_synthK6,  8) <<24,synthK6SlewStatePtr, smear, TRUE)>>24;
+synthK7  = slew(__SSAT(inlet_synthK7,  8) <<24,synthK7SlewStatePtr, smear, TRUE)>>24;
+synthK8  = slew(__SSAT(inlet_synthK8,  8) <<24,synthK8SlewStatePtr, smear, TRUE)>>24;
+synthK9  = slew(__SSAT(inlet_synthK9,  8) <<24,synthK9SlewStatePtr, smear, TRUE)>>24;
+synthK10 = slew(__SSAT(inlet_synthK10, 8) <<24,synthK10SlewStatePtr,smear, TRUE)>>24;
 
 ///////////////////
 // Params/Inlets //
@@ -438,6 +486,8 @@ synthK10 = __SSAT(inlet_synthK10, 8);
 noise = __USAT(param_noise + inlet_noise, 27) >> 19;
 // Bitcrush
 crush = range_pos(__USAT(param_crush + inlet_crush, 27), 0, 7);
+// Smear
+smear = __USAT(param_smear, 27);
 // MIDI note period
 midiPeriod = (inlet_note >> 21) + 28;
 if(midiPeriod < 0)
@@ -714,9 +764,9 @@ for(uint8_t j = 0; j < BUFSIZE; j++) {
 ]]></code.krate>
       </object>
    </patchobj>
-   <patcher type="patch/patcher" uuid="bb4fc26c-60b6-4a70-b6eb-06899980227c" name="K3" x="280" y="140">
+   <patcher type="patch/patcher" uuid="70bfda27-b983-4478-a1c0-94844b5c836f" name="K3" x="280" y="140">
       <params>
-         <frac32.u.map name="Value" value="37.5"/>
+         <frac32.u.map name="Value" value="50.5"/>
       </params>
       <attribs/>
       <subpatch appVersion="1.0.10">
@@ -856,9 +906,9 @@ outlet_int = range_pos(__USAT(inlet_val, 27), param_max);
 ]]></code.krate>
       </object>
    </patchobj>
-   <patcher type="patch/patcher" uuid="7aa82b99-37b5-438f-8984-29470248be67" name="K4" x="378" y="168">
+   <patcher type="patch/patcher" uuid="fc568b2e-4acb-40fc-8fc2-396cd0c87d39" name="K4" x="378" y="168">
       <params>
-         <frac32.u.map name="Value" value="32.0"/>
+         <frac32.u.map name="Value" value="15.0"/>
       </params>
       <attribs/>
       <subpatch appVersion="1.0.10">
@@ -949,17 +999,13 @@ outlet_int = range_pos(__USAT(inlet_val, 27), param_max);
          <notes><![CDATA[]]></notes>
       </subpatch>
    </patcher>
-   <obj type="disp/hex" uuid="87617898f70d90033f8add921438bf0d11721fdd" name="hex_1" x="658" y="182">
+   <obj type="disp/hex" uuid="87617898f70d90033f8add921438bf0d11721fdd" name="hex_1" x="658" y="224">
       <params/>
       <attribs/>
    </obj>
-   <obj type="disp/i" uuid="5e35fd0c62d81e70017289250cf28edd26e19e4a" name="i_4" x="658" y="252">
-      <params/>
-      <attribs/>
-   </obj>
-   <patcher type="patch/patcher" uuid="b48bc57d-031e-4214-85db-38febc5fd2bf" name="K5" x="280" y="266">
+   <patcher type="patch/patcher" uuid="1a64f859-fc84-43d5-b86b-2dd04a5d4ea8" name="K5" x="280" y="266">
       <params>
-         <frac32.u.map name="Value" value="41.5"/>
+         <frac32.u.map name="Value" value="23.0"/>
       </params>
       <attribs/>
       <subpatch appVersion="1.0.10">
@@ -1050,9 +1096,9 @@ outlet_int = range_pos(__USAT(inlet_val, 27), param_max);
          <notes><![CDATA[]]></notes>
       </subpatch>
    </patcher>
-   <patcher type="patch/patcher" uuid="e1aa2bd1-28e9-4534-a6a9-9e6bdf1db031" name="K6" x="378" y="294">
+   <patcher type="patch/patcher" uuid="d277f4e2-f722-4ec4-915f-c1e08a84dc34" name="K6" x="378" y="294">
       <params>
-         <frac32.u.map name="Value" value="33.0"/>
+         <frac32.u.map name="Value" value="21.0"/>
       </params>
       <attribs/>
       <subpatch appVersion="1.0.10">
@@ -1147,9 +1193,9 @@ outlet_int = range_pos(__USAT(inlet_val, 27), param_max);
       <params/>
       <attribs/>
    </obj>
-   <patcher type="patch/patcher" uuid="3ce130a8-154e-42c0-85fb-4ccc1f759f62" name="K7" x="280" y="392">
+   <patcher type="patch/patcher" uuid="b4ea3469-8a71-436b-9f91-4fc175c2183c" name="K7" x="280" y="392">
       <params>
-         <frac32.u.map name="Value" value="38.5"/>
+         <frac32.u.map name="Value" value="16.5"/>
       </params>
       <attribs/>
       <subpatch appVersion="1.0.10">
@@ -1240,9 +1286,9 @@ outlet_int = range_pos(__USAT(inlet_val, 27), param_max);
          <notes><![CDATA[]]></notes>
       </subpatch>
    </patcher>
-   <patcher type="patch/patcher" uuid="6b25b5b3-4037-4d89-969b-f067dbb81375" name="K8" x="378" y="420">
+   <patcher type="patch/patcher" uuid="06c2108a-6827-4b74-ae5e-06cc7ab8b48a" name="K8" x="378" y="420">
       <params>
-         <frac32.u.map name="Value" value="38.5"/>
+         <frac32.u.map name="Value" value="47.5"/>
       </params>
       <attribs/>
       <subpatch appVersion="1.0.10">
@@ -1333,13 +1379,9 @@ outlet_int = range_pos(__USAT(inlet_val, 27), param_max);
          <notes><![CDATA[]]></notes>
       </subpatch>
    </patcher>
-   <obj type="disp/i" uuid="5e35fd0c62d81e70017289250cf28edd26e19e4a" name="i_3" x="140" y="476">
-      <params/>
-      <attribs/>
-   </obj>
-   <patcher type="patch/patcher" uuid="8e02c8ea-38a6-41eb-8fab-b98935b552f0" name="K9" x="280" y="518">
+   <patcher type="patch/patcher" uuid="dfba3526-137e-489d-bbd3-13e02f9dd5e6" name="K9" x="280" y="518">
       <params>
-         <frac32.u.map name="Value" value="36.0"/>
+         <frac32.u.map name="Value" value="43.5"/>
       </params>
       <attribs/>
       <subpatch appVersion="1.0.10">
@@ -1430,9 +1472,9 @@ outlet_int = range_pos(__USAT(inlet_val, 27), param_max);
          <notes><![CDATA[]]></notes>
       </subpatch>
    </patcher>
-   <patcher type="patch/patcher" uuid="006a0774-bd2f-4d2f-a6fd-62795a127453" name="K10" x="378" y="546">
+   <patcher type="patch/patcher" uuid="ba0e23ba-63be-434f-915b-2b046dacc4dc" name="K10" x="378" y="546">
       <params>
-         <frac32.u.map name="Value" value="28.0"/>
+         <frac32.u.map name="Value" value="23.0"/>
       </params>
       <attribs/>
       <subpatch appVersion="1.0.10">
@@ -1591,12 +1633,10 @@ outlet_int = range_pos(__USAT(inlet_val, 27), param_max);
       </net>
       <net>
          <source obj="keyb_1" outlet="note"/>
-         <dest obj="i_3" inlet="in"/>
          <dest obj="==_1" inlet="note"/>
       </net>
       <net>
          <source obj="==_1" outlet="debug"/>
-         <dest obj="i_4" inlet="in"/>
          <dest obj="hex_1" inlet="in"/>
       </net>
    </nets>
