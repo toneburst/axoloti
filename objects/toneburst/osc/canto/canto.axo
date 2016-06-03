@@ -8,10 +8,11 @@
          <frac32.bipolar name="pitch" description="pitch input"/>
          <frac32.positive name="phoneme" description="phoneme select"/>
          <frac32.positive name="formant" description="formant shift"/>
-         <frac32.positive name="roughness"/>
-         <frac32.positive name="srate"/>
+         <frac32.positive name="roughness" description="roughness"/>
          <bool32 name="glide" description="glide on/off"/>
          <frac32.positive name="glidetime" description="glide time"/>
+         <frac32.positive name="srate" description="sample-rate reduction"/>
+         <frac32.positive name="crush" description="bit-crush"/>
       </inlets>
       <outlets>
          <frac32buffer.bipolar name="wave" description="waveform"/>
@@ -23,8 +24,9 @@
          <frac32.u.map name="phoneme" description="phoneme select"/>
          <frac32.u.map name="formant" description="formant position"/>
          <frac32.u.map name="roughness" description="roughness amt"/>
-         <frac32.u.map name="srate" description="sample-rate reduction"/>
          <frac32.u.map name="glidetime" description="glide time"/>
+         <frac32.u.map name="srate" description="sample-rate reduction"/>
+         <frac32.u.map name="crush" description="bit-crush"/>
       </params>
       <attribs>
          <combo name="bank">
@@ -74,6 +76,8 @@ uint8_t formantScale;
 uint8_t roughness;
 // Sample-rate reduction divisor
 uint8_t srateDivisor;
+// Bit-crush amount
+int32_t crush;
 // Sample-rate counter (counts render loops)
 uint8_t srateCounter;
 // Formant glide-time
@@ -83,19 +87,22 @@ int8_t noise;
 // Store final output value
 int8_t outValue;
 
-// Slew states and pointers
+/////////////////
+// Slew states //
+/////////////////
+
 // Pitch phase-increment
-int32_t pitchSlewState;	int32_t *pitchSlewStatePtr = NULL;
+int32_t pitchSlewState;
 // Formant phase-increment
-int32_t f1pSlewState;	int32_t *f1pSlewStatePtr = NULL;
-int32_t f2pSlewState;	int32_t *f2pSlewStatePtr = NULL;
-int32_t f3pSlewState;	int32_t *f3pSlewStatePtr = NULL;
-//  Formant amplitude
-int32_t f1aSlewState;	int32_t *f1aSlewStatePtr = NULL;
-int32_t f2aSlewState;	int32_t *f2aSlewStatePtr = NULL;
-int32_t f3aSlewState;	int32_t *f3aSlewStatePtr = NULL;
+int32_t f1pSlewState;
+int32_t f2pSlewState;
+int32_t f3pSlewState;
+// Formant amplitude
+int32_t f1aSlewState;
+int32_t f2aSlewState;
+int32_t f3aSlewState;
 // Noise-mod
-int32_t fmSlewState;	int32_t *fmSlewStatePtr  = NULL;
+int32_t fmSlewState;
 
 ///////////////
 // Functions //
@@ -121,22 +128,20 @@ __attribute__ ( ( always_inline ) ) __STATIC_INLINE int32_t range_pos(int32_t va
 	return (int32_t)x * outMax / 0x07FFFFFF;
 };
 
+// Logarithmic interpolation
+__attribute__ ( ( always_inline ) ) __STATIC_INLINE int32_t interpLog(int32_t val) {
+	// Transform inlet val to float in 0 - 1 range
+	float inf = val * (float)(1.0f / (1 << 27));
+	float curve = 1 - (1-inf)*(1-inf)*(1-inf);
+	return (int32_t)(curve * (float)(1 << 27));
+}
+
 ]]></code.declaration>
       <code.init><![CDATA[
 
 // Assign sample-rate vars
 srateDivisor = 1;
 srateCounter = 0;
-
-// Assign slew-state pointers
-pitchSlewStatePtr = &pitchSlewState;
-f1pSlewStatePtr   = &f1pSlewState;
-f2pSlewStatePtr   = &f2pSlewState;
-f3pSlewStatePtr   = &f3pSlewState;
-f1aSlewStatePtr   = &f1aSlewState;
-f2aSlewStatePtr   = &f2aSlewState;
-f3aSlewStatePtr   = &f3aSlewState;
-fmSlewStatePtr    = &fmSlewState;
 
 // Phoneme bank select
 switch(attr_bank) {
@@ -159,7 +164,8 @@ switch(attr_bank) {
 };
 
 phoneme = 0;
-oldPhoneme = 1;]]></code.init>
+
+]]></code.init>
       <code.krate><![CDATA[
 
 ///////////////////////////
@@ -167,12 +173,8 @@ oldPhoneme = 1;]]></code.init>
 ///////////////////////////
 
 // Phoneme selection
-//if(oldPhoneme != phoneme) {
-	phoneme = range_pos(__USAT(param_phoneme + inlet_phoneme, 27), phonemeTableLen);
-	phoneme = *(phonemeTablePtr + phoneme);
-	//oldPhoneme = phoneme;
-//};
-
+phoneme = range_pos(__USAT(param_phoneme + inlet_phoneme, 27), phonemeTableLen);
+phoneme = *(phonemeTablePtr + phoneme);
 
 // Shift/scale formant
 formantScale = (__USAT(param_formant + inlet_formant, 27) >> 20) +5;
@@ -180,11 +182,14 @@ formantScale = (__USAT(param_formant + inlet_formant, 27) >> 20) +5;
 // Roughness
 roughness = __USAT(param_roughness + inlet_roughness, 27) >> 23;
 
+// Glide-time
+glideTime = interpLog(__USAT(param_glidetime + inlet_glidetime, 27));
+
 // Sample-rate divisor
 srateDivisor = srateTable[__USAT(param_srate + inlet_srate, 27) >> 24];
 
-// Glide-time
-glideTime = __USAT(param_glidetime + inlet_glidetime, 27);
+// Bit-crush
+crush = range_pos(__USAT(param_crush + inlet_crush, 27), 7);
 
 //////////////////////////////////
 // Read formant vals from table //
@@ -192,17 +197,17 @@ glideTime = __USAT(param_glidetime + inlet_glidetime, 27);
 
 // Calculate formant phase-increment | amp | noise-mod
 // Pass result through slew function, with bit-shifting to/from 32-bit
-form1PhaseInc = slew((formantTable[phoneme][0]*formantScale)<<16,f1pSlewStatePtr,glideTime,inlet_glide)>>16;
-form2PhaseInc = slew((formantTable[phoneme][1]*formantScale)<<16,f2pSlewStatePtr,glideTime,inlet_glide)>>16;
-form3PhaseInc = slew((formantTable[phoneme][2]*formantScale)<<16,f3pSlewStatePtr,glideTime,inlet_glide)>>16;
-form1Amp = slew(formantTable[phoneme][3]<<24,f1aSlewStatePtr,glideTime,inlet_glide)>>24;
-form2Amp = slew(formantTable[phoneme][4]<<24,f2aSlewStatePtr,glideTime,inlet_glide)>>24;
-form3Amp = slew(formantTable[phoneme][5]<<24,f3aSlewStatePtr,glideTime,inlet_glide)>>24;
-noiseMod = slew(formantTable[phoneme][6]<<24,fmSlewStatePtr,glideTime,inlet_glide)>>24;
+form1PhaseInc = slew((formantTable[phoneme][0]*formantScale)<<16,&f1pSlewState,glideTime,inlet_glide)>>16;
+form2PhaseInc = slew((formantTable[phoneme][1]*formantScale)<<16,&f2pSlewState,glideTime,inlet_glide)>>16;
+form3PhaseInc = slew((formantTable[phoneme][2]*formantScale)<<16,&f3pSlewState,glideTime,inlet_glide)>>16;
+form1Amp = slew(formantTable[phoneme][3]<<24,&f1aSlewState,glideTime,inlet_glide)>>24;
+form2Amp = slew(formantTable[phoneme][4]<<24,&f2aSlewState,glideTime,inlet_glide)>>24;
+form3Amp = slew(formantTable[phoneme][5]<<24,&f3aSlewState,glideTime,inlet_glide)>>24;
+noiseMod = slew(formantTable[phoneme][6]<<24,&fmSlewState,glideTime,inlet_glide)>>24;
 
 // Calculate base pitch phase-increment
 MTOFEXTENDED(param_pitch + inlet_pitch, pitchPhaseInc);
-pitchPhaseInc = slew(pitchPhaseInc, pitchSlewStatePtr, param_glidetime, inlet_glide);
+pitchPhaseInc = slew(pitchPhaseInc, &pitchSlewState, param_glidetime, inlet_glide);
 
 ////////////////////////
 // Fill Sample Buffer //
@@ -238,10 +243,14 @@ for(uint8_t j = 0; j < BUFSIZE; j++) {
 	};
 
 	// Sample-rate reduction
-	// (only update sample value if mod(counter, divisor) = 0)
-	if (srateCounter % srateDivisor == 0)
+	if (srateCounter % srateDivisor == 0) {
+		// (only update sample value if mod(counter, divisor) = 0)
 		outValue = value;
-
+		// Apply bit-depth reduction
+		if(crush > 0)
+			outValue = (outValue >> crush) << crush;
+	}
+		
 	// Write sample to buffer
 	outlet_wave[j] = outValue << 20;
 
@@ -250,7 +259,6 @@ for(uint8_t j = 0; j < BUFSIZE; j++) {
 };
 
 // Send out phoneme index
-
 outlet_pindex = phoneme;
 
 ]]></code.krate>
