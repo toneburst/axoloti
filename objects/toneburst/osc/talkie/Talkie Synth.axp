@@ -1,5 +1,5 @@
 <patch-1.0 appVersion="1.0.10">
-   <patcher type="patch/patcher" uuid="3ff584e8-7479-4b60-a821-f9c06cfea9db" name="K1" x="280" y="14">
+   <patcher type="patch/patcher" uuid="f8d09a34-89a4-43b6-80fc-f333bbd780d4" name="K1" x="280" y="14">
       <params>
          <frac32.u.map name="Value" value="17.5"/>
       </params>
@@ -98,7 +98,7 @@ outlet_int = range_pos(__USAT(inlet_val, 27), param_max);
       </params>
       <attribs/>
    </obj>
-   <patcher type="patch/patcher" uuid="3d8ddf9b-6d60-4071-b71d-508284084dcd" name="K2" x="378" y="42">
+   <patcher type="patch/patcher" uuid="483c3506-b32d-4892-98f5-b560961a3301" name="K2" x="378" y="42">
       <params>
          <frac32.u.map name="Value" value="26.5"/>
       </params>
@@ -208,9 +208,10 @@ outlet_int = range_pos(__USAT(inlet_val, 27), param_max);
    <patchobj type="patch/object" uuid="2e3b980b-4415-428f-b6ca-29f283183066" name="==_1" x="504" y="126">
       <params>
          <frac32.u.map name="noise" value="1.0"/>
-         <frac32.u.map name="smear" value="54.0"/>
+         <frac32.u.map name="smear" value="0.0"/>
          <frac32.u.map name="gliss" value="0.0"/>
          <frac32.u.map name="crush" value="0.0"/>
+         <int32 name="pmode" value="0"/>
       </params>
       <attribs>
          <combo attributeName="chirp" selection="TI 2801"/>
@@ -248,8 +249,12 @@ outlet_int = range_pos(__USAT(inlet_val, 27), param_max);
          <params>
             <frac32.u.map name="noise" description="noise level"/>
             <frac32.u.map name="smear" description="harmonic smear"/>
-            <frac32.u.map name="gliss"/>
+            <frac32.u.map name="gliss" description="glissando"/>
             <frac32.u.map name="crush" description="bit-crush"/>
+            <int32 name="pmode" description="pitch-shift mode">
+               <MinValue i="0"/>
+               <MaxValue i="2"/>
+            </int32>
          </params>
          <attribs>
             <combo name="chirp" description="chirp table">
@@ -542,7 +547,7 @@ for(uint8_t j = 0; j < BUFSIZE; j++) {
 ]]></code.krate>
       </object>
    </patchobj>
-   <patcher type="patch/patcher" uuid="c9f8afb6-ff8d-4056-971e-4285650ba4d4" name="K3" x="280" y="140">
+   <patcher type="patch/patcher" uuid="1a891713-e484-4d15-ac8b-e5a69caf50ef" name="K3" x="280" y="140">
       <params>
          <frac32.u.map name="Value" value="46.0"/>
       </params>
@@ -684,7 +689,7 @@ outlet_int = range_pos(__USAT(inlet_val, 27), param_max);
 ]]></code.krate>
       </object>
    </patchobj>
-   <patcher type="patch/patcher" uuid="8a33b647-0953-4181-ac85-b2eaf4310d6d" name="K4" x="378" y="168">
+   <patcher type="patch/patcher" uuid="489f41c4-e4a4-450f-8925-fc5b3516e3b4" name="K4" x="378" y="168">
       <params>
          <frac32.u.map name="Value" value="45.0"/>
       </params>
@@ -781,7 +786,7 @@ outlet_int = range_pos(__USAT(inlet_val, 27), param_max);
       <params/>
       <attribs/>
    </obj>
-   <patcher type="patch/patcher" uuid="47e882e0-c434-471f-a8ea-b4ca1bfb8cc8" name="K5" x="280" y="266">
+   <patcher type="patch/patcher" uuid="e130a4c5-f58a-44a0-9ae0-6899ee94001d" name="K5" x="280" y="266">
       <params>
          <frac32.u.map name="Value" value="17.5"/>
       </params>
@@ -874,7 +879,7 @@ outlet_int = range_pos(__USAT(inlet_val, 27), param_max);
          <notes><![CDATA[]]></notes>
       </subpatch>
    </patcher>
-   <patcher type="patch/patcher" uuid="4e10d422-4be2-440a-a143-b08d1af1802f" name="K6" x="378" y="294">
+   <patcher type="patch/patcher" uuid="5e400a72-f193-4388-af18-a1cb2355a25b" name="K6" x="378" y="294">
       <params>
          <frac32.u.map name="Value" value="40.0"/>
       </params>
@@ -971,7 +976,7 @@ outlet_int = range_pos(__USAT(inlet_val, 27), param_max);
       <params/>
       <attribs/>
    </obj>
-   <patcher type="patch/patcher" uuid="d55f5752-a692-41df-945f-fd931ccc7df5" name="K7" x="280" y="392">
+   <patcher type="patch/patcher" uuid="700d34b7-fdd4-4e9e-b5d4-515cb9ba53cd" name="K7" x="280" y="392">
       <params>
          <frac32.u.map name="Value" value="10.0"/>
       </params>
@@ -1064,7 +1069,7 @@ outlet_int = range_pos(__USAT(inlet_val, 27), param_max);
          <notes><![CDATA[]]></notes>
       </subpatch>
    </patcher>
-   <patcher type="patch/patcher" uuid="388023ff-a555-4a81-b9d1-ee62c25961d0" name="K8" x="378" y="420">
+   <patcher type="patch/patcher" uuid="d20eb8d6-5e54-460b-b62c-ff0dbb98b137" name="K8" x="378" y="420">
       <params>
          <frac32.u.map name="Value" value="29.0"/>
       </params>
@@ -1157,7 +1162,7 @@ outlet_int = range_pos(__USAT(inlet_val, 27), param_max);
          <notes><![CDATA[]]></notes>
       </subpatch>
    </patcher>
-   <patcher type="patch/patcher" uuid="4e5c06f0-b069-4801-8c75-27b30429f42c" name="K9" x="280" y="518">
+   <patcher type="patch/patcher" uuid="a92cc32c-fed1-4cf2-a4f1-a3ff7f1c4948" name="K9" x="280" y="518">
       <params>
          <frac32.u.map name="Value" value="57.0"/>
       </params>
@@ -1250,7 +1255,7 @@ outlet_int = range_pos(__USAT(inlet_val, 27), param_max);
          <notes><![CDATA[]]></notes>
       </subpatch>
    </patcher>
-   <patcher type="patch/patcher" uuid="c2b10638-e656-4f33-b638-288dba98d729" name="K10" x="378" y="546">
+   <patcher type="patch/patcher" uuid="3bb924e7-b5ad-4088-b753-274ed9c41ab0" name="K10" x="378" y="546">
       <params>
          <frac32.u.map name="Value" value="45.5"/>
       </params>

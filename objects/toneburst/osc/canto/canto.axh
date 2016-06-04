@@ -4,7 +4,7 @@
          <frac32.s.map name="a" value="-64.0"/>
          <frac32.s.map name="d" value="-64.0"/>
          <frac32.u.map name="s" value="64.0"/>
-         <frac32.s.map name="r" value="-38.0"/>
+         <frac32.s.map name="r" value="-40.0"/>
       </params>
       <attribs/>
    </obj>
@@ -37,7 +37,7 @@
    <obj type="toneburst/osc/canto/canto.axo" uuid="28df314d-5479-4383-b602-c3fb0939b767" name="canto.axo_1" x="308" y="224">
       <params>
          <frac32.s.map name="pitch" value="0.0"/>
-         <frac32.u.map name="phoneme" value="12.0"/>
+         <frac32.u.map name="phoneme" value="0.0"/>
          <frac32.u.map name="formant" value="32.0"/>
          <frac32.u.map name="roughness" value="0.0"/>
          <frac32.u.map name="glidetime" value="20.0"/>
@@ -54,7 +54,7 @@
    </obj>
    <obj type="ctrl/toggle" uuid="42b8134fa729d54bfc8d62d6ef3fa99498c1de99" name="toggle_1" x="56" y="364">
       <params>
-         <bool32.tgl name="b" value="1"/>
+         <bool32.tgl name="b" value="0"/>
       </params>
       <attribs/>
    </obj>
@@ -64,7 +64,7 @@
          <spinner attributeName="note" value="11"/>
       </attribs>
    </obj>
-   <comment type="patch/comment" x="168" y="476" text="Enable glidewith note 23"/>
+   <comment type="patch/comment" x="168" y="476" text="Enable glidewith note 11"/>
    <obj type="disp/hex" uuid="87617898f70d90033f8add921438bf0d11721fdd" name="hex_1" x="490" y="490">
       <params/>
       <attribs/>
@@ -106,8 +106,12 @@
          <dest obj="hex_1" inlet="in"/>
       </net>
       <net>
-         <source obj="toggle_1" outlet="o"/>
+         <source obj="Glide Enable" outlet="gate"/>
          <dest obj="canto.axo_1" inlet="glide"/>
+      </net>
+      <net>
+         <source obj="Keyboard" outlet="velocity"/>
+         <dest obj="canto.axo_1" inlet="phoneme"/>
       </net>
    </nets>
    <settings>
