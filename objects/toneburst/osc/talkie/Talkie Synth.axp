@@ -1,5 +1,5 @@
 <patch-1.0 appVersion="1.0.10">
-   <patcher type="patch/patcher" uuid="95d1664e-285d-46a5-9471-c8ed39f10961" name="K3_" x="42" y="14">
+   <patcher type="patch/patcher" uuid="2dbf7c73-4236-45e2-bb44-ebcc4bcbb7f0" name="K3_" x="42" y="14">
       <params>
          <frac32.u.map name="Value" value="48.0"/>
       </params>
@@ -74,7 +74,7 @@ outlet_int = range_pos(__USAT(inlet_val, 27), param_max);
          <notes><![CDATA[]]></notes>
       </subpatch>
    </patcher>
-   <patcher type="patch/patcher" uuid="ccebea42-c71a-4889-9a00-3507d7250895" name="K1" x="280" y="14">
+   <patcher type="patch/patcher" uuid="847e44b8-d4af-4311-b6cc-c85f33847182" name="K1" x="280" y="14">
       <params>
          <frac32.u.map name="Value" value="55.5"/>
       </params>
@@ -173,7 +173,7 @@ outlet_int = range_pos(__USAT(inlet_val, 27), param_max);
       </params>
       <attribs/>
    </obj>
-   <patcher type="patch/patcher" uuid="957f39c2-6b2a-4041-9853-635ddf0c0f3f" name="K2" x="378" y="42">
+   <patcher type="patch/patcher" uuid="70dc7cdf-b76c-48a6-8018-2fc774a30e1f" name="K2" x="378" y="42">
       <params>
          <frac32.u.map name="Value" value="16.5"/>
       </params>
@@ -274,7 +274,7 @@ outlet_int = range_pos(__USAT(inlet_val, 27), param_max);
       <params/>
       <attribs/>
    </obj>
-   <patchobj type="patch/object" uuid="2e3b980b-4415-428f-b6ca-29f283183066" name="==_1" x="504" y="126">
+   <patchobj type="patch/object" uuid="2e3b980b-4415-428f-b6ca-29f283183066" name="Talkie Synth" x="504" y="126">
       <params>
          <frac32.u.map name="oct" value="32.0"/>
          <int32 name="pmode" value="2"/>
@@ -288,7 +288,7 @@ outlet_int = range_pos(__USAT(inlet_val, 27), param_max);
       </attribs>
       <object id="patch/object" uuid="2e3b980b-4415-428f-b6ca-29f283183066">
          <sDescription>Talkie Synth</sDescription>
-         <author>Johannes Taelman</author>
+         <author>toneburst</author>
          <license>BSD</license>
          <helpPatch>math.axh</helpPatch>
          <inlets>
@@ -537,9 +537,12 @@ __attribute__ ( ( always_inline ) ) __STATIC_INLINE int8_t clamp8(int8_t val, in
 	return (val <= min) ? min : (val >= max) ? max : val;
 }
 
-// 16-bit xfade
+// 16-bit xfade (adapted from Factory xfade object)
 __attribute__ ( ( always_inline ) ) __STATIC_INLINE int16_t xfade16(int16_t a, int16_t b, uint16_t x) {
-	return a;
+	int8_t ccompl = (1 << 16) - x;
+	int32_t a = (int32_t)b * x;
+	a += (int32_t)a * ccompl;
+	return a >> 16;
 }
 
 // Slew function, with pointer to state variable
@@ -671,7 +674,7 @@ for(uint8_t j = 0; j < BUFSIZE; j++) {
 ]]></code.krate>
       </object>
    </patchobj>
-   <patcher type="patch/patcher" uuid="afee5e9d-7b7b-490d-a8d0-6d218669e2e3" name="K3" x="280" y="140">
+   <patcher type="patch/patcher" uuid="12eef4e7-90e7-48ca-89b1-f882c39fd10a" name="K3" x="280" y="140">
       <params>
          <frac32.u.map name="Value" value="34.0"/>
       </params>
@@ -813,7 +816,7 @@ outlet_int = range_pos(__USAT(inlet_val, 27), param_max);
 ]]></code.krate>
       </object>
    </patchobj>
-   <patcher type="patch/patcher" uuid="857f3a3c-a564-4019-bfa4-de6c634c2af1" name="K4" x="378" y="168">
+   <patcher type="patch/patcher" uuid="838b7f3c-deea-4af9-9943-166891004523" name="K4" x="378" y="168">
       <params>
          <frac32.u.map name="Value" value="18.5"/>
       </params>
@@ -914,7 +917,7 @@ outlet_int = range_pos(__USAT(inlet_val, 27), param_max);
       <params/>
       <attribs/>
    </obj>
-   <patcher type="patch/patcher" uuid="f1b8caa6-c927-442b-af1d-9dd04d6846dd" name="K5" x="280" y="266">
+   <patcher type="patch/patcher" uuid="ddef25bb-612c-4827-8943-4786da53e9c3" name="K5" x="280" y="266">
       <params>
          <frac32.u.map name="Value" value="17.5"/>
       </params>
@@ -1007,7 +1010,7 @@ outlet_int = range_pos(__USAT(inlet_val, 27), param_max);
          <notes><![CDATA[]]></notes>
       </subpatch>
    </patcher>
-   <patcher type="patch/patcher" uuid="fa844f7e-943b-4ede-9ada-0045524b5fdd" name="K6" x="378" y="294">
+   <patcher type="patch/patcher" uuid="e5a30cb6-6c7a-45d9-b678-efdfef85520a" name="K6" x="378" y="294">
       <params>
          <frac32.u.map name="Value" value="40.0"/>
       </params>
@@ -1104,7 +1107,7 @@ outlet_int = range_pos(__USAT(inlet_val, 27), param_max);
       <params/>
       <attribs/>
    </obj>
-   <patcher type="patch/patcher" uuid="5247e4b2-6122-46bb-8afb-6db6ae71d619" name="K7" x="280" y="392">
+   <patcher type="patch/patcher" uuid="679bee0d-26c6-4e27-a2ca-c7bd1cb53770" name="K7" x="280" y="392">
       <params>
          <frac32.u.map name="Value" value="10.0"/>
       </params>
@@ -1197,7 +1200,7 @@ outlet_int = range_pos(__USAT(inlet_val, 27), param_max);
          <notes><![CDATA[]]></notes>
       </subpatch>
    </patcher>
-   <patcher type="patch/patcher" uuid="21e519f4-0b6c-4936-9d89-b813500df78d" name="K8" x="378" y="420">
+   <patcher type="patch/patcher" uuid="3188c179-cec4-43c3-a555-08f431c02ee9" name="K8" x="378" y="420">
       <params>
          <frac32.u.map name="Value" value="29.0"/>
       </params>
@@ -1325,7 +1328,7 @@ outlet_int = range_pos(__USAT(inlet_val, 27), param_max);
 ]]></code.srate>
       </object>
    </patchobj>
-   <patcher type="patch/patcher" uuid="71826822-3223-4f0f-ab0f-6b738a7fb9a7" name="K9" x="280" y="518">
+   <patcher type="patch/patcher" uuid="9d9227b1-7b46-4ed4-9b8b-6f78a58b3b7b" name="K9" x="280" y="518">
       <params>
          <frac32.u.map name="Value" value="57.0"/>
       </params>
@@ -1418,7 +1421,7 @@ outlet_int = range_pos(__USAT(inlet_val, 27), param_max);
          <notes><![CDATA[]]></notes>
       </subpatch>
    </patcher>
-   <patcher type="patch/patcher" uuid="dbc181fd-3f5d-49d0-a914-1bdcbe7308c0" name="K10" x="378" y="546">
+   <patcher type="patch/patcher" uuid="0de39eeb-2ead-47ae-b07a-cef2d735666e" name="K10" x="378" y="546">
       <params>
          <frac32.u.map name="Value" value="45.5"/>
       </params>
@@ -1522,13 +1525,13 @@ outlet_int = range_pos(__USAT(inlet_val, 27), param_max);
          <dest obj="out_1" inlet="right"/>
       </net>
       <net>
-         <source obj="==_1" outlet="out"/>
+         <source obj="Talkie Synth" outlet="out"/>
          <dest obj="scope_1" inlet="in"/>
          <dest obj="*_1" inlet="b"/>
       </net>
       <net>
          <source obj="Param Max_" outlet="int"/>
-         <dest obj="==_1" inlet="synthPeriod"/>
+         <dest obj="Talkie Synth" inlet="synthPeriod"/>
       </net>
       <net>
          <source obj="Volume_" outlet="out"/>
@@ -1536,59 +1539,59 @@ outlet_int = range_pos(__USAT(inlet_val, 27), param_max);
       </net>
       <net>
          <source obj="K2" outlet="outlet_1"/>
-         <dest obj="==_1" inlet="synthK2"/>
+         <dest obj="Talkie Synth" inlet="synthK2"/>
       </net>
       <net>
          <source obj="K1" outlet="outlet_1"/>
-         <dest obj="==_1" inlet="synthK1"/>
+         <dest obj="Talkie Synth" inlet="synthK1"/>
       </net>
       <net>
          <source obj="K3" outlet="outlet_1"/>
-         <dest obj="==_1" inlet="synthK3"/>
+         <dest obj="Talkie Synth" inlet="synthK3"/>
       </net>
       <net>
          <source obj="K4" outlet="outlet_1"/>
-         <dest obj="==_1" inlet="synthK4"/>
+         <dest obj="Talkie Synth" inlet="synthK4"/>
       </net>
       <net>
          <source obj="K6" outlet="outlet_1"/>
-         <dest obj="==_1" inlet="synthK6"/>
+         <dest obj="Talkie Synth" inlet="synthK6"/>
       </net>
       <net>
          <source obj="K5" outlet="outlet_1"/>
-         <dest obj="==_1" inlet="synthK5"/>
+         <dest obj="Talkie Synth" inlet="synthK5"/>
       </net>
       <net>
          <source obj="K7" outlet="outlet_1"/>
-         <dest obj="==_1" inlet="synthK7"/>
+         <dest obj="Talkie Synth" inlet="synthK7"/>
       </net>
       <net>
          <source obj="K8" outlet="outlet_1"/>
-         <dest obj="==_1" inlet="synthK8"/>
+         <dest obj="Talkie Synth" inlet="synthK8"/>
       </net>
       <net>
          <source obj="K10" outlet="outlet_1"/>
-         <dest obj="==_1" inlet="synthK10"/>
+         <dest obj="Talkie Synth" inlet="synthK10"/>
       </net>
       <net>
          <source obj="K9" outlet="outlet_1"/>
-         <dest obj="==_1" inlet="synthK9"/>
+         <dest obj="Talkie Synth" inlet="synthK9"/>
       </net>
       <net>
          <source obj="keyb_1" outlet="note"/>
-         <dest obj="==_1" inlet="note"/>
+         <dest obj="Talkie Synth" inlet="note"/>
       </net>
       <net>
-         <source obj="==_1" outlet="debug"/>
+         <source obj="Talkie Synth" outlet="debug"/>
          <dest obj="hex_1" inlet="in"/>
       </net>
       <net>
          <source obj="toggle_1" outlet="o"/>
-         <dest obj="==_1" inlet="pitch"/>
+         <dest obj="Talkie Synth" inlet="pitch"/>
       </net>
       <net>
          <source obj="K3_" outlet="outlet_1"/>
-         <dest obj="==_1" inlet="synthEnergy"/>
+         <dest obj="Talkie Synth" inlet="synthEnergy"/>
       </net>
    </nets>
    <settings>
@@ -1601,8 +1604,8 @@ outlet_int = range_pos(__USAT(inlet_val, 27), param_max);
    </settings>
    <notes><![CDATA[]]></notes>
    <windowPos>
-      <x>236</x>
-      <y>23</y>
+      <x>678</x>
+      <y>517</y>
       <width>1141</width>
       <height>794</height>
    </windowPos>
