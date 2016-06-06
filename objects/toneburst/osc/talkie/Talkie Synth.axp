@@ -1,7 +1,7 @@
 <patch-1.0 appVersion="1.0.10">
-   <patcher type="patch/patcher" uuid="2dbf7c73-4236-45e2-bb44-ebcc4bcbb7f0" name="K3_" x="42" y="14">
+   <patcher type="patch/patcher" uuid="8bc8825c-2d4d-42b0-9910-8b158f424e66" name="K3_" x="42" y="14">
       <params>
-         <frac32.u.map name="Value" value="48.0"/>
+         <frac32.u.map name="Value" value="42.0"/>
       </params>
       <attribs/>
       <subpatch appVersion="1.0.10">
@@ -74,7 +74,7 @@ outlet_int = range_pos(__USAT(inlet_val, 27), param_max);
          <notes><![CDATA[]]></notes>
       </subpatch>
    </patcher>
-   <patcher type="patch/patcher" uuid="847e44b8-d4af-4311-b6cc-c85f33847182" name="K1" x="280" y="14">
+   <patcher type="patch/patcher" uuid="a20d8859-fe03-41e6-8d6c-595294f5bf9d" name="K1" x="280" y="14">
       <params>
          <frac32.u.map name="Value" value="55.5"/>
       </params>
@@ -167,13 +167,19 @@ outlet_int = range_pos(__USAT(inlet_val, 27), param_max);
          <notes><![CDATA[]]></notes>
       </subpatch>
    </patcher>
+   <obj type="ctrl/toggle" uuid="42b8134fa729d54bfc8d62d6ef3fa99498c1de99" name="toggle_2" x="182" y="28">
+      <params>
+         <bool32.tgl name="b" value="0"/>
+      </params>
+      <attribs/>
+   </obj>
    <obj type="ctrl/dial p" uuid="cc5d2846c3d50e425f450c4b9851371b54f4d674" name="Volume" x="574" y="28">
       <params>
          <frac32.u.map name="value" value="13.5"/>
       </params>
       <attribs/>
    </obj>
-   <patcher type="patch/patcher" uuid="70dc7cdf-b76c-48a6-8018-2fc774a30e1f" name="K2" x="378" y="42">
+   <patcher type="patch/patcher" uuid="db9748b2-22f6-4301-b691-950e478f2903" name="K2" x="378" y="42">
       <params>
          <frac32.u.map name="Value" value="16.5"/>
       </params>
@@ -276,11 +282,11 @@ outlet_int = range_pos(__USAT(inlet_val, 27), param_max);
    </obj>
    <patchobj type="patch/object" uuid="2e3b980b-4415-428f-b6ca-29f283183066" name="Talkie Synth" x="504" y="126">
       <params>
-         <frac32.u.map name="oct" value="32.0"/>
+         <frac32.u.map name="oct" MidiCC="23" value="32.0"/>
          <int32 name="pmode" value="2"/>
-         <frac32.u.map name="noise" value="0.0"/>
+         <frac32.u.map name="noise" MidiCC="22" value="0.0"/>
          <frac32.u.map name="smear" value="0.0"/>
-         <frac32.u.map name="gliss" value="47.0"/>
+         <frac32.u.map name="gliss" value="23.0"/>
          <frac32.u.map name="crush" value="0.0"/>
       </params>
       <attribs>
@@ -292,7 +298,7 @@ outlet_int = range_pos(__USAT(inlet_val, 27), param_max);
          <license>BSD</license>
          <helpPatch>math.axh</helpPatch>
          <inlets>
-            <bool32 name="voiced" description="voiced/unvoiced"/>
+            <bool32 name="unvoiced" description="voiced/unvoiced"/>
             <int32.positive name="synthEnergy" description="synth energy"/>
             <int32.bipolar name="synthPeriod"/>
             <int32.bipolar name="synthK1" description="synth coefficient K1"/>
@@ -305,12 +311,12 @@ outlet_int = range_pos(__USAT(inlet_val, 27), param_max);
             <int32.bipolar name="synthK8" description="synth coefficient K8"/>
             <int32.bipolar name="synthK9" description="synth coefficient K9"/>
             <int32.bipolar name="synthK10" description="synth coefficient K10"/>
-            <frac32.positive name="oct"/>
+            <frac32.positive name="oct" description="octave transpose"/>
             <bool32 name="pitch" description="pitch transpose/override"/>
             <frac32.bipolar name="note" description="midi note in"/>
             <frac32.positive name="noise" description="noise"/>
             <frac32.positive name="crush" description="bit-crush"/>
-            <frac32.positive name="smear"/>
+            <frac32.positive name="smear" description="filter smear"/>
             <frac32.positive name="gliss" description="glissando"/>
             <frac32buffer.bipolar name="ext" description="external input"/>
          </inlets>
@@ -423,7 +429,7 @@ bool voiced;
 uint32_t octave;
 uint8_t oscPeriod;
 uint32_t crush;
-uint8_t noise;
+uint16_t noiseMix;
 uint32_t smear;
 uint32_t gliss;
 uint8_t chirp;
@@ -477,12 +483,9 @@ int8_t tk_renderVoice() {
 	synthRand = (synthRand >> 1) ^ ((synthRand & 1) ? 0xB800 : 0);
 	unvoicedSource = (synthRand & 1) ? synthEnergy : -synthEnergy;
 
-	// Switch voiced/unvoiced source
-	if (synthPeriod) {
-		u10 = u8mix(voicedSource, unvoicedSource, noise);
-	} else {
-		u10 = unvoicedSource;
-	}
+	// Mix voiced/unvoiced source
+	u10 = xfade16(voicedSource, unvoicedSource, noiseMix);
+
     	
     	// Lattice filter forward path
     	u9 = u10 - (((int16_t)synthK10*x9) >> 7);
@@ -512,7 +515,7 @@ int8_t tk_renderVoice() {
 	x0 = u0;
 
 	// Bit-shift return value to -255 to 254 range
-	return unvoicedSource << 2;//u10;//u0 >> 1;
+	return u10;//u0 >> 1;
 }
 
 ///////////////////////
@@ -527,11 +530,6 @@ __attribute__ ( ( always_inline ) ) __STATIC_INLINE int32_t range_pos(int32_t va
 	return (int32_t)(x * (outMax - outMin) / 0x07FFFFFF + outMin);
 };
 
-// 8-Bit linear crossfade (from Mutable Instruments Grids firmware)
-__attribute__ ( ( always_inline ) ) __STATIC_INLINE int8_t u8mix(int8_t a, int8_t b, uint8_t x) {
-	return x * b + (255 - x) * a >> 8;
-}
-
 // 8-Bit clamp val to range min > max
 __attribute__ ( ( always_inline ) ) __STATIC_INLINE int8_t clamp8(int8_t val, int8_t min, int8_t max) {
 	return (val <= min) ? min : (val >= max) ? max : val;
@@ -539,10 +537,10 @@ __attribute__ ( ( always_inline ) ) __STATIC_INLINE int8_t clamp8(int8_t val, in
 
 // 16-bit xfade (adapted from Factory xfade object)
 __attribute__ ( ( always_inline ) ) __STATIC_INLINE int16_t xfade16(int16_t a, int16_t b, uint16_t x) {
-	int8_t ccompl = (1 << 16) - x;
-	int32_t a = (int32_t)b * x;
-	a += (int32_t)a * ccompl;
-	return a >> 16;
+	int16_t ccompl = (1 << 15) - x;
+	int32_t result = (int32_t)b * x;
+	result += (int32_t)a * ccompl;
+	return result >> 16;
 }
 
 // Slew function, with pointer to state variable
@@ -574,7 +572,7 @@ voiced = TRUE;
 octave = 0;
 oscPeriod = 0;
 crush = 9;
-noise = 0;
+noiseMix = 0;
 smear = 0;
 gliss = 0;
 chirp = 0;
@@ -603,7 +601,8 @@ synthK10 = slew(__SSAT(inlet_synthK10, 8) <<24, &synthK10SlewState,smear, TRUE)>
 ///////////////////
 
 // Noise/chirp mix
-noise = __USAT(param_noise + inlet_noise, 27) >> 19;
+noiseMix = (!inlet_unvoiced && synthPeriod) ? __USAT(param_noise + inlet_noise, 27) >> 11 : 0xffff;
+
 // Bitcrush
 crush = range_pos(__USAT(param_crush + inlet_crush, 27), 0, 7);
 // Smear
@@ -674,7 +673,7 @@ for(uint8_t j = 0; j < BUFSIZE; j++) {
 ]]></code.krate>
       </object>
    </patchobj>
-   <patcher type="patch/patcher" uuid="12eef4e7-90e7-48ca-89b1-f882c39fd10a" name="K3" x="280" y="140">
+   <patcher type="patch/patcher" uuid="480a31c2-619d-479d-b79d-374e2fd91e8f" name="K3" x="280" y="140">
       <params>
          <frac32.u.map name="Value" value="34.0"/>
       </params>
@@ -816,7 +815,7 @@ outlet_int = range_pos(__USAT(inlet_val, 27), param_max);
 ]]></code.krate>
       </object>
    </patchobj>
-   <patcher type="patch/patcher" uuid="838b7f3c-deea-4af9-9943-166891004523" name="K4" x="378" y="168">
+   <patcher type="patch/patcher" uuid="49558aaa-4d88-4485-8d40-c213f6a0d065" name="K4" x="378" y="168">
       <params>
          <frac32.u.map name="Value" value="18.5"/>
       </params>
@@ -917,7 +916,7 @@ outlet_int = range_pos(__USAT(inlet_val, 27), param_max);
       <params/>
       <attribs/>
    </obj>
-   <patcher type="patch/patcher" uuid="ddef25bb-612c-4827-8943-4786da53e9c3" name="K5" x="280" y="266">
+   <patcher type="patch/patcher" uuid="561be9bf-d6b9-49e9-a916-972e0f6c5187" name="K5" x="280" y="266">
       <params>
          <frac32.u.map name="Value" value="17.5"/>
       </params>
@@ -1010,7 +1009,7 @@ outlet_int = range_pos(__USAT(inlet_val, 27), param_max);
          <notes><![CDATA[]]></notes>
       </subpatch>
    </patcher>
-   <patcher type="patch/patcher" uuid="e5a30cb6-6c7a-45d9-b678-efdfef85520a" name="K6" x="378" y="294">
+   <patcher type="patch/patcher" uuid="8625706b-8100-446f-915f-52d0b16365cb" name="K6" x="378" y="294">
       <params>
          <frac32.u.map name="Value" value="40.0"/>
       </params>
@@ -1107,7 +1106,7 @@ outlet_int = range_pos(__USAT(inlet_val, 27), param_max);
       <params/>
       <attribs/>
    </obj>
-   <patcher type="patch/patcher" uuid="679bee0d-26c6-4e27-a2ca-c7bd1cb53770" name="K7" x="280" y="392">
+   <patcher type="patch/patcher" uuid="620994b0-7e63-4401-ac60-bfeea6e7d29c" name="K7" x="280" y="392">
       <params>
          <frac32.u.map name="Value" value="10.0"/>
       </params>
@@ -1200,7 +1199,7 @@ outlet_int = range_pos(__USAT(inlet_val, 27), param_max);
          <notes><![CDATA[]]></notes>
       </subpatch>
    </patcher>
-   <patcher type="patch/patcher" uuid="3188c179-cec4-43c3-a555-08f431c02ee9" name="K8" x="378" y="420">
+   <patcher type="patch/patcher" uuid="f3b41daa-be52-43bb-a80a-5ec38705f688" name="K8" x="378" y="420">
       <params>
          <frac32.u.map name="Value" value="29.0"/>
       </params>
@@ -1328,7 +1327,7 @@ outlet_int = range_pos(__USAT(inlet_val, 27), param_max);
 ]]></code.srate>
       </object>
    </patchobj>
-   <patcher type="patch/patcher" uuid="9d9227b1-7b46-4ed4-9b8b-6f78a58b3b7b" name="K9" x="280" y="518">
+   <patcher type="patch/patcher" uuid="34596a7f-ba1b-4ec0-b42d-22e922ba7ac1" name="K9" x="280" y="518">
       <params>
          <frac32.u.map name="Value" value="57.0"/>
       </params>
@@ -1421,7 +1420,7 @@ outlet_int = range_pos(__USAT(inlet_val, 27), param_max);
          <notes><![CDATA[]]></notes>
       </subpatch>
    </patcher>
-   <patcher type="patch/patcher" uuid="0de39eeb-2ead-47ae-b07a-cef2d735666e" name="K10" x="378" y="546">
+   <patcher type="patch/patcher" uuid="472610d7-791b-4378-b4a2-9c4ad3ecd118" name="K10" x="378" y="546">
       <params>
          <frac32.u.map name="Value" value="45.5"/>
       </params>
@@ -1593,6 +1592,10 @@ outlet_int = range_pos(__USAT(inlet_val, 27), param_max);
          <source obj="K3_" outlet="outlet_1"/>
          <dest obj="Talkie Synth" inlet="synthEnergy"/>
       </net>
+      <net>
+         <source obj="toggle_2" outlet="o"/>
+         <dest obj="Talkie Synth" inlet="unvoiced"/>
+      </net>
    </nets>
    <settings>
       <subpatchmode>no</subpatchmode>
@@ -1604,8 +1607,8 @@ outlet_int = range_pos(__USAT(inlet_val, 27), param_max);
    </settings>
    <notes><![CDATA[]]></notes>
    <windowPos>
-      <x>678</x>
-      <y>517</y>
+      <x>172</x>
+      <y>23</y>
       <width>1141</width>
       <height>794</height>
    </windowPos>

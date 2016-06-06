@@ -1,75 +1,90 @@
 <patch-1.0 appVersion="1.0.10">
-   <obj type="env/ahd lin" uuid="4ed5fd29254747e71db6d1d4caa20a89a41740f0" name="ahd_1" x="308" y="28">
+   <obj type="env/ahd lin" uuid="4ed5fd29254747e71db6d1d4caa20a89a41740f0" name="ahd_1" x="392" y="42">
       <params>
          <frac32.s.map name="a" value="-64.0"/>
-         <frac32.s.map name="d" value="-6.0"/>
+         <frac32.s.map name="d" value="-36.0"/>
       </params>
       <attribs/>
    </obj>
-   <obj type="ctrl/dial p" uuid="cc5d2846c3d50e425f450c4b9851371b54f4d674" name="Volume" x="434" y="28">
+   <obj type="ctrl/dial p" uuid="cc5d2846c3d50e425f450c4b9851371b54f4d674" name="Volume" x="518" y="42">
       <params>
-         <frac32.u.map name="value" value="37.0"/>
+         <frac32.u.map name="value" value="64.0"/>
       </params>
       <attribs/>
    </obj>
-   <comment type="patch/comment" x="70" y="126" text="Velocity mapped to phoneme"/>
-   <obj type="gain/vca" uuid="a9f2dcd18043e2f47364e45cb8814f63c2a37c0d" name="vca_1" x="434" y="126">
+   <comment type="patch/comment" x="154" y="140" text="Velocity mapped to phoneme"/>
+   <obj type="gain/vca" uuid="a9f2dcd18043e2f47364e45cb8814f63c2a37c0d" name="vca_1" x="518" y="140">
       <params/>
       <attribs/>
    </obj>
-   <obj type="math/*" uuid="3ac307b9f782049739ed62504081b96d580ea336" name="*_1" x="518" y="126">
+   <obj type="math/*" uuid="3ac307b9f782049739ed62504081b96d580ea336" name="*_1" x="602" y="140">
       <params/>
       <attribs/>
    </obj>
-   <obj type="audio/out stereo" uuid="a1ca7a567f535acc21055669829101d3ee7f0189" name="Output" x="588" y="126">
+   <obj type="audio/out stereo" uuid="a1ca7a567f535acc21055669829101d3ee7f0189" name="Output" x="672" y="140">
       <params/>
       <attribs/>
    </obj>
-   <obj type="midi/in/keyb zone touch" uuid="b50844801544a4d92e447c983cf5c3acafbbdf17" name="Keyboard" x="84" y="154">
+   <obj type="midi/in/keyb zone touch" uuid="b50844801544a4d92e447c983cf5c3acafbbdf17" name="Keyboard" x="168" y="168">
       <params/>
       <attribs>
          <spinner attributeName="startNote" value="24"/>
          <spinner attributeName="endNote" value="60"/>
       </attribs>
    </obj>
-   <obj type="toneburst/osc/canto/canto.axo" uuid="28df314d-5479-4383-b602-c3fb0939b767" name="canto.axo_1" x="238" y="154">
+   <obj type="toneburst/osc/canto/canto.axo" uuid="28df314d-5479-4383-b602-c3fb0939b767" name="canto.axo_1" x="322" y="168">
       <params>
          <frac32.s.map name="pitch" value="0.0"/>
          <frac32.u.map name="phoneme" value="0.0"/>
-         <frac32.u.map name="formant" value="33.0"/>
-         <frac32.u.map name="roughness" value="1.0"/>
+         <frac32.u.map name="formant" MidiCC="21" value="0.0"/>
+         <frac32.u.map name="roughness" value="0.0"/>
+         <frac32.u.map name="glidetime" MidiCC="22" value="7.5"/>
          <frac32.u.map name="srate" value="0.0"/>
-         <frac32.u.map name="glidetime" value="46.0"/>
+         <frac32.u.map name="crush" MidiCC="23" value="0.0"/>
       </params>
       <attribs>
          <combo attributeName="bank" selection="vowels"/>
       </attribs>
    </obj>
-   <obj type="disp/scope 128 b" uuid="2b69f51a714fc276503ef10c349d6d253d1ae5e2" name="Waveform" x="434" y="196">
+   <obj type="disp/scope 128 b" uuid="2b69f51a714fc276503ef10c349d6d253d1ae5e2" name="Waveform" x="518" y="210">
       <params/>
       <attribs/>
    </obj>
-   <obj type="midi/in/keyb note" uuid="ac0cd98e6c0373b7be73d25900342a62ebcf5f" name="Glide Enable" x="112" y="308">
+   <obj type="midi/in/keyb mod" uuid="abcd509d15e7d13d5381203fd2b4d0ac6fe57bb3" name="keyb_1" x="196" y="322">
+      <params/>
+      <attribs/>
+   </obj>
+   <obj type="disp/hex" uuid="87617898f70d90033f8add921438bf0d11721fdd" name="hex_1" x="518" y="420">
+      <params/>
+      <attribs/>
+   </obj>
+   <obj type="midi/in/keyb note" uuid="ac0cd98e6c0373b7be73d25900342a62ebcf5f" name="Glide Enable" x="196" y="434">
       <params/>
       <attribs>
          <spinner attributeName="note" value="23"/>
       </attribs>
    </obj>
-   <comment type="patch/comment" x="84" y="406" text="Enable glidewith note 23"/>
-   <obj type="disp/hex" uuid="87617898f70d90033f8add921438bf0d11721fdd" name="hex_1" x="434" y="406">
+   <comment type="patch/comment" x="518" y="490" text="Index of phoneme in formant table (for debugging)"/>
+   <comment type="patch/comment" x="168" y="532" text="Enable glidewith note 23"/>
+   <obj type="ctrl/toggle" uuid="42b8134fa729d54bfc8d62d6ef3fa99498c1de99" name="toggle_1" x="140" y="560">
+      <params>
+         <bool32.tgl name="b" value="1"/>
+      </params>
+      <attribs/>
+   </obj>
+   <obj type="logic/or 2" uuid="3805d3c84d30032a44fbdbe42d9a2988a1790a3e" name="or_1" x="224" y="560">
       <params/>
       <attribs/>
    </obj>
-   <comment type="patch/comment" x="434" y="476" text="Index of phoneme in formant table (for debugging)"/>
    <nets>
       <net>
          <source obj="*_1" outlet="result"/>
          <dest obj="Output" inlet="left"/>
          <dest obj="Output" inlet="right"/>
+         <dest obj="Waveform" inlet="in"/>
       </net>
       <net>
          <source obj="canto.axo_1" outlet="wave"/>
-         <dest obj="Waveform" inlet="in"/>
          <dest obj="vca_1" inlet="a"/>
       </net>
       <net>
@@ -98,11 +113,19 @@
       </net>
       <net>
          <source obj="Glide Enable" outlet="gate"/>
-         <dest obj="canto.axo_1" inlet="glide"/>
+         <dest obj="or_1" inlet="i1"/>
       </net>
       <net>
-         <source obj="Keyboard" outlet="gate"/>
+         <source obj="keyb_1" outlet="gate"/>
          <dest obj="ahd_1" inlet="trig"/>
+      </net>
+      <net>
+         <source obj="toggle_1" outlet="o"/>
+         <dest obj="or_1" inlet="i2"/>
+      </net>
+      <net>
+         <source obj="or_1" outlet="o"/>
+         <dest obj="canto.axo_1" inlet="glide"/>
       </net>
    </nets>
    <settings>
@@ -110,9 +133,9 @@
    </settings>
    <notes><![CDATA[]]></notes>
    <windowPos>
-      <x>1064</x>
+      <x>265</x>
       <y>23</y>
       <width>1030</width>
-      <height>856</height>
+      <height>852</height>
    </windowPos>
 </patch-1.0>
