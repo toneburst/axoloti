@@ -1,5 +1,5 @@
 <patch-1.0 appVersion="1.0.10">
-   <patcher type="patch/patcher" uuid="40692143-57f5-4a9f-a0f1-3527a9f62792" name="K3_" x="42" y="14">
+   <patcher type="patch/patcher" uuid="95d1664e-285d-46a5-9471-c8ed39f10961" name="K3_" x="42" y="14">
       <params>
          <frac32.u.map name="Value" value="48.0"/>
       </params>
@@ -74,7 +74,7 @@ outlet_int = range_pos(__USAT(inlet_val, 27), param_max);
          <notes><![CDATA[]]></notes>
       </subpatch>
    </patcher>
-   <patcher type="patch/patcher" uuid="b675f32b-3971-40ef-ae58-f6f074c9b0e3" name="K1" x="280" y="14">
+   <patcher type="patch/patcher" uuid="ccebea42-c71a-4889-9a00-3507d7250895" name="K1" x="280" y="14">
       <params>
          <frac32.u.map name="Value" value="55.5"/>
       </params>
@@ -173,7 +173,7 @@ outlet_int = range_pos(__USAT(inlet_val, 27), param_max);
       </params>
       <attribs/>
    </obj>
-   <patcher type="patch/patcher" uuid="fd4e4212-ad44-40f7-bc45-2580ea6b66bd" name="K2" x="378" y="42">
+   <patcher type="patch/patcher" uuid="957f39c2-6b2a-4041-9853-635ddf0c0f3f" name="K2" x="378" y="42">
       <params>
          <frac32.u.map name="Value" value="16.5"/>
       </params>
@@ -532,6 +532,16 @@ __attribute__ ( ( always_inline ) ) __STATIC_INLINE int8_t u8mix(int8_t a, int8_
 	return x * b + (255 - x) * a >> 8;
 }
 
+// 8-Bit clamp val to range min > max
+__attribute__ ( ( always_inline ) ) __STATIC_INLINE int8_t clamp8(int8_t val, int8_t min, int8_t max) {
+	return (val <= min) ? min : (val >= max) ? max : val;
+}
+
+// 16-bit xfade
+__attribute__ ( ( always_inline ) ) __STATIC_INLINE int16_t xfade16(int16_t a, int16_t b, uint16_t x) {
+	return a;
+}
+
 // Slew function, with pointer to state variable
 __attribute__ ( ( always_inline ) ) __STATIC_INLINE int32_t slew(int32_t target, int32_t *state, int32_t slewTime, bool enable) {
 	if (enable && slewTime > 0) {
@@ -542,11 +552,6 @@ __attribute__ ( ( always_inline ) ) __STATIC_INLINE int32_t slew(int32_t target,
 		return target;
 	};
 };
-
-// 8Bit clamp val to range min > max
-__attribute__ ( ( always_inline ) ) __STATIC_INLINE int8_t clamp8(int8_t val, int8_t min, int8_t max) {
-	return (val <= min) ? min : (val >= max) ? max : val;
-}
 
 ]]></code.declaration>
          <code.init><![CDATA[
@@ -666,7 +671,7 @@ for(uint8_t j = 0; j < BUFSIZE; j++) {
 ]]></code.krate>
       </object>
    </patchobj>
-   <patcher type="patch/patcher" uuid="958f214e-3cc9-46a2-9f83-e05771462a30" name="K3" x="280" y="140">
+   <patcher type="patch/patcher" uuid="afee5e9d-7b7b-490d-a8d0-6d218669e2e3" name="K3" x="280" y="140">
       <params>
          <frac32.u.map name="Value" value="34.0"/>
       </params>
@@ -808,7 +813,7 @@ outlet_int = range_pos(__USAT(inlet_val, 27), param_max);
 ]]></code.krate>
       </object>
    </patchobj>
-   <patcher type="patch/patcher" uuid="765cbd92-5f16-4f16-9f02-b230b3728fbe" name="K4" x="378" y="168">
+   <patcher type="patch/patcher" uuid="857f3a3c-a564-4019-bfa4-de6c634c2af1" name="K4" x="378" y="168">
       <params>
          <frac32.u.map name="Value" value="18.5"/>
       </params>
@@ -909,7 +914,7 @@ outlet_int = range_pos(__USAT(inlet_val, 27), param_max);
       <params/>
       <attribs/>
    </obj>
-   <patcher type="patch/patcher" uuid="e48d78b4-39b4-4212-822e-38f0d839c215" name="K5" x="280" y="266">
+   <patcher type="patch/patcher" uuid="f1b8caa6-c927-442b-af1d-9dd04d6846dd" name="K5" x="280" y="266">
       <params>
          <frac32.u.map name="Value" value="17.5"/>
       </params>
@@ -1002,7 +1007,7 @@ outlet_int = range_pos(__USAT(inlet_val, 27), param_max);
          <notes><![CDATA[]]></notes>
       </subpatch>
    </patcher>
-   <patcher type="patch/patcher" uuid="59d4f85b-e6e5-434e-b718-7686c42f0f43" name="K6" x="378" y="294">
+   <patcher type="patch/patcher" uuid="fa844f7e-943b-4ede-9ada-0045524b5fdd" name="K6" x="378" y="294">
       <params>
          <frac32.u.map name="Value" value="40.0"/>
       </params>
@@ -1099,7 +1104,7 @@ outlet_int = range_pos(__USAT(inlet_val, 27), param_max);
       <params/>
       <attribs/>
    </obj>
-   <patcher type="patch/patcher" uuid="0245d9dc-0242-456a-af22-dff172236d07" name="K7" x="280" y="392">
+   <patcher type="patch/patcher" uuid="5247e4b2-6122-46bb-8afb-6db6ae71d619" name="K7" x="280" y="392">
       <params>
          <frac32.u.map name="Value" value="10.0"/>
       </params>
@@ -1192,7 +1197,7 @@ outlet_int = range_pos(__USAT(inlet_val, 27), param_max);
          <notes><![CDATA[]]></notes>
       </subpatch>
    </patcher>
-   <patcher type="patch/patcher" uuid="654c4d7f-059b-42c0-93f8-52e08cf01e53" name="K8" x="378" y="420">
+   <patcher type="patch/patcher" uuid="21e519f4-0b6c-4936-9d89-b813500df78d" name="K8" x="378" y="420">
       <params>
          <frac32.u.map name="Value" value="29.0"/>
       </params>
@@ -1291,7 +1296,36 @@ outlet_int = range_pos(__USAT(inlet_val, 27), param_max);
       </params>
       <attribs/>
    </obj>
-   <patcher type="patch/patcher" uuid="c2b9c4e2-c7cb-4e71-ad8c-a55ff522afc3" name="K9" x="280" y="518">
+   <patchobj type="patch/object" uuid="325e427b-0c89-4479-8959-cce80a02a21c" name="xfade_1" x="784" y="476">
+      <params/>
+      <attribs/>
+      <object id="patch/object" uuid="325e427b-0c89-4479-8959-cce80a02a21c">
+         <sDescription>crossfade between two inputs</sDescription>
+         <author>Johannes Taelman</author>
+         <license>BSD</license>
+         <inlets>
+            <frac32buffer name="i1" description="input"/>
+            <frac32buffer name="i2" description="input"/>
+            <frac32.positive name="c" description="control"/>
+         </inlets>
+         <outlets>
+            <frac32buffer name="o" description="output"/>
+         </outlets>
+         <displays/>
+         <params/>
+         <attribs/>
+         <includes/>
+         <code.krate><![CDATA[   int32_t ccompl = ((128<<20)-inlet_c);
+]]></code.krate>
+         <code.srate><![CDATA[   {
+      int64_t a = (int64_t)inlet_i2 * inlet_c;
+      a += (int64_t)inlet_i1 * ccompl;
+      outlet_o= a>>27;
+   }
+]]></code.srate>
+      </object>
+   </patchobj>
+   <patcher type="patch/patcher" uuid="71826822-3223-4f0f-ab0f-6b738a7fb9a7" name="K9" x="280" y="518">
       <params>
          <frac32.u.map name="Value" value="57.0"/>
       </params>
@@ -1384,7 +1418,7 @@ outlet_int = range_pos(__USAT(inlet_val, 27), param_max);
          <notes><![CDATA[]]></notes>
       </subpatch>
    </patcher>
-   <patcher type="patch/patcher" uuid="9c319911-c279-4d69-a1fc-1b201b6e6dae" name="K10" x="378" y="546">
+   <patcher type="patch/patcher" uuid="dbc181fd-3f5d-49d0-a914-1bdcbe7308c0" name="K10" x="378" y="546">
       <params>
          <frac32.u.map name="Value" value="45.5"/>
       </params>
@@ -1564,12 +1598,11 @@ outlet_int = range_pos(__USAT(inlet_val, 27), param_max);
       <NPresetEntries>32</NPresetEntries>
       <NModulationSources>8</NModulationSources>
       <NModulationTargetsPerSource>8</NModulationTargetsPerSource>
-      <Author></Author>
    </settings>
    <notes><![CDATA[]]></notes>
    <windowPos>
-      <x>140</x>
-      <y>35</y>
+      <x>236</x>
+      <y>23</y>
       <width>1141</width>
       <height>794</height>
    </windowPos>
