@@ -5,14 +5,6 @@
       </params>
       <attribs/>
    </obj>
-   <obj type="math/*" uuid="3ac307b9f782049739ed62504081b96d580ea336" name="*_1" x="252" y="98">
-      <params/>
-      <attribs/>
-   </obj>
-   <obj type="audio/out stereo" uuid="a1ca7a567f535acc21055669829101d3ee7f0189" name="out_1" x="322" y="98">
-      <params/>
-      <attribs/>
-   </obj>
    <obj type="ctrl/toggle" uuid="42b8134fa729d54bfc8d62d6ef3fa99498c1de99" name="Trigger" x="14" y="112">
       <params>
          <bool32.tgl name="b" value="1"/>
@@ -495,6 +487,14 @@ outlet_debugINT = wordLength;
 ]]></code.krate>
       </object>
    </patchobj>
+   <obj type="math/*" uuid="3ac307b9f782049739ed62504081b96d580ea336" name="*_1" x="252" y="112">
+      <params/>
+      <attribs/>
+   </obj>
+   <obj type="audio/out stereo" uuid="a1ca7a567f535acc21055669829101d3ee7f0189" name="out_1" x="322" y="112">
+      <params/>
+      <attribs/>
+   </obj>
    <patchobj type="patch/object" uuid="2e3b980b-4415-428f-b6ca-29f283183066" name="==_1" x="546" y="112">
       <params>
          <frac32.u.map name="noise" value="1.0"/>
@@ -837,7 +837,7 @@ for(uint8_t j = 0; j < BUFSIZE; j++) {
       </params>
       <attribs/>
    </obj>
-   <obj type="disp/scope 128 b trig" uuid="11747dcd1dc9afe4919f537c861fb18b80b4e4e" name="scope_1" x="322" y="210">
+   <obj type="disp/scope 128 b trig" uuid="11747dcd1dc9afe4919f537c861fb18b80b4e4e" name="scope_1" x="322" y="224">
       <params/>
       <attribs/>
    </obj>
