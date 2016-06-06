@@ -45,6 +45,19 @@
             <bool32 name="glitch" description="glitch"/>
          </inlets>
          <outlets>
+            <bool32 name="voiced" description="voiced/unvoiced switch"/>
+            <int32.positive name="synthEnergy" description="synth energy (determines volume)"/>
+            <int32.positive name="synthPeriod" description="synth period (determines voiced frame frequency)"/>
+            <int32.bipolar name="synthK1" description="synth filter coefficient K1"/>
+            <int32.bipolar name="synthK2" description="synth filter coefficient K2"/>
+            <int32.bipolar name="synthK3" description="synth filter coefficient K3"/>
+            <int32.bipolar name="synthK4" description="synth filter coefficient K4"/>
+            <int32.bipolar name="synthK5" description="synth filter coefficient K5"/>
+            <int32.bipolar name="synthK6" description="synth filter coefficient K6"/>
+            <int32.bipolar name="synthK7" description="synth filter coefficient K7"/>
+            <int32.bipolar name="synthK8" description="synth filter coefficient K8"/>
+            <int32.bipolar name="synthK9" description="synth filter coefficient K9"/>
+            <int32.bipolar name="synthK10" description="synth filter coefficient K10"/>
             <frac32buffer.bipolar name="out"/>
             <int32 name="debugINT"/>
             <bool32 name="debugBOOL"/>
@@ -482,48 +495,91 @@ outlet_debugINT = wordLength;
 ]]></code.krate>
       </object>
    </patchobj>
-   <patchobj type="patch/object" uuid="2e3b980b-4415-428f-b6ca-29f283183066" name="==_1" x="588" y="112">
+   <patchobj type="patch/object" uuid="2e3b980b-4415-428f-b6ca-29f283183066" name="==_1" x="546" y="112">
       <params>
-         <frac32.u.map name="noise" value="0.0"/>
+         <frac32.u.map name="noise" value="1.0"/>
          <frac32.u.map name="crush" value="0.0"/>
-         <frac32.u.map name="pitch" value="0.0"/>
+         <frac32.u.map name="smear" value="0.0"/>
       </params>
-      <attribs/>
+      <attribs>
+         <combo attributeName="chirp" selection="TI 2801"/>
+      </attribs>
       <object id="patch/object" uuid="2e3b980b-4415-428f-b6ca-29f283183066">
-         <sDescription>equal</sDescription>
+         <sDescription>Talkie Synth</sDescription>
          <author>Johannes Taelman</author>
          <license>BSD</license>
          <helpPatch>math.axh</helpPatch>
          <inlets>
-            <bool32 name="voiced"/>
-            <int32.bipolar name="synthEnergy"/>
-            <int32.bipolar name="synthPeriod"/>
-            <int32.bipolar name="synthK1"/>
-            <int32.bipolar name="synthK2"/>
-            <int32.bipolar name="synthK3"/>
-            <int32.bipolar name="synthK4"/>
-            <int32.bipolar name="synthK5"/>
-            <int32.bipolar name="synthK6"/>
-            <int32.bipolar name="synthK7"/>
-            <int32.bipolar name="synthK8"/>
-            <int32.bipolar name="synthK9"/>
-            <int32.bipolar name="synthK10"/>
-            <frac32.positive name="noise"/>
-            <frac32.positive name="crush"/>
-            <frac32.positive name="pitch"/>
+            <bool32 name="voiced" description="voiced/unvoiced selector"/>
+            <int32.positive name="synthEnergy" description="output level"/>
+            <int32.positive name="synthPeriod" description="frequency"/>
+            <int32.bipolar name="synthK1" description="filter coefficient K1"/>
+            <int32.bipolar name="synthK2" description="filter coefficient K2"/>
+            <int32.bipolar name="synthK3" description="filter coefficient K3"/>
+            <int32.bipolar name="synthK4" description="filter coefficient K4"/>
+            <int32.bipolar name="synthK5" description="filter coefficient K5"/>
+            <int32.bipolar name="synthK6" description="filter coefficient K6"/>
+            <int32.bipolar name="synthK7" description="filter coefficient K7"/>
+            <int32.bipolar name="synthK8" description="filter coefficient K8"/>
+            <int32.bipolar name="synthK9" description="filter coefficient K9"/>
+            <int32.bipolar name="synthK10" description="filter coefficient K10"/>
+            <frac32.positive name="noise" description="add noise to voiced frames"/>
+            <frac32.positive name="crush" description="bit-crush"/>
+            <frac32.positive name="smear" description="smear"/>
+            <frac32.bipolar name="pitch" description="octave up/down"/>
+            <frac32.bipolar name="note" description="midi note in"/>
+            <frac32buffer.bipolar name="osc" description="external input (converted to 8bit)"/>
          </inlets>
          <outlets>
             <frac32buffer.bipolar name="out"/>
+            <frac32.bipolar name="debug"/>
          </outlets>
          <displays/>
          <params>
-            <frac32.u.map name="noise"/>
-            <frac32.u.map name="crush"/>
-            <frac32.u.map name="pitch"/>
+            <frac32.u.map name="noise" description="noise level"/>
+            <frac32.u.map name="crush" description="bit-crush"/>
+            <frac32.u.map name="smear" description="smear frames"/>
          </params>
-         <attribs/>
+         <attribs>
+            <combo name="chirp" description="chirp table">
+               <MenuEntries>
+                  <string>TI 2801</string>
+                  <string>TI 2802</string>
+                  <string>TI LATER</string>
+               </MenuEntries>
+               <CEntries>
+                  <string>0</string>
+                  <string>1</string>
+                  <string>2</string>
+                  <string>3</string>
+               </CEntries>
+            </combo>
+         </attribs>
          <includes/>
          <code.declaration><![CDATA[
+
+
+///////////////////
+// Params/Inlets //
+///////////////////
+
+uint32_t pitch;
+uint32_t crush;
+uint8_t noise;
+uint32_t smear;
+uint8_t chirp;
+
+int32_t sample;
+int8_t extOsc;
+int32_t oscPhase;
+
+uint8_t renderCounter;
+uint8_t renderInterval;
+int8_t midiPeriod;
+
+///////////////
+// Constants //
+///////////////
 
 const uint8_t tmsEnergy[0x10] = {0x00,0x02,0x03,0x04,0x05,0x07,0x0a,0x0f,0x14,0x20,0x29,0x39,0x51,0x72,0xa1,0xff};
 const uint8_t tmsPeriod[0x40] = {0x00,0x10,0x11,0x12,0x13,0x14,0x15,0x16,0x17,0x18,0x19,0x1A,0x1B,0x1C,0x1D,0x1E,0x1F,0x20,0x21,0x22,0x23,0x24,0x25,0x26,0x27,0x28,0x29,0x2A,0x2B,0x2D,0x2F,0x31,0x33,0x35,0x36,0x39,0x3B,0x3D,0x3F,0x42,0x45,0x47,0x49,0x4D,0x4F,0x51,0x55,0x57,0x5C,0x5F,0x63,0x66,0x6A,0x6E,0x73,0x77,0x7B,0x80,0x85,0x8A,0x8F,0x95,0x9A,0xA0};
@@ -538,19 +594,42 @@ const int8_t tmsK8[0x08]      = {0xC0,0xD8,0xF0,0x07,0x1F,0x37,0x4F,0x66};
 const int8_t tmsK9[0x08]      = {0xC0,0xD4,0xE8,0xFC,0x10,0x25,0x39,0x4D};
 const int8_t tmsK10[0x08]     = {0xCD,0xDF,0xF1,0x04,0x16,0x20,0x3B,0x4D};
 
-#define CHIRP_SIZE 41
-const int8_t chirp[CHIRP_SIZE] = {0x00,0x2a,0xd4,0x32,0xb2,0x12,0x25,0x14,0x02,0xe1,0xc5,0x02,0x5f,0x5a,0x05,0x0f,0x26,0xfc,0xa5,0xa5,0xd6,0xdd,0xdc,0xfc,0x25,0x2b,0x22,0x21,0x0f,0xff,0xf8,0xee,0xed,0xef,0xf7,0xf6,0xfa,0x00,0x03,0x02,0x01};
+#define CHIRP_SIZE 52
+const int8_t chirpTables[3][CHIRP_SIZE] = {
+	// TI 2801 CHIRP
+	{0x00,0x2b,0xd4,0x33,0xb3,0x12,0x25,0x14,0x02,0xe2,0xc6,0x03,0x60,0x5b,0x05,0x0f,0x26,0xfc,0xa6,0xa5,0xd6,0xdd,0xdd,0xfd,0x25,0x2b,0x23,0x22,0x0f,0xff,0xf8,0xef,0xed,0xef,0xf7,0xf7,0xfa,0x01,0x04,0x03,0x01,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00},
+	// TI 2802 CHIRP
+	{0x00,0xa5,0xbd,0xee,0x34,0x73,0x7e,0x3d,0xe8,0xea,0x34,0x24,0xd1,0x01,0x13,0xc3,0x0c,0xd2,0xe7,0xdd,0xd9,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00},
+	// TI LATER CHIRP
+	{0x00,0x03,0x0f,0x28,0x4c,0x6c,0x71,0x50,0x25,0x26,0x4c,0x44,0x1a,0x32,0x3b,0x13,0x37,0x1a,0x25,0x1f,0x1d,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00}
+};
 
-uint8_t synthPeriod;
-uint16_t synthEnergy;
+// Synth coefficients and slew-states/pointers
 int16_t synthK1,synthK2;
+int32_t synthK1SlewState,synthK2SlewState;
+/*int32_t *synthK1SlewStatePtr   = NULL;
+int32_t *synthK2SlewStatePtr 	 = NULL;*/
 int8_t synthK3,synthK4,synthK5,synthK6,synthK7,synthK8,synthK9,synthK10;
+int32_t synthK3SlewState,synthK4SlewState,synthK5SlewState,synthK6SlewState,synthK7SlewState,synthK8SlewState,synthK9SlewState,synthK10SlewState;
+/*int32_t *synthK3SlewStatePtr 	= NULL;
+int32_t *synthK4SlewStatePtr 	= NULL;
+int32_t *synthK5SlewStatePtr 	= NULL;
+int32_t *synthK6SlewStatePtr 	= NULL;
+int32_t *synthK7SlewStatePtr 	= NULL;
+int32_t *synthK8SlewStatePtr 	= NULL;
+int32_t *synthK9SlewStatePtr 	= NULL;
+int32_t *synthK10SlewStatePtr = NULL;*/
 
+// Synth period (no. 8kHz cycles)
+uint8_t synthPeriod;
+// Synth volume
+uint16_t synthEnergy;
+uint8_t periodCounter;
 int16_t x0,x1,x2,x3,x4,x5,x6,x7,x8,x9,x10;
-int32_t sample;
 
-uint8_t renderCounter;
-uint8_t renderInterval;
+// 8000Hz cycle counts to MIDI notes
+// Error increases with frequency
+const uint8_t midiNotes[37] = {122,116,109,103,97,92,87,82,77,73,69,65,61,58,55,51,49,46,43,41,38,36,34,32,31,29,27,26,24,23,22,20,19,18,17,16,15};
 
 //////////////////
 // Render Audio //
@@ -559,63 +638,64 @@ uint8_t renderInterval;
 int8_t tk_renderVoice() {
 	int16_t u0,u1,u2,u3,u4,u5,u6,u7,u8,u9,u10;
 
-	synthPeriod = tmsPeriod[u8mix(synthPeriod, 65 - (pitch >> 21), 255)];
+	synthPeriod = tmsPeriod[synthPeriod];
 	
 	// Generate voiced source
 	static int16_t voicedSource;
-    	if (periodCounter < synthPeriod) {
-    		periodCounter++;
-    	} else {
-    		periodCounter = 0;
-    	}
-    	if (periodCounter < CHIRP_SIZE) {
-    		voicedSource = ((chirp[periodCounter]) * (uint32_t) synthEnergy) >> 8;
-    	} else {
-    		voicedSource = 0;
-    	}
+
+	if (periodCounter < midiPeriod) {
+		periodCounter++;
+	} else {
+		periodCounter = 0;
+	}
+	if (periodCounter < CHIRP_SIZE) {
+		voicedSource = ((chirpTables[chirp][periodCounter]) * (uint32_t) synthEnergy) >> 8;
+	} else {
+		voicedSource = 0;
+	}
 
 	// Generate unvoiced noise source
 	static int16_t unvoicedSource;
-    	static uint16_t synthRand = 1;
-    	synthRand = (synthRand >> 1) ^ ((synthRand & 1) ? 0xB800 : 0);
-    	unvoicedSource = (synthRand & 1) ? synthEnergy : -synthEnergy;
+    static uint16_t synthRand = 1;
+    synthRand = (synthRand >> 1) ^ ((synthRand & 1) ? 0xB800 : 0);
+    unvoicedSource = (synthRand & 1) ? synthEnergy : -synthEnergy;
 
-    	// Switch voiced/unvoiced source
+    // Switch voiced/unvoiced source
 	if (synthPeriod) {
 		u10 = u8mix(voicedSource, unvoicedSource, noise);
-    	} else {
-    		u10 = unvoicedSource;
-    	}
+    } else {
+		u10 = unvoicedSource;
+    }
     	
-    	// Lattice filter forward path
-    	u9 = u10 - (((int16_t)synthK10*x9) >> 7);
-	u8 = u9  - (((int16_t)synthK9*x8) >> 7);
-	u7 = u8  - (((int16_t)synthK8*x7) >> 7);
-	u6 = u7  - (((int16_t)synthK7*x6) >> 7);
-	u5 = u6  - (((int16_t)synthK6*x5) >> 7);
-	u4 = u5  - (((int16_t)synthK5*x4) >> 7);
-	u3 = u4  - (((int16_t)synthK4*x3) >> 7);
-	u2 = u3  - (((int16_t)synthK3*x2) >> 7);
-	u1 = u2  - (((int32_t)synthK2*x1) >> 15);
-	u0 = u1  - (((int32_t)synthK1*x0) >> 15);
-	
-	// Output clamp to 9 bits (-512 to 511)
-	u0 = __SSAT(u0, 9);
-
-	// Lattice filter reverse path
-	x9 = x8 + (((int16_t)synthK9*u8) >> 7);
-	x8 = x7 + (((int16_t)synthK8*u7) >> 7);
-	x7 = x6 + (((int16_t)synthK7*u6) >> 7);
-	x6 = x5 + (((int16_t)synthK6*u5) >> 7);
-	x5 = x4 + (((int16_t)synthK5*u4) >> 7);
-	x4 = x3 + (((int16_t)synthK4*u3) >> 7);
-	x3 = x2 + (((int16_t)synthK3*u2) >> 7);
-	x2 = x1 + (((int32_t)synthK2*u1) >> 15);
-	x1 = x0 + (((int32_t)synthK1*u0) >> 15);
-	x0 = u0;
-
-	// Bit-shift return value to -255 to 254 range
-	return u0 >> 1;
+    // Lattice filter forward path
+    u9 = u10 - (((int16_t)synthK10*x9) >> 7);
+    u8 = u9  - (((int16_t)synthK9*x8) >> 7);
+    u7 = u8  - (((int16_t)synthK8*x7) >> 7);
+    u6 = u7  - (((int16_t)synthK7*x6) >> 7);
+    u5 = u6  - (((int16_t)synthK6*x5) >> 7);
+    u4 = u5  - (((int16_t)synthK5*x4) >> 7);
+    u3 = u4  - (((int16_t)synthK4*x3) >> 7);
+    u2 = u3  - (((int16_t)synthK3*x2) >> 7);
+    u1 = u2  - (((int32_t)synthK2*x1) >> 15);
+    u0 = u1  - (((int32_t)synthK1*x0) >> 15);
+    
+    // Output clamp to 9 bits (-512 to 511)
+    u0 = __SSAT(u0, 9);
+    
+    // Lattice filter reverse path
+    x9 = x8 + (((int16_t)synthK9*u8) >> 7);
+    x8 = x7 + (((int16_t)synthK8*u7) >> 7);
+    x7 = x6 + (((int16_t)synthK7*u6) >> 7);
+    x6 = x5 + (((int16_t)synthK6*u5) >> 7);
+    x5 = x4 + (((int16_t)synthK5*u4) >> 7);
+    x4 = x3 + (((int16_t)synthK4*u3) >> 7);
+    x3 = x2 + (((int16_t)synthK3*u2) >> 7);
+    x2 = x1 + (((int32_t)synthK2*u1) >> 15);
+    x1 = x0 + (((int32_t)synthK1*u0) >> 15);
+    x0 = u0;
+    
+    // Bit-shift return value to -255 to 254 range
+    return u0 >> 1;
 }
 
 ///////////////////////
@@ -634,58 +714,93 @@ __attribute__ ( ( always_inline ) ) __STATIC_INLINE int8_t u8mix(int8_t a, int8_
 	return x * b + (255 - x) * a >> 8;
 }
 
-///////////////////
-// Params/Inlets //
-///////////////////
-
-uint32_t pitch;
-uint32_t crush;
-uint8_t noise;
+// Slew function, with pointer to state variable
+__attribute__ ( ( always_inline ) ) __STATIC_INLINE int32_t slew(int32_t target, int32_t *state, int32_t slewTime, bool enable) {
+	if (enable && slewTime > 0) {
+		*state = ___SMMLA(*state - target, (-1 << 26) + (slewTime >> 1), *state);
+		return *state;
+	} else {
+		*state = target;
+		return target;
+	};
+};
 
 ]]></code.declaration>
          <code.init><![CDATA[
 
 // Counters (count S-Rate cycles)
 renderCounter = 0;
-
 // S-Rate cycle periods for sample-calculate function
 renderInterval = 6;
 
 // Calculated output sample value
 sample = 0;
+extOsc = 0;
 
 // Inlets/Param values
 pitch = 0;
 crush = 9;
 noise = 0;
+smear = 0;
+chirp = 0;
+
+synthK1SlewStatePtr = &synthK1SlewState;
+synthK2SlewStatePtr = &synthK2SlewState;
+synthK3SlewStatePtr = &synthK3SlewState;
+synthK4SlewStatePtr = &synthK4SlewState;
+synthK5SlewStatePtr = &synthK5SlewState;
+synthK6SlewStatePtr = &synthK6SlewState;
+synthK7SlewStatePtr = &synthK7SlewState;
+synthK8SlewStatePtr = &synthK8SlewState;
+synthK9SlewStatePtr = &synthK9SlewState;
+synthK10SlewStatePtr = &synthK10SlewState;
 
 ]]></code.init>
          <code.krate><![CDATA[
 
-
-uint8_t synthPeriod;
-uint16_t synthEnergy;
-int16_t synthK1;
-int16_t synthK2;
-
-int8_t synthK3 = __USAT(inlet_synthK3, );
-int8_t synthK4;
-int8_t synthK5;
-int8_t synthK6;
-int8_t synthK7;
-int8_t synthK8;
-int8_t synthK9;
-int8_t synthK10
+synthPeriod = __USAT(inlet_synthPeriod, 8);
+synthEnergy = __USAT(inlet_synthEnergy, 16);
+// Apply slew to coefficients
+/*synthK1  = slew(__SSAT(inlet_synthK1, 16) <<16,synthK1SlewStatePtr, smear, TRUE)>>16;
+synthK2  = slew(__SSAT(inlet_synthK2, 16) <<16,synthK2SlewStatePtr, smear, TRUE)>>16;
+synthK3  = slew(__SSAT(inlet_synthK3,  8) <<24,synthK3SlewStatePtr, smear, TRUE)>>24;
+synthK4  = slew(__SSAT(inlet_synthK4,  8) <<24,synthK4SlewStatePtr, smear, TRUE)>>24;
+synthK5  = slew(__SSAT(inlet_synthK5,  8) <<24,synthK5SlewStatePtr, smear, TRUE)>>24;
+synthK6  = slew(__SSAT(inlet_synthK6,  8) <<24,synthK6SlewStatePtr, smear, TRUE)>>24;
+synthK7  = slew(__SSAT(inlet_synthK7,  8) <<24,synthK7SlewStatePtr, smear, TRUE)>>24;
+synthK8  = slew(__SSAT(inlet_synthK8,  8) <<24,synthK8SlewStatePtr, smear, TRUE)>>24;
+synthK9  = slew(__SSAT(inlet_synthK9,  8) <<24,synthK9SlewStatePtr, smear, TRUE)>>24;
+synthK10 = slew(__SSAT(inlet_synthK10, 8) <<24,synthK10SlewStatePtr,smear, TRUE)>>24;*/
+synthK1  = slew(__SSAT(inlet_synthK1, 16) <<16,&synthK1SlewState, smear, TRUE)>>16;
+synthK2  = slew(__SSAT(inlet_synthK2, 16) <<16,&synthK2SlewState, smear, TRUE)>>16;
+synthK3  = slew(__SSAT(inlet_synthK3,  8) <<24,&synthK3SlewState, smear, TRUE)>>24;
+synthK4  = slew(__SSAT(inlet_synthK4,  8) <<24,&synthK4SlewState, smear, TRUE)>>24;
+synthK5  = slew(__SSAT(inlet_synthK5,  8) <<24,&synthK5SlewState, smear, TRUE)>>24;
+synthK6  = slew(__SSAT(inlet_synthK6,  8) <<24,&synthK6SlewState, smear, TRUE)>>24;
+synthK7  = slew(__SSAT(inlet_synthK7,  8) <<24,&synthK7SlewState, smear, TRUE)>>24;
+synthK8  = slew(__SSAT(inlet_synthK8,  8) <<24,&synthK8SlewState, smear, TRUE)>>24;
+synthK9  = slew(__SSAT(inlet_synthK9,  8) <<24,&synthK9SlewState, smear, TRUE)>>24;
+synthK10 = slew(__SSAT(inlet_synthK10, 8) <<24,&synthK10SlewState,smear, TRUE)>>24;
 
 ///////////////////
 // Params/Inlets //
 ///////////////////
 
-pitch = __USAT(param_pitch + inlet_pitch, 27);
+// Noise/chirp mix
 noise = __USAT(param_noise + inlet_noise, 27) >> 19;
+// Bitcrush
 crush = range_pos(__USAT(param_crush + inlet_crush, 27), 0, 7);
-
-renderInterval = 6; // 8kHZ
+// Smear
+smear = __USAT(param_smear + inlet_smear, 27);
+// MIDI note period
+midiPeriod = (inlet_note >> 21) + 28;
+if(midiPeriod < 0)
+	midiPeriod = 0;
+if(midiPeriod > 36)
+	midiPeriod = 36;
+synthPeriod = midiNotes[midiPeriod];
+// Chirp table select
+chirp = attr_chirp;
 
 /////////////////
 // Render Loop //
@@ -698,6 +813,8 @@ for(uint8_t j = 0; j < BUFSIZE; j++) {
 	///////////////////
 	
 	if(renderCounter == 0) {
+		// Capture external ocsillator input
+		extOsc = inlet_osc[j] >> 19;
 		// Render voice samples
 		sample = tk_renderVoice();
 		// Bit-reduction
@@ -753,7 +870,7 @@ for(uint8_t j = 0; j < BUFSIZE; j++) {
    </settings>
    <notes><![CDATA[]]></notes>
    <windowPos>
-      <x>254</x>
+      <x>425</x>
       <y>23</y>
       <width>1046</width>
       <height>780</height>
