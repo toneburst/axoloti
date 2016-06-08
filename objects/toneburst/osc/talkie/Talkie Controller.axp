@@ -1,6 +1,7 @@
 <patch-1.0 appVersion="1.0.10">
    <patchobj type="patch/object" uuid="2e3b980b-4415-428f-b6ca-29f283183066" name="Talkie Voiced Source" x="350" y="140">
       <params>
+         <frac32.u.map name="wave" value="0.0"/>
          <frac32.u.map name="oct" value="32.0"/>
          <bool32.tgl name="pitch" value="0"/>
          <int32 name="pmode" value="2"/>
@@ -28,6 +29,7 @@
          </outlets>
          <displays/>
          <params>
+            <frac32.u.map name="wave" description="crossfade between different CHIRP waveforms"/>
             <frac32.u.map name="oct" description="octave"/>
             <bool32.tgl name="pitch" description="override pitch set by &apos;synthEnergy&apos; inlet with value at inlet &apos;note&apos; when true"/>
             <int32 name="pmode" description="pitch-shift mode when &apos;pitch&apos; inlet true">
