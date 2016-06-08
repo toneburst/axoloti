@@ -1,11 +1,100 @@
 <patch-1.0 appVersion="1.0.10">
+   <obj type="ctrl/dial p" uuid="cc5d2846c3d50e425f450c4b9851371b54f4d674" name="Volume" x="420" y="42">
+      <params>
+         <frac32.u.map name="value" value="51.0"/>
+      </params>
+      <attribs/>
+   </obj>
+   <patcher type="patch/patcher" uuid="189f746e-575c-4ffd-98c2-d226787f24f2" name="Energy" x="112" y="126">
+      <params>
+         <frac32.u.map name="Value" value="64.0"/>
+      </params>
+      <attribs/>
+      <subpatch appVersion="1.0.10">
+         <obj type="ctrl/dial p" uuid="cc5d2846c3d50e425f450c4b9851371b54f4d674" name="Value" x="70" y="84">
+            <params>
+               <frac32.u.map name="value" onParent="true" value="0.0"/>
+            </params>
+            <attribs/>
+         </obj>
+         <patchobj type="patch/object" uuid="96da9a47-7d67-452e-96ad-ecfa2ac1c0f8" name="Param Max__" x="154" y="84">
+            <params>
+               <int32 name="max" value="255"/>
+            </params>
+            <attribs/>
+            <object id="patch/object" uuid="96da9a47-7d67-452e-96ad-ecfa2ac1c0f8">
+               <sDescription>greater than</sDescription>
+               <author>toneburst</author>
+               <license>BSD</license>
+               <helpPatch>math.axh</helpPatch>
+               <inlets>
+                  <frac32.positive name="val"/>
+               </inlets>
+               <outlets>
+                  <int32.positive name="int" description="integer positive result"/>
+               </outlets>
+               <displays/>
+               <params>
+                  <int32 name="max">
+                     <MinValue i="0"/>
+                     <MaxValue i="134217727"/>
+                  </int32>
+               </params>
+               <attribs/>
+               <includes/>
+               <code.declaration><![CDATA[
+
+
+// Scale input to range out_min > out_max
+// Input range hard-coded to 0 > 134217727 (27 bits) for frac32.pos inlets / frac32.u.map params
+// WONT'T Work with bipolar input!
+__attribute__ ( ( always_inline ) ) __STATIC_INLINE int32_t range_pos(int32_t val, int32_t out_max) {
+	return (int32_t)(float)val * (float)out_max / 0x07FFFFFF;
+};
+
+]]></code.declaration>
+               <code.krate><![CDATA[
+
+outlet_int = range_pos(__USAT(inlet_val, 27), param_max);
+
+]]></code.krate>
+            </object>
+         </patchobj>
+         <obj type="patch/outlet i" uuid="aae2176b26209e34e4fdeba5edb1ace82d178655" name="outlet_1" x="252" y="84">
+            <params/>
+            <attribs/>
+         </obj>
+         <nets>
+            <net>
+               <source obj="Value" outlet="out"/>
+               <dest obj="Param Max__" inlet="val"/>
+            </net>
+            <net>
+               <source obj="Param Max__" outlet="int"/>
+               <dest obj="outlet_1" inlet="outlet"/>
+            </net>
+         </nets>
+         <settings>
+            <subpatchmode>no</subpatchmode>
+         </settings>
+         <notes><![CDATA[]]></notes>
+      </subpatch>
+   </patcher>
+   <obj type="math/*" uuid="3ac307b9f782049739ed62504081b96d580ea336" name="*_1" x="504" y="126">
+      <params/>
+      <attribs/>
+   </obj>
+   <obj type="audio/out stereo" uuid="a1ca7a567f535acc21055669829101d3ee7f0189" name="out_1" x="574" y="126">
+      <params/>
+      <attribs/>
+   </obj>
    <patchobj type="patch/object" uuid="2e3b980b-4415-428f-b6ca-29f283183066" name="Talkie Voiced Source" x="350" y="140">
       <params>
          <frac32.u.map name="wave" value="0.0"/>
          <frac32.u.map name="oct" value="32.0"/>
-         <bool32.tgl name="pitch" value="0"/>
+         <bool32.tgl name="pitch" value="1"/>
          <int32 name="pmode" value="2"/>
-         <frac32.u.map name="gliss" value="23.0"/>
+         <frac32.u.map name="gliss" value="32.0"/>
          <frac32.u.map name="crush" value="0.0"/>
       </params>
       <attribs/>
@@ -64,6 +153,8 @@ const int8_t chirpTables[3][CHIRP_SIZE] = {
 	{0x00,0xa5,0xbd,0xee,0x34,0x73,0x7e,0x3d,0xe8,0xea,0x34,0x24,0xd1,0x01,0x13,0xc3,0x0c,0xd2,0xe7,0xdd,0xd9,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00},
 	// TI LATER CHIRP
 	{0x00,0x03,0x0f,0x28,0x4c,0x6c,0x71,0x50,0x25,0x26,0x4c,0x44,0x1a,0x32,0x3b,0x13,0x37,0x1a,0x25,0x1f,0x1d,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00}
+	// TI LATER CHIRP
+	{0x00,0x03,0x0f,0x28,0x4c,0x6c,0x71,0x50,0x25,0x26,0x4c,0x44,0x1a,0x32,0x3b,0x13,0x37,0x1a,0x25,0x1f,0x1d,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00}
 };
 
 // 8000Hz cycle counts to MIDI notes (error increases with frequency)
@@ -78,14 +169,15 @@ const int8_t midiTranspose[25] = {61,55,48,42,36,31,26,21,16,12,8,4,0,-3,-6,-10,
 
 // Synth period (no. 8kHz cycles)
 uint8_t synthPeriod;
-
 // Synth volume
 uint16_t synthEnergy;
-
 // Frame frequency
 uint8_t periodCounter;
 
-// Slew-states
+/////////////////
+// Slew-states //
+/////////////////
+
 int32_t energySlewState;
 int32_t oscPeriodSlewState;
 
@@ -94,6 +186,7 @@ int32_t oscPeriodSlewState;
 ///////////////////
 
 bool voiced;
+uint32_t wave;
 uint32_t octave;
 uint8_t oscPeriod;
 uint32_t crush;
@@ -194,6 +287,7 @@ sample = 0;
 extOsc = 0;
 
 // Inlets/Param values
+wave = 0;
 octave = 0;
 oscPeriod = 0;
 crush = 9;
@@ -204,15 +298,21 @@ chirp = 0;
          <code.krate><![CDATA[
 
 // Synth energy and period, with slew
-synthEnergy = slew(__USAT(inlet_synthEnergy, 16)<<24, &energySlewState, smear, true)>>24;
+synthEnergy = __USAT(inlet_synthEnergy, 16);//slew(__USAT(inlet_synthEnergy, 16)<<24, &energySlewState, smear, true)>>24;
 synthPeriod = tmsPeriod[__USAT(inlet_synthPeriod, 8)];
 
 ///////////////////
 // Params/Inlets //
 ///////////////////
 
+// Wave-select
+//wave = param_wave >> 25;
+// Wave index 0 - 3
+//uint8_t waveIndex = param_wave >> 25;
+//uint16_t wavePos = (param_wave << 5) * 3;
+
 // Bitcrush
-crush = range_pos(__USAT(param_crush + inlet_crush, 27), 0, 7);
+crush = range_pos(__USAT(param_crush + inlet_crush, 27), 1, 7);
 // Glissando
 gliss = __USAT(param_gliss + inlet_gliss, 27);
 // Octave
@@ -220,7 +320,7 @@ octave = range_pos(__USAT(param_oct + inlet_oct, 27), 0, 2);
 
 // Transpose/set period of voiced source
 // if boolean inlet 'pitch' true
-if(inlet_pitch) {
+if(inlet_pitch || param_pitch) {
 	// MIDI note number, clamped to range, scaled
 	midiNote = clamp8(inlet_note >> 21, -40, -16) + 40;
 	// Mode 1: transpose
@@ -261,7 +361,7 @@ for(uint8_t j = 0; j < BUFSIZE; j++) {
 	///////////////////
 	
 	if(renderCounter == 0) {
-		
+		sample = (tk_renderVoiced() >> crush) << crush;
 	}
 	
 	// Increment render counter
@@ -274,15 +374,120 @@ for(uint8_t j = 0; j < BUFSIZE; j++) {
 ]]></code.krate>
       </object>
    </patchobj>
-   <nets/>
+   <obj type="midi/in/keyb mod" uuid="abcd509d15e7d13d5381203fd2b4d0ac6fe57bb3" name="keyb_1" x="238" y="196">
+      <params/>
+      <attribs/>
+   </obj>
+   <patcher type="patch/patcher" uuid="a6160cfb-6e4e-422e-b683-f15d625929fe" name="Period" x="112" y="252">
+      <params>
+         <frac32.u.map name="Value" value="61.0"/>
+      </params>
+      <attribs/>
+      <subpatch appVersion="1.0.10">
+         <obj type="ctrl/dial p" uuid="cc5d2846c3d50e425f450c4b9851371b54f4d674" name="Value" x="70" y="84">
+            <params>
+               <frac32.u.map name="value" onParent="true" value="0.0"/>
+            </params>
+            <attribs/>
+         </obj>
+         <patchobj type="patch/object" uuid="96da9a47-7d67-452e-96ad-ecfa2ac1c0f8" name="Param Max__" x="154" y="84">
+            <params>
+               <int32 name="max" value="51"/>
+            </params>
+            <attribs/>
+            <object id="patch/object" uuid="96da9a47-7d67-452e-96ad-ecfa2ac1c0f8">
+               <sDescription>greater than</sDescription>
+               <author>toneburst</author>
+               <license>BSD</license>
+               <helpPatch>math.axh</helpPatch>
+               <inlets>
+                  <frac32.positive name="val"/>
+               </inlets>
+               <outlets>
+                  <int32.positive name="int" description="integer positive result"/>
+               </outlets>
+               <displays/>
+               <params>
+                  <int32 name="max">
+                     <MinValue i="0"/>
+                     <MaxValue i="134217727"/>
+                  </int32>
+               </params>
+               <attribs/>
+               <includes/>
+               <code.declaration><![CDATA[
+
+
+// Scale input to range out_min > out_max
+// Input range hard-coded to 0 > 134217727 (27 bits) for frac32.pos inlets / frac32.u.map params
+// WONT'T Work with bipolar input!
+__attribute__ ( ( always_inline ) ) __STATIC_INLINE int32_t range_pos(int32_t val, int32_t out_max) {
+	return (int32_t)(float)val * (float)out_max / 0x07FFFFFF;
+};
+
+]]></code.declaration>
+               <code.krate><![CDATA[
+
+outlet_int = range_pos(__USAT(inlet_val, 27), param_max);
+
+]]></code.krate>
+            </object>
+         </patchobj>
+         <obj type="patch/outlet i" uuid="aae2176b26209e34e4fdeba5edb1ace82d178655" name="outlet_1" x="252" y="84">
+            <params/>
+            <attribs/>
+         </obj>
+         <nets>
+            <net>
+               <source obj="Value" outlet="out"/>
+               <dest obj="Param Max__" inlet="val"/>
+            </net>
+            <net>
+               <source obj="Param Max__" outlet="int"/>
+               <dest obj="outlet_1" inlet="outlet"/>
+            </net>
+         </nets>
+         <settings>
+            <subpatchmode>no</subpatchmode>
+         </settings>
+         <notes><![CDATA[]]></notes>
+      </subpatch>
+   </patcher>
+   <nets>
+      <net>
+         <source obj="Volume" outlet="out"/>
+         <dest obj="*_1" inlet="a"/>
+      </net>
+      <net>
+         <source obj="*_1" outlet="result"/>
+         <dest obj="out_1" inlet="left"/>
+         <dest obj="out_1" inlet="right"/>
+      </net>
+      <net>
+         <source obj="Talkie Voiced Source" outlet="out"/>
+         <dest obj="*_1" inlet="b"/>
+      </net>
+      <net>
+         <source obj="keyb_1" outlet="note"/>
+         <dest obj="Talkie Voiced Source" inlet="note"/>
+      </net>
+      <net>
+         <source obj="Period" outlet="outlet_1"/>
+         <dest obj="Talkie Voiced Source" inlet="synthPeriod"/>
+      </net>
+      <net>
+         <source obj="Energy" outlet="outlet_1"/>
+         <dest obj="Talkie Voiced Source" inlet="synthEnergy"/>
+      </net>
+   </nets>
    <settings>
       <subpatchmode>no</subpatchmode>
    </settings>
    <notes><![CDATA[]]></notes>
    <windowPos>
-      <x>364</x>
-      <y>83</y>
+      <x>619</x>
+      <y>23</y>
       <width>1240</width>
-      <height>1087</height>
+      <height>852</height>
    </windowPos>
 </patch-1.0>
