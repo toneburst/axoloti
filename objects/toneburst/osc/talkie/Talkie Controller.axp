@@ -1,0 +1,286 @@
+<patch-1.0 appVersion="1.0.10">
+   <patchobj type="patch/object" uuid="2e3b980b-4415-428f-b6ca-29f283183066" name="Talkie Voiced Source" x="350" y="140">
+      <params>
+         <frac32.u.map name="oct" value="32.0"/>
+         <bool32.tgl name="pitch" value="0"/>
+         <int32 name="pmode" value="2"/>
+         <frac32.u.map name="gliss" value="23.0"/>
+         <frac32.u.map name="crush" value="0.0"/>
+      </params>
+      <attribs/>
+      <object id="patch/object" uuid="2e3b980b-4415-428f-b6ca-29f283183066">
+         <sDescription>Talkie Synth</sDescription>
+         <author>toneburst</author>
+         <license>BSD</license>
+         <helpPatch>math.axh</helpPatch>
+         <inlets>
+            <int32.positive name="synthEnergy" description="synth energy"/>
+            <int32.bipolar name="synthPeriod"/>
+            <frac32.positive name="oct" description="octave transpose"/>
+            <bool32 name="pitch" description="while true, override pitch set with &apos;synthPeriod&apos; inlet with MIDI note value at &apos;note&apos; inlet"/>
+            <frac32.bipolar name="note" description="midi note in"/>
+            <frac32.positive name="crush" description="bit-crush"/>
+            <frac32.positive name="gliss" description="glissando"/>
+         </inlets>
+         <outlets>
+            <frac32buffer.bipolar name="out"/>
+            <frac32.bipolar name="debug"/>
+         </outlets>
+         <displays/>
+         <params>
+            <frac32.u.map name="oct" description="octave"/>
+            <bool32.tgl name="pitch" description="override pitch set by &apos;synthEnergy&apos; inlet with value at inlet &apos;note&apos; when true"/>
+            <int32 name="pmode" description="pitch-shift mode when &apos;pitch&apos; inlet true">
+               <MinValue i="1"/>
+               <MaxValue i="2"/>
+            </int32>
+            <frac32.u.map name="gliss" description="glissando"/>
+            <frac32.u.map name="crush" description="bit-crush"/>
+         </params>
+         <attribs/>
+         <includes/>
+         <code.declaration><![CDATA[
+
+///////////////////
+///////////////////
+//// VARIABLES ////
+///////////////////
+///////////////////
+
+///////////////
+// Constants //
+///////////////
+
+const uint8_t tmsEnergy[0x10] = {0x00,0x02,0x03,0x04,0x05,0x07,0x0a,0x0f,0x14,0x20,0x29,0x39,0x51,0x72,0xa1,0xff};
+const uint8_t tmsPeriod[0x40] = {0x00,0x10,0x11,0x12,0x13,0x14,0x15,0x16,0x17,0x18,0x19,0x1A,0x1B,0x1C,0x1D,0x1E,0x1F,0x20,0x21,0x22,0x23,0x24,0x25,0x26,0x27,0x28,0x29,0x2A,0x2B,0x2D,0x2F,0x31,0x33,0x35,0x36,0x39,0x3B,0x3D,0x3F,0x42,0x45,0x47,0x49,0x4D,0x4F,0x51,0x55,0x57,0x5C,0x5F,0x63,0x66,0x6A,0x6E,0x73,0x77,0x7B,0x80,0x85,0x8A,0x8F,0x95,0x9A,0xA0};
+
+#define CHIRP_SIZE 52
+const int8_t chirpTables[3][CHIRP_SIZE] = {
+	// TI 2801 CHIRP
+	{0x00,0x2b,0xd4,0x33,0xb3,0x12,0x25,0x14,0x02,0xe2,0xc6,0x03,0x60,0x5b,0x05,0x0f,0x26,0xfc,0xa6,0xa5,0xd6,0xdd,0xdd,0xfd,0x25,0x2b,0x23,0x22,0x0f,0xff,0xf8,0xef,0xed,0xef,0xf7,0xf7,0xfa,0x01,0x04,0x03,0x01,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00},
+	// TI 2802 CHIRP
+	{0x00,0xa5,0xbd,0xee,0x34,0x73,0x7e,0x3d,0xe8,0xea,0x34,0x24,0xd1,0x01,0x13,0xc3,0x0c,0xd2,0xe7,0xdd,0xd9,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00},
+	// TI LATER CHIRP
+	{0x00,0x03,0x0f,0x28,0x4c,0x6c,0x71,0x50,0x25,0x26,0x4c,0x44,0x1a,0x32,0x3b,0x13,0x37,0x1a,0x25,0x1f,0x1d,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00}
+};
+
+// 8000Hz cycle counts to MIDI notes (error increases with frequency)
+// MIDI Notes C2 (MIDI note #36) - C4 (#60)
+const int8_t midiNotes[25] = {122,116,109,103,97,92,87,82,77,73,69,65,61,58,55,51,49,46,43,41,38,36,34,32,31};
+// Transpose table for transpose mode 1
+const int8_t midiTranspose[25] = {61,55,48,42,36,31,26,21,16,12,8,4,0,-3,-6,-10,-12,-15,-18,-20,-23,-25,-27,-29,-30};
+
+///////////////////////////
+// Synth State Variables //
+///////////////////////////
+
+// Synth period (no. 8kHz cycles)
+uint8_t synthPeriod;
+
+// Synth volume
+uint16_t synthEnergy;
+
+// Frame frequency
+uint8_t periodCounter;
+
+// Slew-states
+int32_t energySlewState;
+int32_t oscPeriodSlewState;
+
+///////////////////
+// Params/Inlets //
+///////////////////
+
+bool voiced;
+uint32_t octave;
+uint8_t oscPeriod;
+uint32_t crush;
+uint16_t noiseMix;
+uint32_t gliss;
+uint8_t chirp;
+int8_t midiNote;
+
+/////////////
+// Samples //
+/////////////
+
+int32_t sample;
+int8_t extOsc;
+
+//////////////
+// Counters //
+//////////////
+
+uint8_t renderCounter;
+uint8_t renderInterval;
+int8_t midiPeriod;
+
+///////////////////
+///////////////////
+//// FUNCTIONS ////
+///////////////////
+///////////////////
+
+//////////////////
+// Render Audio //
+//////////////////
+
+int8_t tk_renderVoiced() {
+	// Generate voiced source
+	static int16_t voicedSource;
+
+	if (periodCounter < oscPeriod) {
+		periodCounter++;
+	} else {
+		periodCounter = 0;
+	}
+	if (periodCounter < CHIRP_SIZE) {
+		voicedSource = ((chirpTables[chirp][periodCounter]) * (uint32_t) synthEnergy) >> 8;
+	} else {
+		voicedSource = 0;
+	}
+	return voicedSource;
+}
+
+///////////////////////
+// Utility Functions //
+///////////////////////
+
+// Scale input to range out_min > out_max
+__attribute__ ( ( always_inline ) ) __STATIC_INLINE int32_t range_pos(int32_t val, int32_t out_min, int32_t out_max) {
+	float x = (float)val;
+	float outMin = (float)out_min;
+	float outMax = (float)out_max;
+	return (int32_t)(x * (outMax - outMin) / 0x07FFFFFF + outMin);
+};
+
+// 8-Bit clamp val to range min > max
+__attribute__ ( ( always_inline ) ) __STATIC_INLINE int8_t clamp8(int8_t val, int8_t min, int8_t max) {
+	return (val <= min) ? min : (val >= max) ? max : val;
+}
+
+// 16-bit xfade (adapted from Factory xfade object)
+__attribute__ ( ( always_inline ) ) __STATIC_INLINE int16_t xfade16(int16_t a, int16_t b, uint16_t x) {
+	int16_t ccompl = (1 << 15) - x;
+	int32_t result = (int32_t)b * x;
+	result += (int32_t)a * ccompl;
+	return result >> 16;
+}
+
+// Slew function, with pointer to state variable
+__attribute__ ( ( always_inline ) ) __STATIC_INLINE int32_t slew(int32_t target, int32_t *state, int32_t slewTime, bool enable) {
+	if (enable && slewTime > 0) {
+		*state = ___SMMLA(*state - target, (-1 << 26) + (slewTime >> 1), *state);
+		return *state;
+	} else {
+		*state = target;
+		return target;
+	};
+};
+
+]]></code.declaration>
+         <code.init><![CDATA[
+
+// Counters (count S-Rate cycles)
+renderCounter = 0;
+// S-Rate cycle periods for sample-calculate function
+renderInterval = 6;
+
+// Calculated output sample value
+sample = 0;
+// External audio input sample
+extOsc = 0;
+
+// Inlets/Param values
+octave = 0;
+oscPeriod = 0;
+crush = 9;
+gliss = 0;
+chirp = 0;
+
+]]></code.init>
+         <code.krate><![CDATA[
+
+// Synth energy and period, with slew
+synthEnergy = slew(__USAT(inlet_synthEnergy, 16)<<24, &energySlewState, smear, true)>>24;
+synthPeriod = tmsPeriod[__USAT(inlet_synthPeriod, 8)];
+
+///////////////////
+// Params/Inlets //
+///////////////////
+
+// Bitcrush
+crush = range_pos(__USAT(param_crush + inlet_crush, 27), 0, 7);
+// Glissando
+gliss = __USAT(param_gliss + inlet_gliss, 27);
+// Octave
+octave = range_pos(__USAT(param_oct + inlet_oct, 27), 0, 2);
+
+// Transpose/set period of voiced source
+// if boolean inlet 'pitch' true
+if(inlet_pitch) {
+	// MIDI note number, clamped to range, scaled
+	midiNote = clamp8(inlet_note >> 21, -40, -16) + 40;
+	// Mode 1: transpose
+	if(param_pmode == 1) {
+		oscPeriod = synthPeriod + midiTranspose[midiNote];		
+	// Mode 2: set period from Note inlet (Vocoder mode)
+	} else if(param_pmode == 2) {
+		oscPeriod = midiNotes[midiNote];
+	}
+} else {
+	oscPeriod = synthPeriod;
+}
+oscPeriod = slew(oscPeriod << 24, &oscPeriodSlewState, gliss, TRUE) >> 24;
+
+// Switch sample-rate for low/high/mid octaves
+switch(octave) {
+	case 0  :
+		renderInterval = 12;
+		break;
+	case 2  :
+		renderInterval = 3;
+		break;
+	default :
+		renderInterval = 6;
+}
+
+// Chirp table
+chirp = 0;//attr_wave;
+
+/////////////////
+// Render Loop //
+/////////////////
+
+for(uint8_t j = 0; j < BUFSIZE; j++) {
+
+	///////////////////
+	// Render Sample //
+	///////////////////
+	
+	if(renderCounter == 0) {
+		
+	}
+	
+	// Increment render counter
+	renderCounter = (renderCounter < (renderInterval - 1)) ? renderCounter + 1 : 0;
+	
+	// Write samples to output buffer (27 bits)
+	outlet_out[j] = sample << 19;
+}
+
+]]></code.krate>
+      </object>
+   </patchobj>
+   <nets/>
+   <settings>
+      <subpatchmode>no</subpatchmode>
+   </settings>
+   <notes><![CDATA[]]></notes>
+   <windowPos>
+      <x>364</x>
+      <y>83</y>
+      <width>1240</width>
+      <height>1087</height>
+   </windowPos>
+</patch-1.0>
