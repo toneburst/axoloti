@@ -6,7 +6,7 @@
       </params>
       <attribs/>
    </obj>
-   <patcher type="patch/patcher" uuid="a9e400e0-5895-425c-8cfd-79cc42ae0796" name="Energy" x="448" y="70">
+   <patcher type="patch/patcher" uuid="71a00b8c-c8f6-4b7f-bb72-a954e72825e4" name="Energy" x="448" y="70">
       <params>
          <frac32.u.map name="Value" value="64.0"/>
       </params>
@@ -87,7 +87,7 @@ outlet_int = range_pos(__USAT(inlet_val, 27), param_max);
       </params>
       <attribs/>
    </obj>
-   <patcher type="patch/patcher" uuid="85ec88ae-65e4-4b63-be17-5ec95a376b29" name="Period" x="322" y="112">
+   <patcher type="patch/patcher" uuid="a69faca0-0c0b-40e0-981b-706d32575156" name="Period" x="322" y="112">
       <params>
          <frac32.u.map name="Value" value="64.0"/>
       </params>
@@ -456,7 +456,7 @@ for(uint8_t j = 0; j < BUFSIZE; j++) {
       <params/>
       <attribs/>
    </obj>
-   <patchobj type="patch/object" uuid="b7a840a4-fac9-40b2-aaca-6f965cd5f0e5" name="TALKIE" x="140" y="196">
+   <patchobj type="patch/object" uuid="b7a840a4-fac9-40b2-aaca-6f965cd5f0e5" name="Talkie Controller" x="140" y="196">
       <params>
          <frac32.u.map name="word" value="0.0"/>
          <frac32.u.map name="rate" value="31.5"/>
