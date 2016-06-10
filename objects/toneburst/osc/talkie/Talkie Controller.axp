@@ -16,7 +16,7 @@
       </params>
       <attribs/>
    </obj>
-   <patcher type="patch/patcher" uuid="8b986b44-db92-4357-81b7-207ba4eacab2" name="Energy" x="448" y="70">
+   <patcher type="patch/patcher" uuid="ac101b61-2b76-420e-9717-60e1b7c0f147" name="Energy" x="448" y="70">
       <params>
          <frac32.u.map name="Value" value="64.0"/>
       </params>
@@ -97,7 +97,7 @@ outlet_int = range_pos(__USAT(inlet_val, 27), param_max);
       </params>
       <attribs/>
    </obj>
-   <patcher type="patch/patcher" uuid="70dad99d-393f-4f95-8fec-867e92f80aa0" name="Period" x="322" y="112">
+   <patcher type="patch/patcher" uuid="2a7b5ca6-4c9b-461d-8b85-2a3010b8a11c" name="Period" x="322" y="112">
       <params>
          <frac32.u.map name="Value" value="64.0"/>
       </params>
@@ -470,9 +470,6 @@ for(uint8_t j = 0; j < BUFSIZE; j++) {
       <params>
          <frac32.u.map name="word" value="0.0"/>
          <frac32.u.map name="rate" value="31.5"/>
-         <frac32.u.map name="pitch" value="0.0"/>
-         <frac32.u.map name="crush" value="0.0"/>
-         <frac32.u.map name="noise" value="3.0"/>
          <bool32.mom name="freeze" value="0"/>
          <bool32.mom name="glitch" value="0"/>
       </params>
@@ -507,9 +504,6 @@ for(uint8_t j = 0; j < BUFSIZE; j++) {
          <params>
             <frac32.u.map name="word" description="word-select"/>
             <frac32.u.map name="rate"/>
-            <frac32.u.map name="pitch" description="pitch"/>
-            <frac32.u.map name="crush" description="bit-crush"/>
-            <frac32.u.map name="noise"/>
             <bool32.mom name="freeze" description="freeze playback"/>
             <bool32.mom name="glitch" description="glitch"/>
          </params>
@@ -635,7 +629,6 @@ void tk_silence() {
 	synthK8  = 0;
 	synthK9  = 0;
 	synthK10 = 0;
-	sample = 0;
 }
 
 //////////////
@@ -788,6 +781,7 @@ uint16_t readInterval;
 ///////////////////
 
 bool trig;
+uint32_t rate;
 bool glitch;
 bool freeze;
 uint8_t* ptrGlitchOffset;
@@ -797,7 +791,6 @@ uint8_t* ptrGlitchOffset;
 
 // S-Rate cycle periods for read and sample-calculate functions
 readInterval = 1200;
-renderInterval = 6;;
 
 // Inlet/param init
 trig = false;
@@ -824,7 +817,7 @@ rate = __USAT(param_rate + inlet_rate, 27);
 freeze = param_freeze | inlet_freeze;
 
 readInterval = 120;//range_pos(rate, 240, 15);
-renderInterval = 6;//range_pos(pitch, 12, 0);
+
 
 /////////////////////////
 // Detect Glitch Press //
@@ -1404,7 +1397,7 @@ outlet_wave = a >> 35;
       <params>
          <frac32.u.map name="synthK1" value="7.0"/>
          <frac32.u.map name="synthK2" value="46.5"/>
-         <frac32.u.map name="synthK3" value="47.0"/>
+         <frac32.u.map name="synthK3" value="5.5"/>
          <frac32.u.map name="synthK4" value="14.0"/>
          <frac32.u.map name="synthK5" value="32.5"/>
          <frac32.u.map name="synthK6" value="13.0"/>
@@ -1484,7 +1477,7 @@ outlet_synthK10 = tmsK10[param_synthK10 >> 24];
    </patchobj>
    <patchobj type="patch/object" uuid="325e427b-0c89-4479-8959-cce80a02a21c" name="Talkie Filter Tranformer" x="938" y="196">
       <params>
-         <frac32.u.map name="rotate" MidiCC="21" value="26.5"/>
+         <frac32.u.map name="rotate" MidiCC="21" value="2.5"/>
       </params>
       <attribs/>
       <object id="patch/object" uuid="325e427b-0c89-4479-8959-cce80a02a21c">
@@ -1736,8 +1729,8 @@ outlet_synthK10 = scaleValue(ins[indices[rotation][9]], bits[indices[rotation][9
    </settings>
    <notes><![CDATA[]]></notes>
    <windowPos>
-      <x>97</x>
-      <y>35</y>
+      <x>17</x>
+      <y>23</y>
       <width>1231</width>
       <height>754</height>
    </windowPos>
