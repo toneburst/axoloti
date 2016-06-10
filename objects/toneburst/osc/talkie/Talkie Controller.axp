@@ -1,12 +1,12 @@
 <patch-1.0 appVersion="1.0.10">
-   <obj type="env/ahd lin m" uuid="f9b46834ce96425064b4ed7f53ad8b91ea1ac0ef" name="ahd_1" x="798" y="28">
+   <obj type="env/ahd lin m" uuid="f9b46834ce96425064b4ed7f53ad8b91ea1ac0ef" name="ahd_1" x="812" y="28">
       <params>
          <frac32.s.map name="a" value="-64.0"/>
          <frac32.s.map name="d" value="-31.0"/>
       </params>
       <attribs/>
    </obj>
-   <patcher type="patch/patcher" uuid="26a94ad6-74bc-4d8f-9dd8-cf210ccbd88b" name="Energy" x="168" y="70">
+   <patcher type="patch/patcher" uuid="3111f53f-d0c9-4893-bc7c-dfb08d9c4f00" name="Energy" x="168" y="70">
       <params>
          <frac32.u.map name="Value" value="64.0"/>
       </params>
@@ -81,13 +81,13 @@ outlet_int = range_pos(__USAT(inlet_val, 27), param_max);
          <notes><![CDATA[]]></notes>
       </subpatch>
    </patcher>
-   <obj type="ctrl/dial p" uuid="cc5d2846c3d50e425f450c4b9851371b54f4d674" name="Volume" x="910" y="84">
+   <obj type="ctrl/dial p" uuid="cc5d2846c3d50e425f450c4b9851371b54f4d674" name="Volume" x="924" y="84">
       <params>
          <frac32.u.map name="value" value="51.0"/>
       </params>
       <attribs/>
    </obj>
-   <patcher type="patch/patcher" uuid="32029335-afc1-4154-8467-cae613ff25f1" name="Period" x="42" y="112">
+   <patcher type="patch/patcher" uuid="f72bf7f3-60eb-443f-9b01-df722ad8397d" name="Period" x="42" y="112">
       <params>
          <frac32.u.map name="Value" value="64.0"/>
       </params>
@@ -162,7 +162,7 @@ outlet_int = range_pos(__USAT(inlet_val, 27), param_max);
          <notes><![CDATA[]]></notes>
       </subpatch>
    </patcher>
-   <patchobj type="patch/object" uuid="2e3b980b-4415-428f-b6ca-29f283183066" name="Talkie Filters" x="798" y="182">
+   <patchobj type="patch/object" uuid="2e3b980b-4415-428f-b6ca-29f283183066" name="Talkie Filters" x="812" y="182">
       <params>
          <frac32.u.map name="srate" value="31.5"/>
          <frac32.u.map name="crush" value="0.0"/>
@@ -441,15 +441,15 @@ for(uint8_t j = 0; j < BUFSIZE; j++) {
 ]]></code.krate>
       </object>
    </patchobj>
-   <obj type="gain/vca" uuid="a9f2dcd18043e2f47364e45cb8814f63c2a37c0d" name="vca_1" x="924" y="182">
+   <obj type="gain/vca" uuid="a9f2dcd18043e2f47364e45cb8814f63c2a37c0d" name="vca_1" x="938" y="182">
       <params/>
       <attribs/>
    </obj>
-   <obj type="math/*" uuid="3ac307b9f782049739ed62504081b96d580ea336" name="*_1" x="994" y="182">
+   <obj type="math/*" uuid="3ac307b9f782049739ed62504081b96d580ea336" name="*_1" x="1008" y="182">
       <params/>
       <attribs/>
    </obj>
-   <obj type="audio/out stereo" uuid="a1ca7a567f535acc21055669829101d3ee7f0189" name="out_1" x="1064" y="182">
+   <obj type="audio/out stereo" uuid="a1ca7a567f535acc21055669829101d3ee7f0189" name="out_1" x="1078" y="182">
       <params/>
       <attribs/>
    </obj>
@@ -873,7 +873,7 @@ for(uint8_t j = 0; j < BUFSIZE; j++) {
 ]]></code.krate>
       </object>
    </patchobj>
-   <patchobj type="patch/object" uuid="06902663-1848-4c47-84be-beae9351032a" name="Talkie Mixer" x="378" y="196">
+   <patchobj type="patch/object" uuid="06902663-1848-4c47-84be-beae9351032a" name="Talkie Mixer" x="392" y="196">
       <params>
          <bool32.tgl name="unvoiced" value="0"/>
          <frac32.u.map name="bias" value="0.0"/>
@@ -963,7 +963,7 @@ outlet_wave = a >> 35;
 ]]></code.srate>
       </object>
    </patchobj>
-   <patchobj type="patch/object" uuid="325e427b-0c89-4479-8959-cce80a02a21c" name="Talkie Filter Controller" x="518" y="196">
+   <patchobj type="patch/object" uuid="325e427b-0c89-4479-8959-cce80a02a21c" name="Talkie Filter Controller" x="532" y="196">
       <params>
          <frac32.u.map name="synthK1" value="37.0"/>
          <frac32.u.map name="synthK2" value="21.0"/>
@@ -1045,7 +1045,7 @@ outlet_synthK10 = tmsK10[param_synthK10 >> 24];
 ]]></code.krate>
       </object>
    </patchobj>
-   <patchobj type="patch/object" uuid="325e427b-0c89-4479-8959-cce80a02a21c" name="Talkie Filter Tranformer" x="644" y="196">
+   <patchobj type="patch/object" uuid="325e427b-0c89-4479-8959-cce80a02a21c" name="Talkie Filter Tranformer" x="658" y="196">
       <params>
          <frac32.u.map name="rotate" value="23.5"/>
       </params>
@@ -1288,7 +1288,7 @@ outlet_synthK10 = scaleValue(ins[indices[rotation][9]], bits[indices[rotation][9
    </settings>
    <notes><![CDATA[]]></notes>
    <windowPos>
-      <x>66</x>
+      <x>424</x>
       <y>23</y>
       <width>1240</width>
       <height>852</height>
