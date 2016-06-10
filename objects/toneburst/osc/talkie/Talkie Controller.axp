@@ -6,7 +6,7 @@
       </params>
       <attribs/>
    </obj>
-   <patcher type="patch/patcher" uuid="3111f53f-d0c9-4893-bc7c-dfb08d9c4f00" name="Energy" x="168" y="70">
+   <patcher type="patch/patcher" uuid="a9e400e0-5895-425c-8cfd-79cc42ae0796" name="Energy" x="168" y="70">
       <params>
          <frac32.u.map name="Value" value="64.0"/>
       </params>
@@ -87,7 +87,7 @@ outlet_int = range_pos(__USAT(inlet_val, 27), param_max);
       </params>
       <attribs/>
    </obj>
-   <patcher type="patch/patcher" uuid="f72bf7f3-60eb-443f-9b01-df722ad8397d" name="Period" x="42" y="112">
+   <patcher type="patch/patcher" uuid="85ec88ae-65e4-4b63-be17-5ec95a376b29" name="Period" x="42" y="112">
       <params>
          <frac32.u.map name="Value" value="64.0"/>
       </params>
@@ -166,7 +166,8 @@ outlet_int = range_pos(__USAT(inlet_val, 27), param_max);
       <params>
          <frac32.u.map name="srate" value="31.5"/>
          <frac32.u.map name="crush" value="0.0"/>
-         <frac32.u.map name="smear" value="52.0"/>
+         <bool32.tgl name="slew" value="0"/>
+         <frac32.u.map name="slewrate" value="22.0"/>
       </params>
       <attribs/>
       <object id="patch/object" uuid="2e3b980b-4415-428f-b6ca-29f283183066">
@@ -188,7 +189,8 @@ outlet_int = range_pos(__USAT(inlet_val, 27), param_max);
             <int32.bipolar name="synthK10" description="synth coefficient K10"/>
             <frac32.positive name="srate" description="octave transpose"/>
             <frac32.positive name="crush" description="bit-crush"/>
-            <frac32.positive name="smear" description="filter smear"/>
+            <bool32 name="slew"/>
+            <frac32.positive name="slewrate" description=""/>
          </inlets>
          <outlets>
             <frac32buffer.bipolar name="voice"/>
@@ -197,7 +199,8 @@ outlet_int = range_pos(__USAT(inlet_val, 27), param_max);
          <params>
             <frac32.u.map name="srate"/>
             <frac32.u.map name="crush" description="bit-crush"/>
-            <frac32.u.map name="smear" description="harmonic smear"/>
+            <bool32.tgl name="slew"/>
+            <frac32.u.map name="slewrate" description="harmonic smear"/>
          </params>
          <attribs/>
          <includes/>
@@ -244,9 +247,9 @@ int16_t x0,x1,x2,x3,x4,x5,x6,x7,x8,x9,x10;
 // Params/Inlets //
 ///////////////////
 
-uint32_t srate;
+uint32_t sampleRate;
 uint32_t crush;
-uint32_t smear;
+uint32_t slewRate;
 
 /////////////
 // Samples //
@@ -336,7 +339,7 @@ __attribute__ ( ( always_inline ) ) __STATIC_INLINE int16_t xfade16(int16_t a, i
 }
 
 // Slew function, with pointer to state variable
-__attribute__ ( ( always_inline ) ) __STATIC_INLINE int32_t slew(int32_t target, int32_t *state, int32_t slewTime, bool enable) {
+__attribute__ ( ( always_inline ) ) __STATIC_INLINE int32_t slew32(int32_t target, int32_t *state, int32_t slewTime, bool enable) {
 	if (enable && slewTime > 0) {
 		*state = ___SMMLA(*state - target, (-1 << 26) + (slewTime >> 1), *state);
 		return *state;
@@ -369,24 +372,24 @@ excitationSource = 0;
 sample = 0;
 
 // Inlets/Param values
-srate = 0;
+sampleRate = 0;
 crush = 9;
-smear = 0;
+slewRate = 0;
 
 ]]></code.init>
          <code.krate><![CDATA[
 
 // Synth coefficients, with slew
-synthK1  = slew(__SSAT(inlet_synthK1, 16) <<16, &synthK1SlewState, smear, true)>>16;
-synthK2  = slew(__SSAT(inlet_synthK2, 16) <<16, &synthK2SlewState, smear, true)>>16;
-synthK3  = slew(__SSAT(inlet_synthK3,  8) <<24, &synthK3SlewState, smear, true)>>24;
-synthK4  = slew(__SSAT(inlet_synthK4,  8) <<24, &synthK4SlewState, smear, true)>>24;
-synthK5  = slew(__SSAT(inlet_synthK5,  8) <<24, &synthK5SlewState, smear, true)>>24;
-synthK6  = slew(__SSAT(inlet_synthK6,  8) <<24, &synthK6SlewState, smear, true)>>24;
-synthK7  = slew(__SSAT(inlet_synthK7,  8) <<24, &synthK7SlewState, smear, true)>>24;
-synthK8  = slew(__SSAT(inlet_synthK8,  8) <<24, &synthK8SlewState, smear, true)>>24;
-synthK9  = slew(__SSAT(inlet_synthK9,  8) <<24, &synthK9SlewState, smear, true)>>24;
-synthK10 = slew(__SSAT(inlet_synthK10, 8) <<24, &synthK10SlewState,smear, true)>>24;
+synthK1  = slew32(__SSAT(inlet_synthK1, 16) <<16, &synthK1SlewState, slewRate, true)>>16;
+synthK2  = slew32(__SSAT(inlet_synthK2, 16) <<16, &synthK2SlewState, slewRate, true)>>16;
+synthK3  = slew32(__SSAT(inlet_synthK3,  8) <<24, &synthK3SlewState, slewRate, true)>>24;
+synthK4  = slew32(__SSAT(inlet_synthK4,  8) <<24, &synthK4SlewState, slewRate, true)>>24;
+synthK5  = slew32(__SSAT(inlet_synthK5,  8) <<24, &synthK5SlewState, slewRate, true)>>24;
+synthK6  = slew32(__SSAT(inlet_synthK6,  8) <<24, &synthK6SlewState, slewRate, true)>>24;
+synthK7  = slew32(__SSAT(inlet_synthK7,  8) <<24, &synthK7SlewState, slewRate, true)>>24;
+synthK8  = slew32(__SSAT(inlet_synthK8,  8) <<24, &synthK8SlewState, slewRate, true)>>24;
+synthK9  = slew32(__SSAT(inlet_synthK9,  8) <<24, &synthK9SlewState, slewRate, true)>>24;
+synthK10 = slew32(__SSAT(inlet_synthK10, 8) <<24, &synthK10SlewState,slewRate, true)>>24;
 
 ///////////////////
 // Params/Inlets //
@@ -395,12 +398,12 @@ synthK10 = slew(__SSAT(inlet_synthK10, 8) <<24, &synthK10SlewState,smear, true)>
 // Bitcrush
 crush = range_pos(__USAT(param_crush + inlet_crush, 27), 0, 7);
 // Smear
-smear = __USAT(param_smear + inlet_smear, 27);
+slewRate = (param_slew || inlet_slew) ? __USAT(param_slewrate + inlet_slewrate, 27) : 0;
 // Sample-rate
-srate = range_pos(__USAT(param_srate + inlet_srate, 27), 0, 2);
+sampleRate = range_pos(__USAT(param_srate + inlet_srate, 27), 0, 2);
 
 // Switch sample-rate low/high/mid
-switch(srate) {
+switch(sampleRate) {
 	case 0  :
 		renderInterval = 12;
 		break;
@@ -664,7 +667,7 @@ __attribute__ ( ( always_inline ) ) __STATIC_INLINE int8_t clamp8(int8_t val, in
 }
 
 // Slew function, with pointer to state variable
-__attribute__ ( ( always_inline ) ) __STATIC_INLINE int32_t slew(int32_t target, int32_t *state, int32_t slewTime, bool enable) {
+__attribute__ ( ( always_inline ) ) __STATIC_INLINE int32_t slew32(int32_t target, int32_t *state, int32_t slewTime, bool enable) {
 	if (enable && slewTime > 0) {
 		*state = ___SMMLA(*state - target, (-1 << 26) + (slewTime >> 1), *state);
 		return *state;
@@ -736,7 +739,7 @@ if(inlet_pitch || param_pitch) {
 } else {
 	oscPeriod = synthPeriod;
 }
-oscPeriod = slew(oscPeriod << 24, &oscPeriodSlewState, glide, TRUE) >> 24;
+oscPeriod = slew32(oscPeriod << 24, &oscPeriodSlewState, glide, TRUE) >> 24;
 
 // Switch sample-rate for low/high/mid octaves
 switch(octave) {
@@ -877,7 +880,8 @@ for(uint8_t j = 0; j < BUFSIZE; j++) {
       <params>
          <bool32.tgl name="unvoiced" value="0"/>
          <frac32.u.map name="bias" value="0.0"/>
-         <frac32.u.map name="smear" value="31.5"/>
+         <bool32.tgl name="slew" value="0"/>
+         <frac32.u.map name="slewrate" value="36.0"/>
       </params>
       <attribs/>
       <object id="patch/object" uuid="06902663-1848-4c47-84be-beae9351032a">
@@ -890,7 +894,8 @@ for(uint8_t j = 0; j < BUFSIZE; j++) {
             <frac32buffer name="voicedWave" description="voiced wave"/>
             <frac32buffer name="unvoicedWave" description="unvoiced wave"/>
             <frac32.positive name="bias" description="mix unvoiced (noise) into voiced source"/>
-            <frac32.positive name="smear" description=""/>
+            <bool32 name="slew"/>
+            <frac32.positive name="slewrate" description=""/>
          </inlets>
          <outlets>
             <frac32buffer.bipolar name="wave"/>
@@ -899,7 +904,8 @@ for(uint8_t j = 0; j < BUFSIZE; j++) {
          <params>
             <bool32.tgl name="unvoiced" description="unvoiced switch"/>
             <frac32.u.map name="bias" description="mix unvoiced (noise) into voiced source"/>
-            <frac32.u.map name="smear" description="apply slew to voiced/unvoiced mix"/>
+            <bool32.tgl name="slew"/>
+            <frac32.u.map name="slewrate" description="apply slew to voiced/unvoiced mix"/>
          </params>
          <attribs/>
          <includes/>
@@ -913,7 +919,7 @@ int32_t mixSlewState;
 ///////////////////////
 
 // Slew function, with pointer to state variable
-__attribute__ ( ( always_inline ) ) __STATIC_INLINE int32_t slew(int32_t target, int32_t *state, int32_t slewTime, bool enable) {
+__attribute__ ( ( always_inline ) ) __STATIC_INLINE int32_t slew32(int32_t target, int32_t *state, int32_t slewTime, bool enable) {
 	if (enable && slewTime > 0) {
 		*state = ___SMMLA(*state - target, (-1 << 26) + (slewTime >> 1), *state);
 		return *state;
@@ -924,7 +930,7 @@ __attribute__ ( ( always_inline ) ) __STATIC_INLINE int32_t slew(int32_t target,
 };
 
 // Exponential interpolation
-__attribute__ ( ( always_inline ) ) __STATIC_INLINE int32_t interpExp(int32_t val) {
+__attribute__ ( ( always_inline ) ) __STATIC_INLINE int32_t interpExp32(int32_t val) {
 	// Transform inlet val to float in 0 - 1 range
 	float inf = val * (float)(1.0f / (1 << 27));
 	float curve = inf*inf;
@@ -941,15 +947,14 @@ mixSlewState = 0;
          <code.krate><![CDATA[
 
 // Set mix to max if unvoiced param or inlet set true, else set to values from bias param/inlet (saturated to 27 bits)
-mix = (inlet_unvoiced || param_unvoiced) ? 0x07ffffff : interpExp(__USAT(param_bias + inlet_bias, 27));
+mix = (inlet_unvoiced || param_unvoiced) ? 0x07ffffff : interpExp32(__USAT(param_bias + inlet_bias, 27));
+
 // Apply slew to mix value
-mix = slew(mix, &mixSlewState, __USAT(param_smear + inlet_smear, 27), true);
+if(param_slew || inlet_slew)
+	mix = slew32(mix, &mixSlewState, __USAT(param_slewrate + inlet_slewrate, 27), true);
+
 // Inverted mix value
 int32_t ccompl = ((128 << 20) - mix);
-
-
-//voicedSource = ((chirpTables[waveIndex][periodCounter]) * (uint32_t) synthEnergy) >> 8;
-
 
 ]]></code.krate>
          <code.srate><![CDATA[
@@ -957,7 +962,11 @@ int32_t ccompl = ((128 << 20) - mix);
 // Mix voiced and unvoiced inlets (code from Factory mix/xfade object)
 int64_t a = (int64_t)inlet_unvoicedWave * mix;
 a += (int64_t)inlet_voicedWave * ccompl;
+
+// Multiply by synthEnergy value
 a *= inlet_synthEnergy;
+
+// Set outlet sample
 outlet_wave = a >> 35;
 
 ]]></code.srate>
@@ -1288,8 +1297,8 @@ outlet_synthK10 = scaleValue(ins[indices[rotation][9]], bits[indices[rotation][9
    </settings>
    <notes><![CDATA[]]></notes>
    <windowPos>
-      <x>424</x>
-      <y>23</y>
+      <x>783</x>
+      <y>43</y>
       <width>1240</width>
       <height>852</height>
    </windowPos>
