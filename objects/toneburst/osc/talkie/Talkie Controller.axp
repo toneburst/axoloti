@@ -1,12 +1,22 @@
 <patch-1.0 appVersion="1.0.10">
-   <obj type="env/ahd lin m" uuid="f9b46834ce96425064b4ed7f53ad8b91ea1ac0ef" name="ahd_1" x="1092" y="28">
+   <obj type="midi/in/monitor" uuid="b51863ca-6afa-4d29-acfd-c8c2fe06cb16" name="monitor_1" x="56" y="28">
       <params>
-         <frac32.s.map name="a" value="-64.0"/>
-         <frac32.s.map name="d" value="-31.0"/>
+         <bool32.tgl name="ControlChange" value="0"/>
+         <bool32.tgl name="Note" value="0"/>
+         <bool32.tgl name="ProgramChange" value="0"/>
+         <bool32.tgl name="Bend" value="0"/>
+         <bool32.tgl name="PolyPressure" value="0"/>
       </params>
       <attribs/>
    </obj>
-   <patcher type="patch/patcher" uuid="38446211-387e-4bf2-9f48-33ece15032e9" name="Energy" x="448" y="70">
+   <obj type="env/ahd lin m" uuid="f9b46834ce96425064b4ed7f53ad8b91ea1ac0ef" name="ahd_1" x="1092" y="28">
+      <params>
+         <frac32.s.map name="a" value="-64.0"/>
+         <frac32.s.map name="d" value="64.0"/>
+      </params>
+      <attribs/>
+   </obj>
+   <patcher type="patch/patcher" uuid="8b986b44-db92-4357-81b7-207ba4eacab2" name="Energy" x="448" y="70">
       <params>
          <frac32.u.map name="Value" value="64.0"/>
       </params>
@@ -83,11 +93,11 @@ outlet_int = range_pos(__USAT(inlet_val, 27), param_max);
    </patcher>
    <obj type="ctrl/dial p" uuid="cc5d2846c3d50e425f450c4b9851371b54f4d674" name="Volume" x="1204" y="84">
       <params>
-         <frac32.u.map name="value" value="27.0"/>
+         <frac32.u.map name="value" value="54.5"/>
       </params>
       <attribs/>
    </obj>
-   <patcher type="patch/patcher" uuid="6c8fbe9a-b3e8-4e14-9e82-93e4722e07fa" name="Period" x="322" y="112">
+   <patcher type="patch/patcher" uuid="70dad99d-393f-4f95-8fec-867e92f80aa0" name="Period" x="322" y="112">
       <params>
          <frac32.u.map name="Value" value="64.0"/>
       </params>
@@ -475,14 +485,11 @@ for(uint8_t j = 0; j < BUFSIZE; j++) {
             <bool32.risingfalling name="gate" description="gate"/>
             <frac32.positive name="word" description="word-select"/>
             <frac32.positive name="rate" description="playback rate"/>
-            <frac32.positive name="pitch" description="playback pitch"/>
-            <frac32.positive name="crush" description="bit-crush"/>
-            <frac32.positive name="noise"/>
             <bool32 name="freeze" description="freeze playback"/>
             <bool32 name="glitch" description="glitch"/>
          </inlets>
          <outlets>
-            <bool32 name="voiced" description="voiced/unvoiced switch"/>
+            <bool32 name="unvoiced" description="voiced/unvoiced switch"/>
             <int32.positive name="synthEnergy" description="synth energy (determines volume)"/>
             <int32.positive name="synthPeriod" description="synth period (determines voiced frame frequency)"/>
             <int32.bipolar name="synthK1" description="synth filter coefficient K1"/>
@@ -495,9 +502,6 @@ for(uint8_t j = 0; j < BUFSIZE; j++) {
             <int32.bipolar name="synthK8" description="synth filter coefficient K8"/>
             <int32.bipolar name="synthK9" description="synth filter coefficient K9"/>
             <int32.bipolar name="synthK10" description="synth filter coefficient K10"/>
-            <frac32buffer.bipolar name="out"/>
-            <int32 name="debugINT"/>
-            <bool32 name="debugBOOL"/>
          </outlets>
          <displays/>
          <params>
@@ -603,7 +607,7 @@ uint8_t tk_getBits(uint8_t bits) {
 //////////////////
 
 uint8_t tk_revBits(uint8_t a) {
-	// REDO with Cortex M4 builtin REV function !!	
+	// REDO with Cortex M4 builtin REV function?	
 	// 76543210
 	a = (a>>4) | (a<<4); // Swap in groups of 4
 	// 32107654
@@ -619,6 +623,7 @@ uint8_t tk_revBits(uint8_t a) {
 /////////////////////////
 
 void tk_silence() {
+	synthPeriod = 0;
 	synthEnergy = 0;
 	synthK1  = 0;
 	synthK2  = 0;
@@ -687,13 +692,11 @@ void tk_speak() {
 // Render Audio //
 //////////////////
 
-uint8_t periodCounter;
+/*uint8_t periodCounter;
 int16_t x0,x1,x2,x3,x4,x5,x6,x7,x8,x9,x10;
 
 #define CHIRP_SIZE 41
 const int8_t chirp[CHIRP_SIZE] = {0x00,0x2a,0xd4,0x32,0xb2,0x12,0x25,0x14,0x02,0xe1,0xc5,0x02,0x5f,0x5a,0x05,0x0f,0x26,0xfc,0xa5,0xa5,0xd6,0xdd,0xdc,0xfc,0x25,0x2b,0x22,0x21,0x0f,0xff,0xf8,0xee,0xed,0xef,0xf7,0xf6,0xfa,0x00,0x03,0x02,0x01};
-
-int32_t sample;
 
 int8_t tk_renderVoice() {
 	int16_t u0,u1,u2,u3,u4,u5,u6,u7,u8,u9,u10;
@@ -755,7 +758,7 @@ int8_t tk_renderVoice() {
 
 	// Bit-shift return value to -255 to 254 range
 	return u10;//u0 >> 1;
-}
+}*/
 
 ///////////////////////
 // Utility Functions //
@@ -777,8 +780,6 @@ __attribute__ ( ( always_inline ) ) __STATIC_INLINE int8_t u8mix(int8_t a, int8_
 // Read/Render Counters/Intervals //
 ////////////////////////////////////
 
-uint16_t renderCounter;
-uint16_t renderInterval;
 uint16_t readCounter;
 uint16_t readInterval;
 
@@ -788,31 +789,21 @@ uint16_t readInterval;
 
 bool trig;
 bool glitch;
-uint32_t rate;
-uint32_t pitch;
 bool freeze;
-uint32_t crush;
-uint8_t noise;
 uint8_t* ptrGlitchOffset;
 
 ]]></code.declaration>
          <code.init><![CDATA[
 
-// Counters (count S-Rate cycles)
-readCounter = 0;
-renderCounter = 0;
-
 // S-Rate cycle periods for read and sample-calculate functions
 readInterval = 1200;
-renderInterval = 6;
+renderInterval = 6;;
 
-// Calculated output sample value
-sample = 0;
-
-// Bool inlet/param init
+// Inlet/param init
 trig = false;
-freeze = 0;
+freeze = false;
 glitch = false;
+rate = 0;
 
 // Pointer
 ptrAddr = NULL;
@@ -822,14 +813,6 @@ loop = true;
 wordLength = 0;	
 ptrGlitchOffset = 0;	// Offset from start of word pointer
 
-// Inlets/Param values
-rate = 0;
-pitch = 0;
-freeze = false;
-glitch = false;
-crush = 9;
-noise = 0;
-
 ]]></code.init>
          <code.krate><![CDATA[
 
@@ -838,10 +821,7 @@ noise = 0;
 ///////////////////
 
 rate = __USAT(param_rate + inlet_rate, 27);
-pitch = __USAT(param_pitch + inlet_pitch, 27);
-noise = __USAT(param_noise + inlet_noise, 27) >> 19;
 freeze = param_freeze | inlet_freeze;
-crush = range_pos(__USAT(param_crush + inlet_crush, 27), 0, 8);
 
 readInterval = 120;//range_pos(rate, 240, 15);
 renderInterval = 6;//range_pos(pitch, 12, 0);
@@ -877,9 +857,7 @@ if(inlet_gate) {
 
 		// Reset cycle counters
 		readCounter = 0;
-		renderCounter = 0;
-	}
-		
+	}		
 	trig = true;	
 } else {
 	// Silence synth on gate-off
@@ -896,46 +874,20 @@ if(inlet_gate) {
 if(readCounter == 0 && inlet_gate) {
 	// Only read if gate on and rate > 0
 	if(inlet_gate && !freeze) {
-		tk_speak();
+		//tk_speak();
 	}
 }
 // Increment read counter
 readCounter = (readCounter < (readInterval - 1)) ? readCounter + 1 : 0;
 
 
-/////////////////
-// Render Loop //
-/////////////////
-
-for(uint8_t j = 0; j < BUFSIZE; j++) {
-
-	///////////////////
-	// Render Sample //
-	///////////////////
-	
-	if(renderCounter == 0) {
-		// Render voice samples
-		sample = tk_renderVoice();
-		// Bit-reduction
-		if(crush > 0)
-			sample = (sample >> crush) << crush;
-	}
-	// Increment render counter
-	renderCounter = (renderCounter < (renderInterval - 1)) ? renderCounter + 1 : 0;
-	
-	// Write samples to output buffer (27 bits)
-	outlet_out[j] = sample << 19;
-}
-
-outlet_debugINT = wordLength;
-
 ]]></code.krate>
       </object>
    </patchobj>
    <patchobj type="patch/object" uuid="2e3b980b-4415-428f-b6ca-29f283183066" name="Talkie Voiced Source" x="420" y="196">
       <params>
-         <frac32.u.map name="wave" value="0.0"/>
-         <frac32.u.map name="oct" value="0.0"/>
+         <frac32.u.map name="wave" MidiCC="22" value="0.0"/>
+         <frac32.u.map name="oct" value="32.0"/>
          <bool32.tgl name="pitch" value="1"/>
          <int32 name="pmode" value="2"/>
          <bool32.tgl name="glide" value="0"/>
@@ -1256,8 +1208,8 @@ for(uint8_t j = 0; j < BUFSIZE; j++) {
    <patchobj type="patch/object" uuid="0c5470ff-da3f-4dc8-9848-fbe7ff65bd4e" name="Talkie Unvoiced Source" x="546" y="196">
       <params>
          <frac32.s.map name="pitch" value="0.0"/>
-         <frac32.u.map name="octave" value="32.0"/>
-         <bool32.tgl name="fixed" value="1"/>
+         <frac32.u.map name="octave" value="47.0"/>
+         <bool32.tgl name="fixed" value="0"/>
       </params>
       <attribs/>
       <object id="patch/object" uuid="0c5470ff-da3f-4dc8-9848-fbe7ff65bd4e">
@@ -1365,8 +1317,8 @@ for(uint8_t j = 0; j < BUFSIZE; j++) {
          <author>toneburst</author>
          <license>BSD</license>
          <inlets>
-            <int32.positive name="synthEnergy" description="energy (volume)"/>
             <bool32 name="unvoiced" description="switch between voiced and unvoiced waves"/>
+            <int32.positive name="synthEnergy" description="energy (volume)"/>
             <frac32buffer name="voicedWave" description="voiced wave"/>
             <frac32buffer name="unvoicedWave" description="unvoiced wave"/>
             <frac32.positive name="bias" description="mix unvoiced (noise) into voiced source"/>
@@ -1450,14 +1402,14 @@ outlet_wave = a >> 35;
    </patchobj>
    <patchobj type="patch/object" uuid="325e427b-0c89-4479-8959-cce80a02a21c" name="Talkie Filter Controller" x="812" y="196">
       <params>
-         <frac32.u.map name="synthK1" value="14.0"/>
-         <frac32.u.map name="synthK2" value="48.5"/>
-         <frac32.u.map name="synthK3" value="15.0"/>
-         <frac32.u.map name="synthK4" value="18.0"/>
-         <frac32.u.map name="synthK5" value="47.0"/>
-         <frac32.u.map name="synthK6" value="18.0"/>
-         <frac32.u.map name="synthK7" value="52.0"/>
-         <frac32.u.map name="synthK8" value="21.0"/>
+         <frac32.u.map name="synthK1" value="7.0"/>
+         <frac32.u.map name="synthK2" value="46.5"/>
+         <frac32.u.map name="synthK3" value="47.0"/>
+         <frac32.u.map name="synthK4" value="14.0"/>
+         <frac32.u.map name="synthK5" value="32.5"/>
+         <frac32.u.map name="synthK6" value="13.0"/>
+         <frac32.u.map name="synthK7" value="47.5"/>
+         <frac32.u.map name="synthK8" value="50.5"/>
          <frac32.u.map name="synthK9" value="37.5"/>
          <frac32.u.map name="synthK10" value="20.0"/>
       </params>
@@ -1532,7 +1484,7 @@ outlet_synthK10 = tmsK10[param_synthK10 >> 24];
    </patchobj>
    <patchobj type="patch/object" uuid="325e427b-0c89-4479-8959-cce80a02a21c" name="Talkie Filter Tranformer" x="938" y="196">
       <params>
-         <frac32.u.map name="rotate" MidiCC="20" value="0.0"/>
+         <frac32.u.map name="rotate" MidiCC="21" value="26.5"/>
       </params>
       <attribs/>
       <object id="patch/object" uuid="325e427b-0c89-4479-8959-cce80a02a21c">
@@ -1639,6 +1591,12 @@ outlet_synthK10 = scaleValue(ins[indices[rotation][9]], bits[indices[rotation][9
    </patchobj>
    <obj type="midi/in/keyb mod" uuid="abcd509d15e7d13d5381203fd2b4d0ac6fe57bb3" name="keyb_1" x="308" y="238">
       <params/>
+      <attribs/>
+   </obj>
+   <obj type="ctrl/dial p" uuid="cc5d2846c3d50e425f450c4b9851371b54f4d674" name="dial_1" x="980" y="448">
+      <params>
+         <frac32.u.map name="value" MidiCC="23" value="0.0"/>
+      </params>
       <attribs/>
    </obj>
    <nets>
@@ -1778,8 +1736,8 @@ outlet_synthK10 = scaleValue(ins[indices[rotation][9]], bits[indices[rotation][9
    </settings>
    <notes><![CDATA[]]></notes>
    <windowPos>
-      <x>0</x>
-      <y>23</y>
+      <x>97</x>
+      <y>35</y>
       <width>1231</width>
       <height>754</height>
    </windowPos>
