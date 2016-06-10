@@ -777,7 +777,7 @@ for(uint8_t j = 0; j < BUFSIZE; j++) {
    <patchobj type="patch/object" uuid="0c5470ff-da3f-4dc8-9848-fbe7ff65bd4e" name="Talkie Unvoiced Source" x="266" y="196">
       <params>
          <frac32.s.map name="pitch" value="0.0"/>
-         <frac32.u.map name="octave" value="64.0"/>
+         <frac32.u.map name="octave" value="32.0"/>
          <bool32.tgl name="fixed" value="1"/>
       </params>
       <attribs/>
