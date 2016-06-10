@@ -2,7 +2,7 @@
    <obj type="env/ahd lin m" uuid="f9b46834ce96425064b4ed7f53ad8b91ea1ac0ef" name="ahd_1" x="798" y="28">
       <params>
          <frac32.s.map name="a" value="-64.0"/>
-         <frac32.s.map name="d" value="-60.0"/>
+         <frac32.s.map name="d" value="-31.0"/>
       </params>
       <attribs/>
    </obj>
@@ -1288,7 +1288,7 @@ outlet_synthK10 = scaleValue(ins[indices[rotation][9]], bits[indices[rotation][9
    </settings>
    <notes><![CDATA[]]></notes>
    <windowPos>
-      <x>65</x>
+      <x>66</x>
       <y>23</y>
       <width>1240</width>
       <height>852</height>
