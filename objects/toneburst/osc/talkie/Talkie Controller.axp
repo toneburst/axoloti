@@ -164,9 +164,9 @@ outlet_int = range_pos(__USAT(inlet_val, 27), param_max);
    </patcher>
    <patchobj type="patch/object" uuid="2e3b980b-4415-428f-b6ca-29f283183066" name="Talkie Filters" x="798" y="182">
       <params>
-         <frac32.u.map name="srate" value="32.0"/>
+         <frac32.u.map name="srate" value="31.5"/>
          <frac32.u.map name="crush" value="0.0"/>
-         <frac32.u.map name="smear" value="60.5"/>
+         <frac32.u.map name="smear" value="36.5"/>
       </params>
       <attribs/>
       <object id="patch/object" uuid="2e3b980b-4415-428f-b6ca-29f283183066">
@@ -460,8 +460,8 @@ for(uint8_t j = 0; j < BUFSIZE; j++) {
          <bool32.tgl name="pitch" value="1"/>
          <int32 name="pmode" value="2"/>
          <bool32.tgl name="glide" value="1"/>
-         <frac32.u.map name="gliderate" value="46.0"/>
-         <frac32.u.map name="crush" value="64.0"/>
+         <frac32.u.map name="gliderate" value="31.5"/>
+         <frac32.u.map name="crush" value="0.0"/>
       </params>
       <attribs/>
       <object id="patch/object" uuid="2e3b980b-4415-428f-b6ca-29f283183066">
@@ -964,12 +964,12 @@ outlet_wave = a >> 35;
    </patchobj>
    <patchobj type="patch/object" uuid="325e427b-0c89-4479-8959-cce80a02a21c" name="Talkie Filter Controller" x="518" y="196">
       <params>
-         <frac32.u.map name="synthK1" value="36.0"/>
-         <frac32.u.map name="synthK2" value="23.5"/>
-         <frac32.u.map name="synthK3" value="11.5"/>
+         <frac32.u.map name="synthK1" value="43.5"/>
+         <frac32.u.map name="synthK2" value="54.5"/>
+         <frac32.u.map name="synthK3" value="12.0"/>
          <frac32.u.map name="synthK4" value="52.5"/>
-         <frac32.u.map name="synthK5" value="34.0"/>
-         <frac32.u.map name="synthK6" value="36.0"/>
+         <frac32.u.map name="synthK5" value="23.5"/>
+         <frac32.u.map name="synthK6" value="43.0"/>
          <frac32.u.map name="synthK7" value="55.0"/>
          <frac32.u.map name="synthK8" value="6.5"/>
          <frac32.u.map name="synthK9" value="22.5"/>
@@ -1046,7 +1046,7 @@ outlet_synthK10 = tmsK10[param_synthK10 >> 24];
    </patchobj>
    <patchobj type="patch/object" uuid="325e427b-0c89-4479-8959-cce80a02a21c" name="Talkie Filter Controller_" x="644" y="196">
       <params>
-         <frac32.u.map name="rotate" value="37.0"/>
+         <frac32.u.map name="rotate" value="14.5"/>
       </params>
       <attribs/>
       <object id="patch/object" uuid="325e427b-0c89-4479-8959-cce80a02a21c">
