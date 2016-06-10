@@ -1045,7 +1045,7 @@ outlet_synthK10 = tmsK10[param_synthK10 >> 24];
 ]]></code.krate>
       </object>
    </patchobj>
-   <patchobj type="patch/object" uuid="325e427b-0c89-4479-8959-cce80a02a21c" name="Talkie Filter Controller_" x="644" y="196">
+   <patchobj type="patch/object" uuid="325e427b-0c89-4479-8959-cce80a02a21c" name="Talkie Filter Tranformer" x="644" y="196">
       <params>
          <frac32.u.map name="rotate" value="23.5"/>
       </params>
@@ -1204,82 +1204,82 @@ outlet_synthK10 = scaleValue(ins[indices[rotation][9]], bits[indices[rotation][9
       </net>
       <net>
          <source obj="Talkie Filter Controller" outlet="synthK1"/>
-         <dest obj="Talkie Filter Controller_" inlet="synthK1"/>
+         <dest obj="Talkie Filter Tranformer" inlet="synthK1"/>
       </net>
       <net>
          <source obj="Talkie Filter Controller" outlet="synthK2"/>
-         <dest obj="Talkie Filter Controller_" inlet="synthK2"/>
+         <dest obj="Talkie Filter Tranformer" inlet="synthK2"/>
       </net>
       <net>
          <source obj="Talkie Filter Controller" outlet="synthK3"/>
-         <dest obj="Talkie Filter Controller_" inlet="synthK3"/>
+         <dest obj="Talkie Filter Tranformer" inlet="synthK3"/>
       </net>
       <net>
          <source obj="Talkie Filter Controller" outlet="synthK4"/>
-         <dest obj="Talkie Filter Controller_" inlet="synthK4"/>
+         <dest obj="Talkie Filter Tranformer" inlet="synthK4"/>
       </net>
       <net>
          <source obj="Talkie Filter Controller" outlet="synthK5"/>
-         <dest obj="Talkie Filter Controller_" inlet="synthK5"/>
+         <dest obj="Talkie Filter Tranformer" inlet="synthK5"/>
       </net>
       <net>
          <source obj="Talkie Filter Controller" outlet="synthK6"/>
-         <dest obj="Talkie Filter Controller_" inlet="synthK6"/>
+         <dest obj="Talkie Filter Tranformer" inlet="synthK6"/>
       </net>
       <net>
          <source obj="Talkie Filter Controller" outlet="synthK7"/>
-         <dest obj="Talkie Filter Controller_" inlet="synthK7"/>
+         <dest obj="Talkie Filter Tranformer" inlet="synthK7"/>
       </net>
       <net>
          <source obj="Talkie Filter Controller" outlet="synthK8"/>
-         <dest obj="Talkie Filter Controller_" inlet="synthK8"/>
+         <dest obj="Talkie Filter Tranformer" inlet="synthK8"/>
       </net>
       <net>
          <source obj="Talkie Filter Controller" outlet="synthK9"/>
-         <dest obj="Talkie Filter Controller_" inlet="synthK9"/>
+         <dest obj="Talkie Filter Tranformer" inlet="synthK9"/>
       </net>
       <net>
          <source obj="Talkie Filter Controller" outlet="synthK10"/>
-         <dest obj="Talkie Filter Controller_" inlet="synthK10"/>
+         <dest obj="Talkie Filter Tranformer" inlet="synthK10"/>
       </net>
       <net>
-         <source obj="Talkie Filter Controller_" outlet="synthK1"/>
+         <source obj="Talkie Filter Tranformer" outlet="synthK1"/>
          <dest obj="Talkie Filters" inlet="synthK1"/>
       </net>
       <net>
-         <source obj="Talkie Filter Controller_" outlet="synthK2"/>
+         <source obj="Talkie Filter Tranformer" outlet="synthK2"/>
          <dest obj="Talkie Filters" inlet="synthK2"/>
       </net>
       <net>
-         <source obj="Talkie Filter Controller_" outlet="synthK3"/>
+         <source obj="Talkie Filter Tranformer" outlet="synthK3"/>
          <dest obj="Talkie Filters" inlet="synthK3"/>
       </net>
       <net>
-         <source obj="Talkie Filter Controller_" outlet="synthK4"/>
+         <source obj="Talkie Filter Tranformer" outlet="synthK4"/>
          <dest obj="Talkie Filters" inlet="synthK4"/>
       </net>
       <net>
-         <source obj="Talkie Filter Controller_" outlet="synthK5"/>
+         <source obj="Talkie Filter Tranformer" outlet="synthK5"/>
          <dest obj="Talkie Filters" inlet="synthK5"/>
       </net>
       <net>
-         <source obj="Talkie Filter Controller_" outlet="synthK6"/>
+         <source obj="Talkie Filter Tranformer" outlet="synthK6"/>
          <dest obj="Talkie Filters" inlet="synthK6"/>
       </net>
       <net>
-         <source obj="Talkie Filter Controller_" outlet="synthK7"/>
+         <source obj="Talkie Filter Tranformer" outlet="synthK7"/>
          <dest obj="Talkie Filters" inlet="synthK7"/>
       </net>
       <net>
-         <source obj="Talkie Filter Controller_" outlet="synthK8"/>
+         <source obj="Talkie Filter Tranformer" outlet="synthK8"/>
          <dest obj="Talkie Filters" inlet="synthK8"/>
       </net>
       <net>
-         <source obj="Talkie Filter Controller_" outlet="synthK9"/>
+         <source obj="Talkie Filter Tranformer" outlet="synthK9"/>
          <dest obj="Talkie Filters" inlet="synthK9"/>
       </net>
       <net>
-         <source obj="Talkie Filter Controller_" outlet="synthK10"/>
+         <source obj="Talkie Filter Tranformer" outlet="synthK10"/>
          <dest obj="Talkie Filters" inlet="synthK10"/>
       </net>
    </nets>
