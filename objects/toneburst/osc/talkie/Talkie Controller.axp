@@ -778,7 +778,7 @@ for(uint8_t j = 0; j < BUFSIZE; j++) {
       <params>
          <frac32.s.map name="pitch" value="0.0"/>
          <frac32.u.map name="octave" value="64.0"/>
-         <bool32.tgl name="fixed" value="0"/>
+         <bool32.tgl name="fixed" value="1"/>
       </params>
       <attribs/>
       <object id="patch/object" uuid="0c5470ff-da3f-4dc8-9848-fbe7ff65bd4e">
