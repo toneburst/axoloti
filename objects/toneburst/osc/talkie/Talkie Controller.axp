@@ -1297,8 +1297,8 @@ outlet_synthK10 = scaleValue(ins[indices[rotation][9]], bits[indices[rotation][9
    </settings>
    <notes><![CDATA[]]></notes>
    <windowPos>
-      <x>783</x>
-      <y>43</y>
+      <x>408</x>
+      <y>23</y>
       <width>1240</width>
       <height>852</height>
    </windowPos>
