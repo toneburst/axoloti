@@ -6,6 +6,10 @@
       </params>
       <attribs/>
    </obj>
+   <obj type="gain/vca" uuid="a9f2dcd18043e2f47364e45cb8814f63c2a37c0d" name="vca_1" x="994" y="28">
+      <params/>
+      <attribs/>
+   </obj>
    <obj type="midi/in/monitor" uuid="b51863ca-6afa-4d29-acfd-c8c2fe06cb16" name="monitor_1" x="42" y="56">
       <params>
          <bool32.tgl name="ControlChange" value="0"/>
@@ -26,7 +30,11 @@
       </params>
       <attribs/>
    </obj>
-   <obj type="gain/vca" uuid="a9f2dcd18043e2f47364e45cb8814f63c2a37c0d" name="vca_1" x="952" y="98">
+   <obj type="math/*" uuid="3ac307b9f782049739ed62504081b96d580ea336" name="*_1" x="994" y="98">
+      <params/>
+      <attribs/>
+   </obj>
+   <obj type="audio/out stereo" uuid="a1ca7a567f535acc21055669829101d3ee7f0189" name="out_1" x="1064" y="98">
       <params/>
       <attribs/>
    </obj>
@@ -475,7 +483,7 @@ outlet_synthK10 = synthK10;
          <int32 name="pmode" value="2"/>
          <bool32.tgl name="glide" value="0"/>
          <frac32.u.map name="gliderate" value="45.5"/>
-         <frac32.u.map name="crush" value="64.0"/>
+         <frac32.u.map name="crush" value="0.0"/>
       </params>
       <attribs/>
       <object id="patch/object" uuid="2e3b980b-4415-428f-b6ca-29f283183066">
@@ -791,7 +799,7 @@ for(uint8_t j = 0; j < BUFSIZE; j++) {
    <patchobj type="patch/object" uuid="0c5470ff-da3f-4dc8-9848-fbe7ff65bd4e" name="Talkie Unvoiced Source" x="574" y="168">
       <params>
          <frac32.s.map name="pitch" value="0.0"/>
-         <frac32.u.map name="octave" value="32.0"/>
+         <frac32.u.map name="octave" value="64.0"/>
          <bool32.tgl name="fixed" value="1"/>
       </params>
       <attribs/>
@@ -1265,19 +1273,18 @@ for(uint8_t j = 0; j < BUFSIZE; j++) {
 ]]></code.krate>
       </object>
    </patchobj>
-   <obj type="math/*" uuid="3ac307b9f782049739ed62504081b96d580ea336" name="*_1" x="952" y="168">
-      <params/>
-      <attribs/>
-   </obj>
-   <obj type="audio/out stereo" uuid="a1ca7a567f535acc21055669829101d3ee7f0189" name="out_1" x="1022" y="168">
-      <params/>
+   <obj type="filter/lp" uuid="1427779cf086ab83c8b03eeeac69c2a97759c651" name="lp_1" x="952" y="168">
+      <params>
+         <frac32.s.map name="pitch" value="50.0"/>
+         <frac32.u.map name="reso" value="0.0"/>
+      </params>
       <attribs/>
    </obj>
    <patchobj type="patch/object" uuid="325e427b-0c89-4479-8959-cce80a02a21c" name="Talkie Tranformer" x="266" y="182">
       <params>
-         <bool32.tgl name="bend" value="0"/>
+         <bool32.tgl name="bend" value="1"/>
          <frac32.u.map name="bendIndex" MidiCC="21" value="0.0"/>
-         <frac32.s.map name="sweep" value="5.0"/>
+         <frac32.s.map name="sweep" value="0.0"/>
       </params>
       <attribs/>
       <object id="patch/object" uuid="325e427b-0c89-4479-8959-cce80a02a21c">
@@ -1416,7 +1423,7 @@ sweep = 0;
 ]]></code.init>
          <code.krate><![CDATA[
 
-sweep = __SSAT(param_sweep, 27) >> 20;
+//sweep = __SSAT(param_sweep, 27) >> 19;
 
 int32_t ins[12] = {
 	inlet_synthEnergy,
@@ -1430,7 +1437,7 @@ int32_t ins[12] = {
 	inlet_synthK7,
 	inlet_synthK8,
 	inlet_synthK9,
-	inlet_synthK10 + sweep
+	inlet_synthK10
 };
 
 bend = (inlet_bend || param_bend) ?
@@ -1491,7 +1498,7 @@ outlet_synthK10    = scaleValue(ins[indices[bend][11]], bits[indices[bend][11]],
       </net>
       <net>
          <source obj="Talkie Filters" outlet="voice"/>
-         <dest obj="vca_1" inlet="a"/>
+         <dest obj="lp_1" inlet="in"/>
       </net>
       <net>
          <source obj="Talkie Tranformer" outlet="synthK1"/>
@@ -1598,15 +1605,19 @@ outlet_synthK10    = scaleValue(ins[indices[bend][11]], bits[indices[bend][11]],
          <source obj="Talkie Tranformer" outlet="synthEnergy"/>
          <dest obj="Talkie Mixer" inlet="synthEnergy"/>
       </net>
+      <net>
+         <source obj="lp_1" outlet="out"/>
+         <dest obj="vca_1" inlet="a"/>
+      </net>
    </nets>
    <settings>
       <subpatchmode>no</subpatchmode>
    </settings>
    <notes><![CDATA[]]></notes>
    <windowPos>
-      <x>0</x>
-      <y>23</y>
-      <width>1440</width>
-      <height>852</height>
+      <x>132</x>
+      <y>26</y>
+      <width>1235</width>
+      <height>696</height>
    </windowPos>
 </patch-1.0>
