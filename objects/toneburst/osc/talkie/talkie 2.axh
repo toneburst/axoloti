@@ -753,9 +753,9 @@ outlet_synthK10 = synthK10;
       <params>
          <frac32.u.map name="wave" MidiCC="22" value="0.0"/>
          <frac32.u.map name="oct" MidiCC="23" value="0.0"/>
-         <bool32.tgl name="pitch" value="1"/>
-         <int32 name="pmode" value="1"/>
-         <bool32.tgl name="glide" value="1"/>
+         <bool32.tgl name="pitch" value="0"/>
+         <int32 name="pmode" value="2"/>
+         <bool32.tgl name="glide" value="0"/>
          <frac32.u.map name="gliderate" value="59.5"/>
          <frac32.u.map name="crush" value="0.0"/>
       </params>
