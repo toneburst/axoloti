@@ -16,7 +16,7 @@
    </obj>
    <obj type="ctrl/dial p" uuid="cc5d2846c3d50e425f450c4b9851371b54f4d674" name="Volume" x="868" y="70">
       <params>
-         <frac32.u.map name="value" value="54.5"/>
+         <frac32.u.map name="value" value="64.0"/>
       </params>
       <attribs/>
    </obj>
@@ -230,7 +230,8 @@ void tk_setPtr(uint8_t* addr) {
 ///////////////////////////////////
 
 void tk_resetToStart() {
-	ptrAddr = ptrStart;	
+	ptrAddr = ptrStart;
+	ptrBit = 0;
 }
 
 ////////////////////
@@ -420,7 +421,7 @@ readInterval = 120;//range_pos(rate, 240, 15);
 // Detect Glitch Press //
 /////////////////////////
 
-/*if(param_glitch || inlet_glitch) {
+if(param_glitch || inlet_glitch) {
 	if(!glitch) {
 		tk_glitchPtr();
 	}
@@ -430,7 +431,7 @@ readInterval = 120;//range_pos(rate, 240, 15);
 		tk_glitchPtrReset();
 	}
 	glitch = false;
-}*/
+}
 
 ////////////////////
 // Detect Gate-On //
@@ -1300,7 +1301,7 @@ for(uint8_t j = 0; j < BUFSIZE; j++) {
    <patchobj type="patch/object" uuid="325e427b-0c89-4479-8959-cce80a02a21c" name="Talkie Tranformer" x="266" y="182">
       <params>
          <bool32.tgl name="bend" value="0"/>
-         <frac32.u.map name="bendIndex" MidiCC="21" value="11.5"/>
+         <frac32.u.map name="bendIndex" MidiCC="21" value="21.5"/>
          <frac32.s.map name="sweep" value="0.0"/>
       </params>
       <attribs/>
