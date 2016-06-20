@@ -1,43 +1,43 @@
 <patch-1.0 appVersion="1.0.10">
-   <obj type="env/ahd lin m" uuid="f9b46834ce96425064b4ed7f53ad8b91ea1ac0ef" name="ahd_1" x="756" y="14">
+   <obj type="env/ahd lin m" uuid="f9b46834ce96425064b4ed7f53ad8b91ea1ac0ef" name="ahd_1" x="812" y="14">
       <params>
          <frac32.s.map name="a" value="-64.0"/>
          <frac32.s.map name="d" value="64.0"/>
       </params>
       <attribs/>
    </obj>
-   <obj type="gain/vca" uuid="a9f2dcd18043e2f47364e45cb8814f63c2a37c0d" name="vca_1" x="994" y="28">
+   <obj type="gain/vca" uuid="a9f2dcd18043e2f47364e45cb8814f63c2a37c0d" name="vca_1" x="1050" y="28">
       <params/>
       <attribs/>
    </obj>
-   <obj type="midi/in/keyb mod" uuid="abcd509d15e7d13d5381203fd2b4d0ac6fe57bb3" name="keyboard" x="154" y="56">
+   <obj type="midi/in/keyb mod" uuid="abcd509d15e7d13d5381203fd2b4d0ac6fe57bb3" name="Keyboard" x="42" y="56">
       <params/>
       <attribs/>
    </obj>
-   <obj type="ctrl/dial p" uuid="cc5d2846c3d50e425f450c4b9851371b54f4d674" name="Volume" x="868" y="70">
+   <obj type="ctrl/dial p" uuid="cc5d2846c3d50e425f450c4b9851371b54f4d674" name="Volume" x="924" y="70">
       <params>
-         <frac32.u.map name="value" value="64.0"/>
+         <frac32.u.map name="value" value="34.0"/>
       </params>
       <attribs/>
    </obj>
-   <obj type="math/*" uuid="3ac307b9f782049739ed62504081b96d580ea336" name="*_1" x="994" y="98">
+   <obj type="math/*" uuid="3ac307b9f782049739ed62504081b96d580ea336" name="*_1" x="1050" y="98">
       <params/>
       <attribs/>
    </obj>
-   <obj type="audio/out stereo" uuid="a1ca7a567f535acc21055669829101d3ee7f0189" name="out_1" x="1064" y="98">
+   <obj type="audio/out stereo" uuid="a1ca7a567f535acc21055669829101d3ee7f0189" name="Output" x="1120" y="98">
       <params/>
       <attribs/>
    </obj>
-   <obj type="ctrl/toggle" uuid="42b8134fa729d54bfc8d62d6ef3fa99498c1de99" name="PLAY" x="14" y="168">
+   <obj type="ctrl/toggle" uuid="42b8134fa729d54bfc8d62d6ef3fa99498c1de99" name="PLAY" x="70" y="168">
       <params>
          <bool32.tgl name="b" value="1"/>
       </params>
       <attribs/>
    </obj>
-   <patchobj type="patch/object" uuid="b7a840a4-fac9-40b2-aaca-6f965cd5f0e5" name="Talkie Player" x="98" y="168">
+   <patchobj type="patch/object" uuid="b7a840a4-fac9-40b2-aaca-6f965cd5f0e5" name="Talkie Player" x="154" y="168">
       <params>
          <frac32.u.map name="word" value="0.0"/>
-         <frac32.u.map name="rate" value="32.0"/>
+         <frac32.u.map name="rate" value="33.0"/>
          <bool32.tgl name="freeze" value="0"/>
          <bool32.mom name="glitch" value="0"/>
       </params>
@@ -52,6 +52,7 @@
             <frac32.positive name="rate" description="playback rate"/>
             <bool32 name="freeze" description="freeze playback"/>
             <bool32 name="glitch" description="glitch"/>
+            <bool32 name="step" description="step read"/>
          </inlets>
          <outlets>
             <bool32 name="synthUnvoiced" description="voiced/unvoiced switch"/>
@@ -204,6 +205,7 @@ uint32_t rate;
 bool glitch;
 bool freeze;
 bool loop;
+bool step;
 
 ///////////////////
 ///////////////////
@@ -241,7 +243,7 @@ void tk_resetToStart() {
 void tk_glitchPtr() {
 	ptrGlitchOffset = ptrAddr;
 	ptrBitGlitchOffset = ptrBit;
-	ptrAddr += GenerateRandomNumber() >> 22;
+	ptrBit = GenerateRandomNumber() % 7;//>> 23;
 }
 
 ///////////////////////////
@@ -377,6 +379,14 @@ __attribute__ ( ( always_inline ) ) __STATIC_INLINE int8_t u8mix(int8_t a, int8_
 	return x * b + (255 - x) * a >> 8;
 }
 
+// Exponential interpolation
+__attribute__ ( ( always_inline ) ) __STATIC_INLINE int32_t interpLog(int32_t val) {
+	// Transform inlet val to float in 0 - 1 range
+	float inf = val * (float)(1.0f / (1 << 27));
+	float curve = 1 - (1 - inf) * (1 - inf);
+	return (int32_t)(curve * (float)(1 << 27));
+}
+
 ]]></code.declaration>
          <code.init><![CDATA[
 
@@ -389,6 +399,7 @@ synthUnvoiced = false;
 trig = false;
 freeze = false;
 glitch = false;
+step = false;
 rate = 0;
 wordIndex = 0;
 
@@ -412,10 +423,9 @@ LogTextMessage("Initialising toneburst Talkie Synth Controller");
 
 wordIndex = 0;//__USAT(param_word + inlet_word, 27);
 rate = __USAT(param_rate + inlet_rate, 27);
+readInterval = range_pos(interpLog(rate), 480, 15);
+
 freeze = param_freeze | inlet_freeze;
-
-readInterval = 120;//range_pos(rate, 240, 15);
-
 
 /////////////////////////
 // Detect Glitch Press //
@@ -444,7 +454,6 @@ if(inlet_gate) {
 		///////////////////
 
 		// Set pointer and reset pointer offset
-		//tk_setPtr(*words[word], sizeof *words[word]);
 		tk_setPtr(words[wordIndex].data);
 
 		// Reset cycle counters
@@ -458,6 +467,22 @@ if(inlet_gate) {
 }
 
 
+//////////////////////
+// Detect Step Trig //
+//////////////////////
+
+if(inlet_step) {
+	if(!step) {
+		if(freeze) {
+			tk_readWord();
+		}
+	}		
+	step = true;	
+} else {
+	step = false;
+}
+
+
 ///////////////
 // Read Bits //
 ///////////////
@@ -465,11 +490,15 @@ if(inlet_gate) {
 //
 if(readCounter == 0 && inlet_gate) {
 	// Only read if gate on and rate > 0
-	if(inlet_gate && !freeze) {
+	if(!freeze) {
 		tk_readWord();
 	}
 }
-// Increment read counter
+
+////////////////////////////
+// Increment read counter //
+////////////////////////////
+
 readCounter = (readCounter < (readInterval - 1)) ? readCounter + 1 : 0;
 
 /////////////////
@@ -493,7 +522,7 @@ outlet_synthK10 = synthK10;
 ]]></code.krate>
       </object>
    </patchobj>
-   <patchobj type="patch/object" uuid="2e3b980b-4415-428f-b6ca-29f283183066" name="Talkie Voiced Source" x="448" y="168">
+   <patchobj type="patch/object" uuid="2e3b980b-4415-428f-b6ca-29f283183066" name="Talkie Voiced Source" x="504" y="168">
       <params>
          <frac32.u.map name="wave" value="0.0"/>
          <frac32.u.map name="oct" value="32.0"/>
@@ -814,7 +843,7 @@ for(uint8_t j = 0; j < BUFSIZE; j++) {
 ]]></code.krate>
       </object>
    </patchobj>
-   <patchobj type="patch/object" uuid="0c5470ff-da3f-4dc8-9848-fbe7ff65bd4e" name="Talkie Unvoiced Source" x="574" y="168">
+   <patchobj type="patch/object" uuid="0c5470ff-da3f-4dc8-9848-fbe7ff65bd4e" name="Talkie Unvoiced Source" x="630" y="168">
       <params>
          <frac32.s.map name="pitch" value="0.0"/>
          <frac32.u.map name="octave" value="32.0"/>
@@ -913,7 +942,7 @@ for(uint8_t j = 0; j < BUFSIZE; j++) {
 ]]></code.krate>
       </object>
    </patchobj>
-   <patchobj type="patch/object" uuid="06902663-1848-4c47-84be-beae9351032a" name="Talkie Mixer" x="700" y="168">
+   <patchobj type="patch/object" uuid="06902663-1848-4c47-84be-beae9351032a" name="Talkie Mixer" x="756" y="168">
       <params>
          <bool32.tgl name="unvoiced" value="0"/>
          <frac32.u.map name="bias" value="0.0"/>
@@ -1009,7 +1038,7 @@ outlet_wave = a >> 35;
 ]]></code.srate>
       </object>
    </patchobj>
-   <patchobj type="patch/object" uuid="2e3b980b-4415-428f-b6ca-29f283183066" name="Talkie Filters" x="840" y="168">
+   <patchobj type="patch/object" uuid="2e3b980b-4415-428f-b6ca-29f283183066" name="Talkie Filters" x="896" y="168">
       <params>
          <frac32.u.map name="srate" value="32.0"/>
          <frac32.u.map name="crush" value="0.0"/>
@@ -1291,17 +1320,17 @@ for(uint8_t j = 0; j < BUFSIZE; j++) {
 ]]></code.krate>
       </object>
    </patchobj>
-   <obj type="filter/lp" uuid="1427779cf086ab83c8b03eeeac69c2a97759c651" name="lp_1" x="952" y="168">
+   <obj type="filter/lp" uuid="1427779cf086ab83c8b03eeeac69c2a97759c651" name="LP Filter" x="1008" y="168">
       <params>
          <frac32.s.map name="pitch" value="50.0"/>
          <frac32.u.map name="reso" value="0.0"/>
       </params>
       <attribs/>
    </obj>
-   <patchobj type="patch/object" uuid="325e427b-0c89-4479-8959-cce80a02a21c" name="Talkie Tranformer" x="266" y="182">
+   <patchobj type="patch/object" uuid="325e427b-0c89-4479-8959-cce80a02a21c" name="Talkie Tranformer" x="322" y="182">
       <params>
          <bool32.tgl name="bend" value="0"/>
-         <frac32.u.map name="bendIndex" MidiCC="21" value="21.5"/>
+         <frac32.u.map name="bendIndex" MidiCC="21" value="51.5"/>
          <frac32.s.map name="sweep" value="0.0"/>
       </params>
       <attribs/>
@@ -1482,6 +1511,12 @@ outlet_synthK10    = scaleValue(ins[indices[bend][11]] + sweep, bits[indices[ben
 disp_bendIndex = bend;]]></code.krate>
       </object>
    </patchobj>
+   <obj type="ctrl/button" uuid="ef3d13774349df85aa9bfecf30dbc91ab8488b3f" name="Step" x="70" y="252">
+      <params>
+         <bool32.mom name="b" value="0"/>
+      </params>
+      <attribs/>
+   </obj>
    <nets>
       <net>
          <source obj="Volume" outlet="out"/>
@@ -1489,11 +1524,11 @@ disp_bendIndex = bend;]]></code.krate>
       </net>
       <net>
          <source obj="*_1" outlet="result"/>
-         <dest obj="out_1" inlet="left"/>
-         <dest obj="out_1" inlet="right"/>
+         <dest obj="Output" inlet="left"/>
+         <dest obj="Output" inlet="right"/>
       </net>
       <net>
-         <source obj="keyboard" outlet="note"/>
+         <source obj="Keyboard" outlet="note"/>
          <dest obj="Talkie Voiced Source" inlet="note"/>
          <dest obj="Talkie Unvoiced Source" inlet="pitch"/>
       </net>
@@ -1519,7 +1554,7 @@ disp_bendIndex = bend;]]></code.krate>
       </net>
       <net>
          <source obj="Talkie Filters" outlet="voice"/>
-         <dest obj="lp_1" inlet="in"/>
+         <dest obj="LP Filter" inlet="in"/>
       </net>
       <net>
          <source obj="Talkie Tranformer" outlet="synthK1"/>
@@ -1627,8 +1662,12 @@ disp_bendIndex = bend;]]></code.krate>
          <dest obj="Talkie Mixer" inlet="synthEnergy"/>
       </net>
       <net>
-         <source obj="lp_1" outlet="out"/>
+         <source obj="LP Filter" outlet="out"/>
          <dest obj="vca_1" inlet="a"/>
+      </net>
+      <net>
+         <source obj="Step" outlet="o"/>
+         <dest obj="Talkie Player" inlet="step"/>
       </net>
    </nets>
    <settings>
@@ -1636,7 +1675,7 @@ disp_bendIndex = bend;]]></code.krate>
    </settings>
    <notes><![CDATA[]]></notes>
    <windowPos>
-      <x>50</x>
+      <x>98</x>
       <y>23</y>
       <width>1306</width>
       <height>834</height>
