@@ -30,15 +30,15 @@
    </obj>
    <obj type="ctrl/toggle" uuid="42b8134fa729d54bfc8d62d6ef3fa99498c1de99" name="PLAY" x="42" y="182">
       <params>
-         <bool32.tgl name="b" value="0"/>
+         <bool32.tgl name="b" value="1"/>
       </params>
       <attribs/>
    </obj>
    <patchobj type="patch/object" uuid="b7a840a4-fac9-40b2-aaca-6f965cd5f0e5" name="Talkie Player" x="126" y="182">
       <params>
-         <frac32.u.map name="word" value="30.0"/>
-         <frac32.u.map name="rate" value="33.5"/>
-         <bool32.tgl name="loop" value="0"/>
+         <frac32.u.map name="word" value="33.5"/>
+         <frac32.u.map name="rate" value="32.0"/>
+         <bool32.tgl name="loop" value="1"/>
          <bool32.tgl name="freeze" value="0"/>
          <bool32.mom name="glitch" value="0"/>
       </params>
@@ -690,7 +690,7 @@ outlet_synthK10 = synthK10;
       <params>
          <frac32.u.map name="wave" value="0.0"/>
          <frac32.u.map name="oct" value="32.0"/>
-         <bool32.tgl name="pitch" value="0"/>
+         <bool32.tgl name="repitch" value="0"/>
          <int32 name="pmode" value="1"/>
          <bool32.tgl name="glide" value="0"/>
          <frac32.u.map name="gliderate" value="45.5"/>
@@ -705,7 +705,7 @@ outlet_synthK10 = synthK10;
          <inlets>
             <int32.bipolar name="synthPeriod" description="period (from Talkie Controller object)"/>
             <frac32.positive name="oct" description="octave transpose"/>
-            <bool32 name="pitch" description="while true, override pitch set with &apos;synthPeriod&apos; inlet with MIDI note value at &apos;note&apos; inlet"/>
+            <bool32 name="repitch" description="while true, override pitch set with &apos;synthPeriod&apos; inlet with MIDI note value at &apos;note&apos; inlet"/>
             <frac32.bipolar name="note" description="midi note in"/>
             <frac32.positive name="crush" description="bit-crush"/>
             <bool32 name="glide" description="glide enable/disable"/>
@@ -718,7 +718,7 @@ outlet_synthK10 = synthK10;
          <params>
             <frac32.u.map name="wave" description="select &apos;chirp&apos; waveform"/>
             <frac32.u.map name="oct" description="octave"/>
-            <bool32.tgl name="pitch" description="override pitch set by &apos;synthEnergy&apos; inlet with value at inlet &apos;note&apos; when true"/>
+            <bool32.tgl name="repitch" description="override pitch set by &apos;synthEnergy&apos; inlet with value at inlet &apos;note&apos; when true"/>
             <int32 name="pmode" description="pitch-shift mode when &apos;pitch&apos; inlet true">
                <MinValue i="1"/>
                <MaxValue i="2"/>
@@ -956,7 +956,7 @@ octave = range_pos(__USAT(param_oct + inlet_oct, 27), 0, 2);
 
 // Transpose/set period of voiced source
 // if boolean inlet 'pitch' true
-if(inlet_pitch || param_pitch) {
+if(inlet_repitch || param_repitch) {
 	// MIDI note number, clamped to range, scaled
 	midiNote = clamp8(inlet_note >> 21, -40, -16) + 40;
 	// Mode 1: transpose
@@ -1494,8 +1494,8 @@ for(uint8_t j = 0; j < BUFSIZE; j++) {
    <patchobj type="patch/object" uuid="325e427b-0c89-4479-8959-cce80a02a21c" name="Talkie Tranformer" x="294" y="196">
       <params>
          <bool32.tgl name="bend" value="0"/>
-         <frac32.u.map name="bendIndex" MidiCC="21" value="33.5"/>
-         <frac32.s.map name="sweep" value="-64.0"/>
+         <frac32.u.map name="bendIndex" MidiCC="21" value="13.5"/>
+         <frac32.s.map name="sweep" value="0.0"/>
       </params>
       <attribs/>
       <object id="patch/object" uuid="325e427b-0c89-4479-8959-cce80a02a21c">
@@ -1693,8 +1693,8 @@ disp_bendIndex = bend;]]></code.krate>
       </net>
       <net>
          <source obj="Keyboard" outlet="note"/>
-         <dest obj="Talkie Voiced Source" inlet="note"/>
          <dest obj="Talkie Unvoiced Source" inlet="pitch"/>
+         <dest obj="Talkie Voiced Source" inlet="note"/>
       </net>
       <net>
          <source obj="vca_1" outlet="o"/>
