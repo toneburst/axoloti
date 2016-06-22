@@ -79,9 +79,7 @@
             <bool32.mom name="glitch" description="glitch"/>
          </params>
          <attribs/>
-         <includes>
-            <include>../../lib/toneburst-utility-functions.h</include>
-         </includes>
+         <includes/>
          <code.declaration><![CDATA[
 
 ///////////////////
@@ -911,9 +909,7 @@ disp_bendIndex = bend;
             <frac32.u.map name="crush" description="bit-crush"/>
          </params>
          <attribs/>
-         <includes>
-            <include>../../lib/toneburst-utility-functions.h</include>
-         </includes>
+         <includes/>
          <code.declaration><![CDATA[
 
 ///////////////////
@@ -1220,9 +1216,7 @@ for(uint8_t j = 0; j < BUFSIZE; j++) {
             <bool32.tgl name="fixed" description="fixed 8kHz pitch"/>
          </params>
          <attribs/>
-         <includes>
-            <include>../../lib/toneburst-utility-functions.h</include>
-         </includes>
+         <includes/>
          <code.declaration><![CDATA[
 
 // Phase-counter
@@ -1328,9 +1322,7 @@ for(uint8_t j = 0; j < BUFSIZE; j++) {
             <frac32.u.map name="slewrate" description="apply slew to voiced/unvoiced mix"/>
          </params>
          <attribs/>
-         <includes>
-            <include>../../lib/toneburst-utility-functions.h</include>
-         </includes>
+         <includes/s>
          <code.declaration><![CDATA[
 
 int32_t mix;
@@ -1437,9 +1429,7 @@ outlet_wave = a >> 35;
             <frac32.u.map name="slewrate" description="harmonic smear"/>
          </params>
          <attribs/>
-         <includes>
-            <include>../../lib/toneburst-utility-functions.h</include>
-         </includes>
+         <includes/>
          <code.declaration><![CDATA[
 
 ///////////////////
