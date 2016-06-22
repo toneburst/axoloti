@@ -80,7 +80,9 @@
             <bool32.mom name="glitch" description="glitch"/>
          </params>
          <attribs/>
-         <includes/>
+         <includes>
+            <include>../../lib/toneburst-utility-functions.h</include>
+         </includes>
          <code.declaration><![CDATA[
 
 ///////////////////
@@ -445,7 +447,7 @@ uint8_t tk_getBits(uint8_t bits) {
 //////////////////
 
 uint8_t tk_revBits(uint8_t a) {
-	// REDO with Cortex M4 builtin REV function?	
+	// REDO with Cortex M4 builtin REV function?
 	// 76543210
 	a = (a>>4) | (a<<4); // Swap in groups of 4
 	// 32107654
@@ -485,7 +487,7 @@ void tk_readWord() {
 		uint8_t repeat;
 		uint8_t energy;
 		// Speak if end of word not reached and ptrAddress is set
-		if (energy != 0xf && ptrAddr) {		
+		if (energy != 0xf && ptrAddr) {
 			energy = tk_getBits(4);
 			if (energy == 0) {
 				// Energy = 0: rest frame
@@ -506,7 +508,7 @@ void tk_readWord() {
 					synthK1 = tmsK1[tk_getBits(5)];
 					synthK2 = tmsK2[tk_getBits(5)];
 					synthK3 = tmsK3[tk_getBits(4)];
-					synthK4 = tmsK4[tk_getBits(4)];	
+					synthK4 = tmsK4[tk_getBits(4)];
 					if (synthPeriod) {
 						synthUnvoiced = false;
 						// Voiced frames use 6 extra coefficients.
@@ -578,7 +580,7 @@ ptrAddr = NULL;
 ptrBit = 0;
 ptrStart = NULL;
 loop = true;
-wordLength = 0;	
+wordLength = 0;
 ptrGlitchOffset = 0;	// Offset from start of word pointer
 ptrBitGlitchOffset = 0;
 
@@ -605,7 +607,7 @@ if(param_glitch || inlet_glitch) {
 	if(!glitch) {
 		tk_glitchPtr();
 	}
-	glitch = true;	
+	glitch = true;
 } else {
 	if(glitch) {
 		tk_glitchPtrReset();
@@ -628,8 +630,8 @@ if(inlet_gate) {
 
 		// Reset cycle counters
 		readCounter = 0;
-	}		
-	trig = true;	
+	}
+	trig = true;
 } else {
 	// Silence synth on gate-off
 	tk_silence();
@@ -646,8 +648,8 @@ if(inlet_step) {
 		if(freeze) {
 			tk_readWord();
 		}
-	}		
-	step = true;	
+	}
+	step = true;
 } else {
 	step = false;
 }
@@ -734,7 +736,9 @@ outlet_synthK10 = synthK10;
             <frac32.u.map name="crush" description="bit-crush"/>
          </params>
          <attribs/>
-         <includes/>
+         <includes>
+            <include>../../lib/toneburst-utility-functions.h</include>
+         </includes>
          <code.declaration><![CDATA[
 
 ///////////////////
@@ -967,7 +971,7 @@ if(inlet_repitch || param_repitch) {
 	midiNote = clamp8(inlet_note >> 21, -40, -16) + 40;
 	// Mode 1: transpose
 	if(param_pmode == 1) {
-		oscPeriod = synthPeriod + midiTranspose[midiNote];		
+		oscPeriod = synthPeriod + midiTranspose[midiNote];
 	// Mode 2: set period from Note inlet (Vocoder mode)
 	} else if(param_pmode == 2) {
 		oscPeriod = midiNotes[midiNote];
@@ -998,14 +1002,14 @@ for(uint8_t j = 0; j < BUFSIZE; j++) {
 	///////////////////
 	// Render Sample //
 	///////////////////
-	
+
 	if(renderCounter == 0) {
 		sample = (tk_renderVoiced() >> crush) << crush;
 	}
-	
+
 	// Increment render counter
 	renderCounter = (renderCounter < (renderInterval - 1)) ? renderCounter + 1 : 0;
-	
+
 	// Write samples to output buffer (27 bits)
 	outlet_out[j] = sample << 19;
 }
@@ -1039,7 +1043,9 @@ for(uint8_t j = 0; j < BUFSIZE; j++) {
             <bool32.tgl name="fixed" description="fixed 8kHz pitch"/>
          </params>
          <attribs/>
-         <includes/>
+         <includes>
+            <include>../../lib/toneburst-utility-functions.h</include>
+         </includes>
          <code.declaration><![CDATA[
 
 // Phase-counter
@@ -1079,7 +1085,7 @@ MTOFEXTENDED(param_pitch + inlet_pitch,freq);
 // Calculate octave multiplier for phase-increment
 uint8_t multiplier = __USAT(param_octave + inlet_octave, 27) >> 22;
 // Ensure multiplier has minimum value of 1
-multiplier = (multiplier == 0) ? 1 : multiplier; 
+multiplier = (multiplier == 0) ? 1 : multiplier;
 // Multiply phase-increment by octave multiplier (phase will wrap at 32 bits)
 freq *= multiplier;
 
@@ -1098,7 +1104,7 @@ for(uint8_t j = 0; j < BUFSIZE; j++) {
 	} else {
 		if(osc_p <= freq) {
 			// Update sample
-			sample = tk_renderUnvoiced();			
+			sample = tk_renderUnvoiced();
 		}
 	}
 	// Increment phase-counter
@@ -1144,7 +1150,9 @@ for(uint8_t j = 0; j < BUFSIZE; j++) {
             <frac32.u.map name="slewrate" description="apply slew to voiced/unvoiced mix"/>
          </params>
          <attribs/>
-         <includes/>
+         <includes>
+            <include>../../lib/toneburst-utility-functions.h</include>
+         </includes>
          <code.declaration><![CDATA[
 
 int32_t mix;
@@ -1249,7 +1257,9 @@ outlet_wave = a >> 35;
             <frac32.u.map name="slewrate" description="harmonic smear"/>
          </params>
          <attribs/>
-         <includes/>
+         <includes>
+            <include>../../lib/toneburst-utility-functions.h</include>
+         </includes>
          <code.declaration><![CDATA[
 
 ///////////////////
@@ -1327,7 +1337,7 @@ int8_t tk_renderFilters() {
 
 	// Mix voiced/unvoiced source
 	u10 = excitationSource;
-    	
+
     	// Lattice filter forward path
     	u9 = u10 - (((int16_t)synthK10*x9) >> 7);
 	u8 = u9  - (((int16_t)synthK9*x8) >> 7);
@@ -1339,7 +1349,7 @@ int8_t tk_renderFilters() {
 	u2 = u3  - (((int16_t)synthK3*x2) >> 7);
 	u1 = u2  - (((int32_t)synthK2*x1) >> 15);
 	u0 = u1  - (((int32_t)synthK1*x0) >> 15);
-	
+
 	// Output clamp to 9 bits (-512 to 511)
 	u0 = __SSAT(u0, 9);
 
@@ -1469,7 +1479,7 @@ for(uint8_t j = 0; j < BUFSIZE; j++) {
 	///////////////////
 	// Render Sample //
 	///////////////////
-	
+
 	if(renderCounter == 0) {
 		// Capture external ocsillator input (downsampled to 8 bit)
 		excitationSource = inlet_excitation[j] >> 19;
@@ -1479,10 +1489,10 @@ for(uint8_t j = 0; j < BUFSIZE; j++) {
 		if(crush > 0)
 			sample = (sample >> crush) << crush;
 	}
-	
+
 	// Increment render counter
 	renderCounter = (renderCounter < (renderInterval - 1)) ? renderCounter + 1 : 0;
-	
+
 	// Write samples to output buffer (27 bits)
 	outlet_voice[j] = sample << 19;
 }
@@ -1564,7 +1574,7 @@ const uint8_t indices[47][12] = {
 	{0,1,5,6,7,8,9,10,11,2,3,4},
 	{0,1,4,5,6,7,8,9,10,11,2,3},
 	{0,1,3,4,5,6,7,8,9,10,11,2},
-	
+
 	{0,1,2,3,4,5,6,7,8,9,10,11},
 	{1,2,3,4,5,6,7,8,9,10,11,0},
 	{2,3,4,5,6,7,8,9,10,11,0,1},
@@ -1585,7 +1595,7 @@ const uint8_t indices[47][12] = {
 	{0,1,2,3,4,5,7,6,8,9,10,11},
 	{0,1,2,3,4,5,6,7,9,8,10,11},
 	{0,1,2,3,4,5,6,7,8,9,11,10},
-	
+
 	{1,0,2,3,4,5,6,7,8,9,10,11},
 	{1,0,3,2,4,5,6,7,8,9,10,11},
 	{1,0,3,2,5,4,6,7,8,9,10,11},
@@ -1593,7 +1603,7 @@ const uint8_t indices[47][12] = {
 	{1,0,3,2,5,4,7,6,9,8,10,11},
 	{1,0,3,2,5,4,7,6,9,8,11,10},
 	{1,0,3,2,5,4,7,6,9,8,11,10},
-	
+
 	{0,7,10,2,11,3,9,4,6,5,1,8},
 	{10,7,4,3,6,5,1,11,2,0,8,9},
 	{3,8,1,10,6,5,0,9,11,7,2,4},
@@ -1668,11 +1678,11 @@ outlet_synthEnergy = scaleValue(ins[indices[bend][0]] + sweep,  bits[indices[ben
 outlet_synthPeriod = scaleValue(ins[indices[bend][1]] + sweep,  bits[indices[bend][1]],  8);
 outlet_synthK1     = scaleValue(ins[indices[bend][2]] + sweep,  bits[indices[bend][2]], 16);
 outlet_synthK2     = scaleValue(ins[indices[bend][3]] + sweep,  bits[indices[bend][3]], 16);
-outlet_synthK3     = scaleValue(ins[indices[bend][4]] + sweep,  bits[indices[bend][4]],  8);  
-outlet_synthK4     = scaleValue(ins[indices[bend][5]] + sweep,  bits[indices[bend][5]],  8);  
+outlet_synthK3     = scaleValue(ins[indices[bend][4]] + sweep,  bits[indices[bend][4]],  8);
+outlet_synthK4     = scaleValue(ins[indices[bend][5]] + sweep,  bits[indices[bend][5]],  8);
 outlet_synthK5     = scaleValue(ins[indices[bend][6]] + sweep,  bits[indices[bend][6]],  8);
 outlet_synthK6     = scaleValue(ins[indices[bend][7]] + sweep,  bits[indices[bend][7]],  8);
-outlet_synthK7     = scaleValue(ins[indices[bend][8]] + sweep,  bits[indices[bend][8]],  8); 
+outlet_synthK7     = scaleValue(ins[indices[bend][8]] + sweep,  bits[indices[bend][8]],  8);
 outlet_synthK8     = scaleValue(ins[indices[bend][9]] + sweep,  bits[indices[bend][9]],  8);
 outlet_synthK9     = scaleValue(ins[indices[bend][10]] + sweep, bits[indices[bend][10]], 8);
 outlet_synthK10    = scaleValue(ins[indices[bend][11]] + sweep, bits[indices[bend][11]], 8);

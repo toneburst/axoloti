@@ -12,7 +12,7 @@ __attribute__ ( ( always_inline ) ) __STATIC_INLINE int32_t mapU32(int32_t val, 
 };
 
 // Exponential interpolation for 27-bit param/inlet values
-__attribute__ ( ( always_inline ) ) __STATIC_INLINE int32_t interpLog32(int32_t val) {
+__attribute__ ( ( always_inline ) ) __STATIC_INLINE int32_t curveLog32(int32_t val) {
 	// Transform inlet val to float in 0 - 1 range
 	float inf = val * (float)(1.0f / (1 << 27));
 	float curve = 1 - (1 - inf) * (1 - inf);
@@ -20,9 +20,8 @@ __attribute__ ( ( always_inline ) ) __STATIC_INLINE int32_t interpLog32(int32_t 
 	return (int32_t)(curve * (float)(1 << 27));
 }
 
-
 // Exponential interpolation for 27-bit param/inlet values
-__attribute__ ( ( always_inline ) ) __STATIC_INLINE int32_t interpExp32(int32_t val) {
+__attribute__ ( ( always_inline ) ) __STATIC_INLINE int32_t curveExp32(int32_t val) {
 	// Transform inlet val to float in 0 - 1 range
 	float inf = val * (float)(1.0f / (1 << 27));
 	float curve = inf*inf;
@@ -30,7 +29,8 @@ __attribute__ ( ( always_inline ) ) __STATIC_INLINE int32_t interpExp32(int32_t 
 	return (int32_t)(curve * (float)(1 << 27));
 }
 
-// 32bit slew function, with pointer to state variable
+// 32-bit slew function, with pointer to state variable
+// (Adapted from Library glide object)
 __attribute__ ( ( always_inline ) ) __STATIC_INLINE int32_t slew32(int32_t target, int32_t *state, int32_t slewTime, bool enable) {
 	if (enable && slewTime > 0) {
 		*state = ___SMMLA(*state - target, (-1 << 26) + (slewTime >> 1), *state);
@@ -52,7 +52,7 @@ __attribute__ ( ( always_inline ) ) __STATIC_INLINE int16_t clamp16(int16_t val,
 	return (val <= min) ? min : (val >= max) ? max : val;
 }
 
-// 16-Bit clamp val to range min > max
+// 32-Bit clamp val to range min > max
 __attribute__ ( ( always_inline ) ) __STATIC_INLINE int32_t clamp32(int32_t val, int32_t min, int32_t max) {
 	return (val <= min) ? min : (val >= max) ? max : val;
 }
