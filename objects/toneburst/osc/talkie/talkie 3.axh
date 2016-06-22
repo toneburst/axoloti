@@ -186,11 +186,14 @@ word UK_ACORN[80] = {
 	{.length = 62,  .data = &spTONE1[0]},
 	{.length = 56,  .data = &spTONE2[0]},
 	{.length = 23,  .data = &sp_D[0]},
+	{.length = 43,  .data = &sp_ED[0]},
 	{.length = 54,  .data = &sp_ING[0]},
 	{.length = 35,  .data = &sp_S[0]},
 	{.length = 88,  .data = &sp_TEEN[0]},
 	{.length = 23,  .data = &sp_TH[0]},
+	{.length = 34,  .data = &sp_T[0]},
 	{.length = 34,  .data = &sp_Z[0]},
+	{.length = 145, .data = &spZERO[0]},
 	{.length = 104, .data = &spHUNDRED[0]},
 	{.length = 154, .data = &spTHOUSAND[0]},
 	{.length = 105, .data = &spONE[0]},
@@ -200,6 +203,7 @@ word UK_ACORN[80] = {
 	{.length = 73,  .data = &spTHIR_[0]},
 	{.length = 111, .data = &spFOUR[0]},
 	{.length = 73,  .data = &spFOUR_[0]},
+	{.length = 118, .data = &spFIVE[0]},
 	{.length = 51,  .data = &spFIF_[0]},
 	{.length = 77,  .data = &spSIX[0]},
 	{.length = 56,  .data = &spSIX_[0]},
@@ -210,6 +214,7 @@ word UK_ACORN[80] = {
 	{.length = 140, .data = &spNINE[0]},
 	{.length = 96,  .data = &spNINE_[0]},
 	{.length = 89,  .data = &spA[0]},
+	{.length = 149, .data = &spACORN[0]},
 	{.length = 104, .data = &spAFTER[0]},
 	{.length = 147, .data = &spAGAIN[0]},
 	{.length = 119, .data = &spAMOUNT[0]},
@@ -230,6 +235,7 @@ word UK_ACORN[80] = {
 	{.length = 108, .data = &spCOMPLETE[0]},
 	{.length = 120, .data = &spCOMPUTER[0]},
 	{.length = 109, .data = &spCORRECT[0]},
+	{.length = 75,  .data = &spD[0]},
 	{.length = 100, .data = &spDATA[0]},
 	{.length = 71,  .data = &spDATE[0]},
 	{.length = 68,  .data = &spDO[0]},
@@ -538,9 +544,9 @@ __attribute__ ( ( always_inline ) ) __STATIC_INLINE int32_t range_pos(int32_t va
 	return (int32_t)(x * (outMax - outMin) / 0x07FFFFFF + outMin);
 };
 
-__attribute__ ( ( always_inline ) ) __STATIC_INLINE int8_t u8mix(int8_t a, int8_t b, uint8_t x) {
+/*__attribute__ ( ( always_inline ) ) __STATIC_INLINE int8_t u8mix(int8_t a, int8_t b, uint8_t x) {
 	return x * b + (255 - x) * a >> 8;
-}
+}*/
 
 // Exponential interpolation
 __attribute__ ( ( always_inline ) ) __STATIC_INLINE int32_t interpLog(int32_t val) {
@@ -1693,8 +1699,8 @@ disp_bendIndex = bend;]]></code.krate>
       </net>
       <net>
          <source obj="Keyboard" outlet="note"/>
-         <dest obj="Talkie Unvoiced Source" inlet="pitch"/>
          <dest obj="Talkie Voiced Source" inlet="note"/>
+         <dest obj="Talkie Unvoiced Source" inlet="pitch"/>
       </net>
       <net>
          <source obj="vca_1" outlet="o"/>
@@ -1839,8 +1845,8 @@ disp_bendIndex = bend;]]></code.krate>
    </settings>
    <notes><![CDATA[]]></notes>
    <windowPos>
-      <x>84</x>
-      <y>23</y>
+      <x>627</x>
+      <y>137</y>
       <width>1306</width>
       <height>834</height>
    </windowPos>
