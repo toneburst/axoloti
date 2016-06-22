@@ -823,6 +823,8 @@ __attribute__ ( ( always_inline ) ) __STATIC_INLINE int32_t range_pos(int32_t va
 
 bend = 0;
 
+LogTextMessage("Initialising toneburst Talkie Synth Transformer");
+
 ]]></code.init>
          <code.krate><![CDATA[
 
@@ -1117,6 +1119,8 @@ crush = 9;
 glide = 0;
 chirp = 0;
 
+LogTextMessage("Initialising toneburst Talkie Synth Voiced Source");
+
 ]]></code.init>
          <code.krate><![CDATA[
 
@@ -1247,7 +1251,7 @@ int32_t tk_renderUnvoiced() {
 osc_p = 0;
 rcount = 0;
 
-]]></code.init>
+LogTextMessage("Initialising toneburst Talkie Synth Unvoiced Source");]]></code.init>
          <code.krate><![CDATA[
 
 
@@ -1360,6 +1364,8 @@ __attribute__ ( ( always_inline ) ) __STATIC_INLINE int32_t interpExp32(int32_t 
 
 mix = 0;
 mixSlewState = 0;
+
+LogTextMessage("Initialising toneburst Talkie Synth excitation source mixer");
 
 ]]></code.init>
          <code.krate><![CDATA[
@@ -1605,6 +1611,8 @@ sample = 0;
 sampleRate = 0;
 crush = 9;
 slewRate = 0;
+
+LogTextMessage("Initialising toneburst Talkie Synth formant filter-bank");
 
 ]]></code.init>
          <code.krate><![CDATA[
