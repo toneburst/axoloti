@@ -1,5 +1,5 @@
 <patch-1.0 appVersion="1.0.10">
-   <obj type="env/ahd lin m" uuid="f9b46834ce96425064b4ed7f53ad8b91ea1ac0ef" name="ahd_1" x="756" y="28">
+   <obj type="env/ahd lin m" uuid="f9b46834ce96425064b4ed7f53ad8b91ea1ac0ef" name="ahd_1" x="770" y="28">
       <params>
          <frac32.s.map name="a" value="-64.0"/>
          <frac32.s.map name="d" value="-61.0"/>
@@ -14,17 +14,17 @@
       <params/>
       <attribs/>
    </obj>
-   <obj type="ctrl/dial p" uuid="cc5d2846c3d50e425f450c4b9851371b54f4d674" name="Volume" x="896" y="84">
+   <obj type="ctrl/dial p" uuid="cc5d2846c3d50e425f450c4b9851371b54f4d674" name="Volume" x="910" y="84">
       <params>
          <frac32.u.map name="value" value="34.0"/>
       </params>
       <attribs/>
    </obj>
-   <obj type="math/*" uuid="3ac307b9f782049739ed62504081b96d580ea336" name="*_1" x="1022" y="112">
+   <obj type="math/*" uuid="3ac307b9f782049739ed62504081b96d580ea336" name="*_1" x="1036" y="112">
       <params/>
       <attribs/>
    </obj>
-   <obj type="audio/out stereo" uuid="a1ca7a567f535acc21055669829101d3ee7f0189" name="Output" x="1092" y="112">
+   <obj type="audio/out stereo" uuid="a1ca7a567f535acc21055669829101d3ee7f0189" name="Output" x="1106" y="112">
       <params/>
       <attribs/>
    </obj>
@@ -34,7 +34,7 @@
       </params>
       <attribs/>
    </obj>
-   <patchobj type="patch/object" uuid="b7a840a4-fac9-40b2-aaca-6f965cd5f0e5" name="Talkie Player" x="126" y="182">
+   <patchobj type="patch/object" uuid="b7a840a4-fac9-40b2-aaca-6f965cd5f0e5" name="Talkie Player" x="154" y="182">
       <params>
          <frac32.u.map name="word" value="33.5"/>
          <frac32.u.map name="rate" value="32.0"/>
@@ -57,7 +57,6 @@
             <bool32 name="step" description="step read"/>
          </inlets>
          <outlets>
-            <bool32 name="synthUnvoiced" description="voiced/unvoiced switch"/>
             <int32.positive name="synthEnergy" description="synth energy (determines volume)"/>
             <int32.positive name="synthPeriod" description="synth period (determines voiced frame frequency)"/>
             <int32.bipolar name="synthK1" description="synth filter coefficient K1"/>
@@ -331,7 +330,6 @@ const int8_t tmsK10[0x08] = {
 // Synth State Variables //
 ///////////////////////////
 
-bool synthUnvoiced;
 uint8_t synthPeriod;
 uint16_t synthEnergy;
 int16_t synthK1,synthK2;
@@ -510,7 +508,6 @@ void tk_readWord() {
 					synthK3 = tmsK3[tk_getBits(4)];
 					synthK4 = tmsK4[tk_getBits(4)];
 					if (synthPeriod) {
-						synthUnvoiced = false;
 						// Voiced frames use 6 extra coefficients.
 						synthK5  = tmsK5[ tk_getBits(4)];
 						synthK6  = tmsK6[ tk_getBits(4)];
@@ -519,7 +516,6 @@ void tk_readWord() {
 						synthK9  = tmsK9[ tk_getBits(3)];
 						synthK10 = tmsK10[tk_getBits(3)];
 					} else {
-						synthUnvoiced = true;
 						// Zero above coefficients for unvoiced frames
 						synthK5  = 0;
 						synthK6  = 0;
@@ -563,7 +559,6 @@ __attribute__ ( ( always_inline ) ) __STATIC_INLINE int32_t interpLog(int32_t va
 
 // S-Rate cycle periods for read and sample-calculate functions
 readInterval = 1200;
-synthUnvoiced = false;
 playEnable = true;
 
 // Inlet/param init
@@ -694,7 +689,185 @@ outlet_synthK10 = synthK10;
 ]]></code.krate>
       </object>
    </patchobj>
-   <patchobj type="patch/object" uuid="2e3b980b-4415-428f-b6ca-29f283183066" name="Talkie Voiced Source" x="476" y="182">
+   <patchobj type="patch/object" uuid="325e427b-0c89-4479-8959-cce80a02a21c" name="Talkie Tranformer" x="308" y="182">
+      <params>
+         <bool32.tgl name="bend" value="0"/>
+         <frac32.u.map name="bendIndex" MidiCC="21" value="13.5"/>
+         <frac32.s.map name="sweep" value="0.0"/>
+      </params>
+      <attribs/>
+      <object id="patch/object" uuid="325e427b-0c89-4479-8959-cce80a02a21c">
+         <sDescription>crossfade between two inputs</sDescription>
+         <author>toneburst</author>
+         <license>BSD</license>
+         <inlets>
+            <int32.positive name="synthEnergy" description="synth energy"/>
+            <int32.positive name="synthPeriod" description="synth period"/>
+            <int32.bipolar name="synthK1" description="synth filter coefficient 1"/>
+            <int32.bipolar name="synthK2" description="synth filter coefficient 2"/>
+            <int32.bipolar name="synthK3" description="synth filter coefficient 3"/>
+            <int32.bipolar name="synthK4" description="synth filter coefficient 4"/>
+            <int32.bipolar name="synthK5" description="synth filter coefficient 5"/>
+            <int32.bipolar name="synthK6" description="synth filter coefficient 6"/>
+            <int32.bipolar name="synthK7" description="synth filter coefficient 7"/>
+            <int32.bipolar name="synthK8" description="synth filter coefficient 8"/>
+            <int32.bipolar name="synthK9" description="synth filter coefficient 9"/>
+            <int32.bipolar name="synthK10" description="synth filter coefficient 10"/>
+            <bool32 name="bend" description="bend enable"/>
+            <frac32.positive name="bendIndex" description="circuit-bend signals"/>
+         </inlets>
+         <outlets>
+            <int32.positive name="synthEnergy" description="synth energy"/>
+            <int32.positive name="synthPeriod" description="synth period"/>
+            <int32.bipolar name="synthK1" description="synth filter coefficient 1"/>
+            <int32.bipolar name="synthK2" description="synth filter coefficient 2"/>
+            <int32.bipolar name="synthK3" description="synth filter coefficient 3"/>
+            <int32.bipolar name="synthK4" description="synth filter coefficient 4"/>
+            <int32.bipolar name="synthK5" description="synth filter coefficient 5"/>
+            <int32.bipolar name="synthK6" description="synth filter coefficient 6"/>
+            <int32.bipolar name="synthK7" description="synth filter coefficient 7"/>
+            <int32.bipolar name="synthK8" description="synth filter coefficient 8"/>
+            <int32.bipolar name="synthK9" description="synth filter coefficient 9"/>
+            <int32.bipolar name="synthK10" description="synth filter coefficient 10"/>
+         </outlets>
+         <displays>
+            <int32.label name="bendIndex" description="bend index"/>
+         </displays>
+         <params>
+            <bool32.tgl name="bend" description="bend enable"/>
+            <frac32.u.map name="bendIndex" description="circuit-bend signals"/>
+            <frac32.s.map name="sweep" description="sweep filters"/>
+         </params>
+         <attribs/>
+         <includes/>
+         <code.declaration><![CDATA[
+
+// Indices for transforming connections between inlet and outlet
+const uint8_t indices[47][12] = {
+	{0,1,2,3,4,5,6,7,8,9,10,11},
+	{0,1,2,3,4,5,6,7,8,9,10,11},
+	{0,1,11,2,3,4,5,6,7,8,9,10},
+	{0,1,10,11,2,3,4,5,6,7,8,9},
+	{0,1,9,10,11,2,3,4,5,6,7,8},
+	{0,1,8,9,10,11,2,3,4,5,6,7},
+	{0,1,7,8,9,10,11,2,3,4,5,6},
+	{0,1,6,7,8,9,10,11,2,3,4,5},
+	{0,1,5,6,7,8,9,10,11,2,3,4},
+	{0,1,4,5,6,7,8,9,10,11,2,3},
+	{0,1,3,4,5,6,7,8,9,10,11,2},
+
+	{0,1,2,3,4,5,6,7,8,9,10,11},
+	{1,2,3,4,5,6,7,8,9,10,11,0},
+	{2,3,4,5,6,7,8,9,10,11,0,1},
+	{3,4,5,6,7,8,9,10,11,0,1,2},
+	{4,5,6,7,8,9,10,11,0,1,2,3},
+	{5,6,7,8,9,10,11,0,1,2,3,4},
+	{6,7,8,9,10,11,0,1,2,3,4,5},
+	{7,8,9,10,11,0,1,2,3,4,5,6},
+	{8,9,10,11,0,1,2,3,4,5,6,7},
+	{9,10,11,0,1,2,3,4,5,6,7,8},
+	{10,11,0,1,2,3,4,5,6,7,8,9},
+	{11,0,1,2,3,4,5,6,7,8,9,10},
+	{0,1,2,3,4,5,6,7,8,9,10,11},
+
+	{1,0,2,3,4,5,6,7,8,9,10,11},
+	{0,1,3,2,4,5,6,7,8,9,10,11},
+	{0,1,2,3,5,4,6,7,8,9,10,11},
+	{0,1,2,3,4,5,7,6,8,9,10,11},
+	{0,1,2,3,4,5,6,7,9,8,10,11},
+	{0,1,2,3,4,5,6,7,8,9,11,10},
+
+	{1,0,2,3,4,5,6,7,8,9,10,11},
+	{1,0,3,2,4,5,6,7,8,9,10,11},
+	{1,0,3,2,5,4,6,7,8,9,10,11},
+	{1,0,3,2,5,4,7,6,8,9,10,11},
+	{1,0,3,2,5,4,7,6,9,8,10,11},
+	{1,0,3,2,5,4,7,6,9,8,11,10},
+	{1,0,3,2,5,4,7,6,9,8,11,10},
+
+	{0,7,10,2,11,3,9,4,6,5,1,8},
+	{10,7,4,3,6,5,1,11,2,0,8,9},
+	{3,8,1,10,6,5,0,9,11,7,2,4},
+	{2,5,1,11,6,9,7,3,10,8,0,4},
+	{3,10,9,11,5,7,4,6,0,1,8,2},
+	{9,7,8,10,6,2,0,1,4,11,5,3},
+	{3,4,6,1,7,10,8,11,2,5,0,9},
+	{7,9,11,6,1,5,8,0,3,10,4,2},
+	{11,7,5,10,0,3,6,2,8,9,4,1},
+	{5,10,2,7,9,6,1,3,4,8,0,11},
+};
+
+// Number of bits for each signal
+const uint8_t bits[12] = {8,8,16,16,8,8,8,8,8,8,8,8};
+
+uint8_t bend;
+
+__attribute__ ( ( always_inline ) ) __STATIC_INLINE int32_t scaleValue(int32_t val, uint8_t inbits, uint8_t outbits) {
+	if(inbits == 16 && outbits == 8)
+		return val >> 8;
+	else if(inbits == 8 && outbits == 16)
+		return val << 8;
+	else
+		return val;
+}
+
+// Scale input to range out_min > out_max
+__attribute__ ( ( always_inline ) ) __STATIC_INLINE int32_t range_pos(int32_t val, int32_t out_min, int32_t out_max) {
+	float x = (float)val;
+	float outMin = (float)out_min;
+	float outMax = (float)out_max;
+	return (int32_t)(x * (outMax - outMin) / 0x07FFFFFF + outMin);
+};
+]]></code.declaration>
+         <code.init><![CDATA[
+
+bend = 0;
+
+]]></code.init>
+         <code.krate><![CDATA[
+
+// Sweep filter coefficients
+sweep = (__SSAT(param_sweep, 27) >> 22) * (-1);
+
+int32_t ins[12] = {
+	inlet_synthEnergy,
+	inlet_synthPeriod,
+	inlet_synthK1,
+	inlet_synthK2,
+	inlet_synthK3,
+	inlet_synthK4,
+	inlet_synthK5,
+	inlet_synthK6,
+	inlet_synthK7,
+	inlet_synthK8,
+	inlet_synthK9,
+	inlet_synthK10
+};
+
+bend = (inlet_bend || param_bend) ? range_pos(__USAT(param_bendIndex + inlet_bendIndex, 27), 0, 46) : 0;
+
+// Scale controls to coefficient table indices
+// and set outlets
+outlet_synthEnergy = scaleValue(ins[indices[bend][0]] + sweep,  bits[indices[bend][0]],  8);
+outlet_synthPeriod = scaleValue(ins[indices[bend][1]] + sweep,  bits[indices[bend][1]],  8);
+outlet_synthK1     = scaleValue(ins[indices[bend][2]] + sweep,  bits[indices[bend][2]], 16);
+outlet_synthK2     = scaleValue(ins[indices[bend][3]] + sweep,  bits[indices[bend][3]], 16);
+outlet_synthK3     = scaleValue(ins[indices[bend][4]] + sweep,  bits[indices[bend][4]],  8);
+outlet_synthK4     = scaleValue(ins[indices[bend][5]] + sweep,  bits[indices[bend][5]],  8);
+outlet_synthK5     = scaleValue(ins[indices[bend][6]] + sweep,  bits[indices[bend][6]],  8);
+outlet_synthK6     = scaleValue(ins[indices[bend][7]] + sweep,  bits[indices[bend][7]],  8);
+outlet_synthK7     = scaleValue(ins[indices[bend][8]] + sweep,  bits[indices[bend][8]],  8);
+outlet_synthK8     = scaleValue(ins[indices[bend][9]] + sweep,  bits[indices[bend][9]],  8);
+outlet_synthK9     = scaleValue(ins[indices[bend][10]] + sweep, bits[indices[bend][10]], 8);
+outlet_synthK10    = scaleValue(ins[indices[bend][11]] + sweep, bits[indices[bend][11]], 8);
+
+// Display bend index
+disp_bendIndex = bend;
+
+]]></code.krate>
+      </object>
+   </patchobj>
+   <patchobj type="patch/object" uuid="2e3b980b-4415-428f-b6ca-29f283183066" name="Talkie Voiced Source" x="490" y="182">
       <params>
          <frac32.u.map name="wave" value="0.0"/>
          <frac32.u.map name="oct" value="32.0"/>
@@ -1017,7 +1190,7 @@ for(uint8_t j = 0; j < BUFSIZE; j++) {
 ]]></code.krate>
       </object>
    </patchobj>
-   <patchobj type="patch/object" uuid="0c5470ff-da3f-4dc8-9848-fbe7ff65bd4e" name="Talkie Unvoiced Source" x="602" y="182">
+   <patchobj type="patch/object" uuid="0c5470ff-da3f-4dc8-9848-fbe7ff65bd4e" name="Talkie Unvoiced Source" x="616" y="182">
       <params>
          <frac32.s.map name="pitch" value="0.0"/>
          <frac32.u.map name="octave" value="32.0"/>
@@ -1118,7 +1291,7 @@ for(uint8_t j = 0; j < BUFSIZE; j++) {
 ]]></code.krate>
       </object>
    </patchobj>
-   <patchobj type="patch/object" uuid="06902663-1848-4c47-84be-beae9351032a" name="Talkie Mixer" x="728" y="182">
+   <patchobj type="patch/object" uuid="06902663-1848-4c47-84be-beae9351032a" name="Talkie Mixer" x="742" y="182">
       <params>
          <bool32.tgl name="unvoiced" value="0"/>
          <frac32.u.map name="bias" value="0.0"/>
@@ -1133,6 +1306,7 @@ for(uint8_t j = 0; j < BUFSIZE; j++) {
          <inlets>
             <bool32 name="synthUnvoiced" description="switch between voiced and unvoiced waves"/>
             <int32.positive name="synthEnergy" description="energy (volume)"/>
+            <int32.positive name="synthPeriod" description="synth period"/>
             <frac32buffer name="voicedWave" description="voiced wave"/>
             <frac32buffer name="unvoicedWave" description="unvoiced wave"/>
             <frac32.positive name="bias" description="mix unvoiced (noise) into voiced source"/>
@@ -1191,7 +1365,7 @@ mixSlewState = 0;
          <code.krate><![CDATA[
 
 // Set mix to max if unvoiced param or inlet set true, else set to values from bias param/inlet (saturated to 27 bits)
-mix = (inlet_synthUnvoiced || param_unvoiced) ? 0x07ffffff : interpExp32(__USAT(param_bias + inlet_bias, 27));
+mix = (inlet_synthUnvoiced || param_unvoiced || (!synthPeriod)) ? 0x07ffffff : interpExp32(__USAT(param_bias + inlet_bias, 27));
 
 // Apply slew to mix value
 if(param_slew || inlet_slew)
@@ -1216,7 +1390,7 @@ outlet_wave = a >> 35;
 ]]></code.srate>
       </object>
    </patchobj>
-   <patchobj type="patch/object" uuid="2e3b980b-4415-428f-b6ca-29f283183066" name="Talkie Filters" x="868" y="182">
+   <patchobj type="patch/object" uuid="2e3b980b-4415-428f-b6ca-29f283183066" name="Talkie Filters" x="882" y="182">
       <params>
          <frac32.u.map name="srate" value="32.0"/>
          <frac32.u.map name="crush" value="0.0"/>
@@ -1500,197 +1674,13 @@ for(uint8_t j = 0; j < BUFSIZE; j++) {
 ]]></code.krate>
       </object>
    </patchobj>
-   <obj type="filter/lp" uuid="1427779cf086ab83c8b03eeeac69c2a97759c651" name="LP Filter" x="980" y="182">
+   <obj type="filter/lp" uuid="1427779cf086ab83c8b03eeeac69c2a97759c651" name="LP Filter" x="994" y="182">
       <params>
          <frac32.s.map name="pitch" value="50.0"/>
          <frac32.u.map name="reso" value="0.0"/>
       </params>
       <attribs/>
    </obj>
-   <patchobj type="patch/object" uuid="325e427b-0c89-4479-8959-cce80a02a21c" name="Talkie Tranformer" x="294" y="196">
-      <params>
-         <bool32.tgl name="bend" value="0"/>
-         <frac32.u.map name="bendIndex" MidiCC="21" value="13.5"/>
-         <frac32.s.map name="sweep" value="0.0"/>
-      </params>
-      <attribs/>
-      <object id="patch/object" uuid="325e427b-0c89-4479-8959-cce80a02a21c">
-         <sDescription>crossfade between two inputs</sDescription>
-         <author>toneburst</author>
-         <license>BSD</license>
-         <inlets>
-            <int32.positive name="synthEnergy" description="synth energy"/>
-            <int32.positive name="synthPeriod" description="synth period"/>
-            <int32.bipolar name="synthK1" description="synth filter coefficient 1"/>
-            <int32.bipolar name="synthK2" description="synth filter coefficient 2"/>
-            <int32.bipolar name="synthK3" description="synth filter coefficient 3"/>
-            <int32.bipolar name="synthK4" description="synth filter coefficient 4"/>
-            <int32.bipolar name="synthK5" description="synth filter coefficient 5"/>
-            <int32.bipolar name="synthK6" description="synth filter coefficient 6"/>
-            <int32.bipolar name="synthK7" description="synth filter coefficient 7"/>
-            <int32.bipolar name="synthK8" description="synth filter coefficient 8"/>
-            <int32.bipolar name="synthK9" description="synth filter coefficient 9"/>
-            <int32.bipolar name="synthK10" description="synth filter coefficient 10"/>
-            <bool32 name="bend" description="bend enable"/>
-            <frac32.positive name="bendIndex" description="circuit-bend signals"/>
-         </inlets>
-         <outlets>
-            <int32.positive name="synthEnergy" description="synth energy"/>
-            <int32.positive name="synthPeriod" description="synth period"/>
-            <int32.bipolar name="synthK1" description="synth filter coefficient 1"/>
-            <int32.bipolar name="synthK2" description="synth filter coefficient 2"/>
-            <int32.bipolar name="synthK3" description="synth filter coefficient 3"/>
-            <int32.bipolar name="synthK4" description="synth filter coefficient 4"/>
-            <int32.bipolar name="synthK5" description="synth filter coefficient 5"/>
-            <int32.bipolar name="synthK6" description="synth filter coefficient 6"/>
-            <int32.bipolar name="synthK7" description="synth filter coefficient 7"/>
-            <int32.bipolar name="synthK8" description="synth filter coefficient 8"/>
-            <int32.bipolar name="synthK9" description="synth filter coefficient 9"/>
-            <int32.bipolar name="synthK10" description="synth filter coefficient 10"/>
-            <frac32.bipolar name="sweep" description="sweep filters"/>
-         </outlets>
-         <displays>
-            <int32.label name="bendIndex" description="bend index"/>
-         </displays>
-         <params>
-            <bool32.tgl name="bend" description="bend enable"/>
-            <frac32.u.map name="bendIndex" description="circuit-bend signals"/>
-            <frac32.s.map name="sweep" description="sweep filters"/>
-         </params>
-         <attribs/>
-         <includes/>
-         <code.declaration><![CDATA[
-
-// Indices for transforming connections between inlet and outlet
-const uint8_t indices[47][12] = {
-	{0,1,2,3,4,5,6,7,8,9,10,11},
-	{0,1,2,3,4,5,6,7,8,9,10,11},
-	{0,1,11,2,3,4,5,6,7,8,9,10},
-	{0,1,10,11,2,3,4,5,6,7,8,9},
-	{0,1,9,10,11,2,3,4,5,6,7,8},
-	{0,1,8,9,10,11,2,3,4,5,6,7},
-	{0,1,7,8,9,10,11,2,3,4,5,6},
-	{0,1,6,7,8,9,10,11,2,3,4,5},
-	{0,1,5,6,7,8,9,10,11,2,3,4},
-	{0,1,4,5,6,7,8,9,10,11,2,3},
-	{0,1,3,4,5,6,7,8,9,10,11,2},
-
-	{0,1,2,3,4,5,6,7,8,9,10,11},
-	{1,2,3,4,5,6,7,8,9,10,11,0},
-	{2,3,4,5,6,7,8,9,10,11,0,1},
-	{3,4,5,6,7,8,9,10,11,0,1,2},
-	{4,5,6,7,8,9,10,11,0,1,2,3},
-	{5,6,7,8,9,10,11,0,1,2,3,4},
-	{6,7,8,9,10,11,0,1,2,3,4,5},
-	{7,8,9,10,11,0,1,2,3,4,5,6},
-	{8,9,10,11,0,1,2,3,4,5,6,7},
-	{9,10,11,0,1,2,3,4,5,6,7,8},
-	{10,11,0,1,2,3,4,5,6,7,8,9},
-	{11,0,1,2,3,4,5,6,7,8,9,10},
-	{0,1,2,3,4,5,6,7,8,9,10,11},
-
-	{1,0,2,3,4,5,6,7,8,9,10,11},
-	{0,1,3,2,4,5,6,7,8,9,10,11},
-	{0,1,2,3,5,4,6,7,8,9,10,11},
-	{0,1,2,3,4,5,7,6,8,9,10,11},
-	{0,1,2,3,4,5,6,7,9,8,10,11},
-	{0,1,2,3,4,5,6,7,8,9,11,10},
-
-	{1,0,2,3,4,5,6,7,8,9,10,11},
-	{1,0,3,2,4,5,6,7,8,9,10,11},
-	{1,0,3,2,5,4,6,7,8,9,10,11},
-	{1,0,3,2,5,4,7,6,8,9,10,11},
-	{1,0,3,2,5,4,7,6,9,8,10,11},
-	{1,0,3,2,5,4,7,6,9,8,11,10},
-	{1,0,3,2,5,4,7,6,9,8,11,10},
-
-	{0,7,10,2,11,3,9,4,6,5,1,8},
-	{10,7,4,3,6,5,1,11,2,0,8,9},
-	{3,8,1,10,6,5,0,9,11,7,2,4},
-	{2,5,1,11,6,9,7,3,10,8,0,4},
-	{3,10,9,11,5,7,4,6,0,1,8,2},
-	{9,7,8,10,6,2,0,1,4,11,5,3},
-	{3,4,6,1,7,10,8,11,2,5,0,9},
-	{7,9,11,6,1,5,8,0,3,10,4,2},
-	{11,7,5,10,0,3,6,2,8,9,4,1},
-	{5,10,2,7,9,6,1,3,4,8,0,11},
-};
-
-// Number of bits for each signal
-const uint8_t bits[12] = {8,8,16,16,8,8,8,8,8,8,8,8};
-
-uint8_t bend;
-int8_t sweep;
-
-// Rotate array
-// http://stackoverflow.com/questions/22078728/rotate-array-left-or-right-by-a-set-number-of-positions-in-on-complexity
-
-
-
-int32_t scaleValue(int32_t val, uint8_t inbits, uint8_t outbits) {
-	if(inbits == 16 && outbits == 8)
-		return val >> 8;
-	else if(inbits == 8 && outbits == 16)
-		return val << 8;
-	else
-		return val;
-}
-
-// Scale input to range out_min > out_max
-__attribute__ ( ( always_inline ) ) __STATIC_INLINE int32_t range_pos(int32_t val, int32_t out_min, int32_t out_max) {
-	float x = (float)val;
-	float outMin = (float)out_min;
-	float outMax = (float)out_max;
-	return (int32_t)(x * (outMax - outMin) / 0x07FFFFFF + outMin);
-};
-]]></code.declaration>
-         <code.init><![CDATA[
-
-bend = 0;
-sweep = 0;
-
-]]></code.init>
-         <code.krate><![CDATA[
-
-sweep = (__SSAT(param_sweep, 27) >> 22) * (-1);
-
-int32_t ins[12] = {
-	inlet_synthEnergy,
-	inlet_synthPeriod,
-	inlet_synthK1,
-	inlet_synthK2,
-	inlet_synthK3,
-	inlet_synthK4,
-	inlet_synthK5,
-	inlet_synthK6,
-	inlet_synthK7,
-	inlet_synthK8,
-	inlet_synthK9,
-	inlet_synthK10
-};
-
-bend = (inlet_bend || param_bend) ?
-	range_pos(__USAT(param_bendIndex + inlet_bendIndex, 27), 0, 46) : 0;
-
-// Scale controls to coefficient table indices
-// and set outlets
-outlet_synthEnergy = scaleValue(ins[indices[bend][0]] + sweep,  bits[indices[bend][0]],  8);
-outlet_synthPeriod = scaleValue(ins[indices[bend][1]] + sweep,  bits[indices[bend][1]],  8);
-outlet_synthK1     = scaleValue(ins[indices[bend][2]] + sweep,  bits[indices[bend][2]], 16);
-outlet_synthK2     = scaleValue(ins[indices[bend][3]] + sweep,  bits[indices[bend][3]], 16);
-outlet_synthK3     = scaleValue(ins[indices[bend][4]] + sweep,  bits[indices[bend][4]],  8);
-outlet_synthK4     = scaleValue(ins[indices[bend][5]] + sweep,  bits[indices[bend][5]],  8);
-outlet_synthK5     = scaleValue(ins[indices[bend][6]] + sweep,  bits[indices[bend][6]],  8);
-outlet_synthK6     = scaleValue(ins[indices[bend][7]] + sweep,  bits[indices[bend][7]],  8);
-outlet_synthK7     = scaleValue(ins[indices[bend][8]] + sweep,  bits[indices[bend][8]],  8);
-outlet_synthK8     = scaleValue(ins[indices[bend][9]] + sweep,  bits[indices[bend][9]],  8);
-outlet_synthK9     = scaleValue(ins[indices[bend][10]] + sweep, bits[indices[bend][10]], 8);
-outlet_synthK10    = scaleValue(ins[indices[bend][11]] + sweep, bits[indices[bend][11]], 8);
-
-// Display bend index
-disp_bendIndex = bend;]]></code.krate>
-      </object>
-   </patchobj>
    <obj type="ctrl/button" uuid="ef3d13774349df85aa9bfecf30dbc91ab8488b3f" name="Step" x="42" y="266">
       <params>
          <bool32.mom name="b" value="0"/>
@@ -1743,6 +1733,7 @@ disp_bendIndex = bend;]]></code.krate>
       <net>
          <source obj="Talkie Tranformer" outlet="synthPeriod"/>
          <dest obj="Talkie Voiced Source" inlet="synthPeriod"/>
+         <dest obj="Talkie Mixer" inlet="synthPeriod"/>
       </net>
       <net>
          <source obj="Talkie Tranformer" outlet="synthK1"/>
@@ -1844,10 +1835,6 @@ disp_bendIndex = bend;]]></code.krate>
       <net>
          <source obj="LP Filter" outlet="out"/>
          <dest obj="vca_1" inlet="a"/>
-      </net>
-      <net>
-         <source obj="Talkie Player" outlet="synthUnvoiced"/>
-         <dest obj="Talkie Mixer" inlet="synthUnvoiced"/>
       </net>
    </nets>
    <settings>
