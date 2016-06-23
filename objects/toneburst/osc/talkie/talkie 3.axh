@@ -10,7 +10,7 @@
       <params/>
       <attribs/>
    </obj>
-   <obj type="midi/in/keyb mod" uuid="abcd509d15e7d13d5381203fd2b4d0ac6fe57bb3" name="Keyboard" x="28" y="70">
+   <obj type="midi/in/keyb mod" uuid="abcd509d15e7d13d5381203fd2b4d0ac6fe57bb3" name="Keyboard" x="42" y="70">
       <params/>
       <attribs/>
    </obj>
@@ -28,15 +28,15 @@
       <params/>
       <attribs/>
    </obj>
-   <obj type="ctrl/toggle" uuid="42b8134fa729d54bfc8d62d6ef3fa99498c1de99" name="PLAY" x="42" y="182">
+   <obj type="ctrl/toggle" uuid="42b8134fa729d54bfc8d62d6ef3fa99498c1de99" name="PLAY" x="70" y="182">
       <params>
-         <bool32.tgl name="b" value="1"/>
+         <bool32.tgl name="b" value="0"/>
       </params>
       <attribs/>
    </obj>
    <patchobj type="patch/object" uuid="b7a840a4-fac9-40b2-aaca-6f965cd5f0e5" name="Talkie Player" x="154" y="182">
       <params>
-         <frac32.u.map name="word" value="33.5"/>
+         <frac32.u.map name="word" value="24.5"/>
          <frac32.u.map name="rate" value="32.0"/>
          <bool32.tgl name="loop" value="1"/>
          <bool32.tgl name="freeze" value="0"/>
@@ -670,7 +670,6 @@ readCounter = (readCounter < (readInterval - 1)) ? readCounter + 1 : 0;
 // Set Outlets //
 /////////////////
 
-outlet_synthUnvoiced = synthUnvoiced;
 outlet_synthEnergy = synthEnergy;
 outlet_synthPeriod = synthPeriod;
 outlet_synthK1  = synthK1;
@@ -690,7 +689,7 @@ outlet_synthK10 = synthK10;
    <patchobj type="patch/object" uuid="325e427b-0c89-4479-8959-cce80a02a21c" name="Talkie Tranformer" x="308" y="182">
       <params>
          <bool32.tgl name="bend" value="0"/>
-         <frac32.u.map name="bendIndex" MidiCC="21" value="13.5"/>
+         <frac32.u.map name="bendIndex" MidiCC="21" value="37.5"/>
          <frac32.s.map name="sweep" value="0.0"/>
       </params>
       <attribs/>
@@ -799,6 +798,7 @@ const uint8_t indices[47][12] = {
 const uint8_t bits[12] = {8,8,16,16,8,8,8,8,8,8,8,8};
 
 uint8_t bend;
+int32_t sweep;
 
 __attribute__ ( ( always_inline ) ) __STATIC_INLINE int32_t scaleValue(int32_t val, uint8_t inbits, uint8_t outbits) {
 	if(inbits == 16 && outbits == 8)
@@ -820,6 +820,7 @@ __attribute__ ( ( always_inline ) ) __STATIC_INLINE int32_t range_pos(int32_t va
          <code.init><![CDATA[
 
 bend = 0;
+sweep = 0;
 
 LogTextMessage("Initialising toneburst Talkie Synth Transformer");
 
@@ -1088,14 +1089,6 @@ __attribute__ ( ( always_inline ) ) __STATIC_INLINE int32_t slew32(int32_t targe
 	}
 }
 
-// 16-bit xfade (adapted from Factory xfade object)
-/*__attribute__ ( ( always_inline ) ) __STATIC_INLINE int16_t xfade16(int16_t a, int16_t b, uint16_t x) {
-	int16_t ccompl = (1 << 15) - x;
-	int32_t result = (int32_t)b * x;
-	result += (int32_t)a * ccompl;
-	return result >> 16;
-}*/
-
 ]]></code.declaration>
          <code.init><![CDATA[
 
@@ -1322,7 +1315,7 @@ for(uint8_t j = 0; j < BUFSIZE; j++) {
             <frac32.u.map name="slewrate" description="apply slew to voiced/unvoiced mix"/>
          </params>
          <attribs/>
-         <includes/s>
+         <includes/>
          <code.declaration><![CDATA[
 
 int32_t mix;
@@ -1363,7 +1356,7 @@ LogTextMessage("Initialising toneburst Talkie Synth excitation source mixer");
          <code.krate><![CDATA[
 
 // Set mix to max if unvoiced param or inlet set true, else set to values from bias param/inlet (saturated to 27 bits)
-mix = (inlet_synthUnvoiced || param_unvoiced || (!synthPeriod)) ? 0x07ffffff : interpExp32(__USAT(param_bias + inlet_bias, 27));
+mix = (inlet_synthUnvoiced || param_unvoiced || (!inlet_synthPeriod)) ? 0x07ffffff : interpExp32(__USAT(param_bias + inlet_bias, 27));
 
 // Apply slew to mix value
 if(param_slew || inlet_slew)
@@ -1679,7 +1672,7 @@ for(uint8_t j = 0; j < BUFSIZE; j++) {
       </params>
       <attribs/>
    </obj>
-   <obj type="ctrl/button" uuid="ef3d13774349df85aa9bfecf30dbc91ab8488b3f" name="Step" x="42" y="266">
+   <obj type="ctrl/button" uuid="ef3d13774349df85aa9bfecf30dbc91ab8488b3f" name="Step" x="70" y="266">
       <params>
          <bool32.mom name="b" value="0"/>
       </params>
@@ -1697,8 +1690,8 @@ for(uint8_t j = 0; j < BUFSIZE; j++) {
       </net>
       <net>
          <source obj="Keyboard" outlet="note"/>
-         <dest obj="Talkie Voiced Source" inlet="note"/>
          <dest obj="Talkie Unvoiced Source" inlet="pitch"/>
+         <dest obj="Talkie Voiced Source" inlet="note"/>
       </net>
       <net>
          <source obj="vca_1" outlet="o"/>
@@ -1840,8 +1833,8 @@ for(uint8_t j = 0; j < BUFSIZE; j++) {
    </settings>
    <notes><![CDATA[]]></notes>
    <windowPos>
-      <x>627</x>
-      <y>137</y>
+      <x>134</x>
+      <y>41</y>
       <width>1306</width>
       <height>834</height>
    </windowPos>
