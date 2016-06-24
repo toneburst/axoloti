@@ -16,7 +16,7 @@
    </obj>
    <obj type="ctrl/dial p" uuid="cc5d2846c3d50e425f450c4b9851371b54f4d674" name="Volume" x="910" y="84">
       <params>
-         <frac32.u.map name="value" value="15.0"/>
+         <frac32.u.map name="value" value="21.5"/>
       </params>
       <attribs/>
    </obj>
@@ -37,9 +37,9 @@
    <patchobj type="patch/object" uuid="b7a840a4-fac9-40b2-aaca-6f965cd5f0e5" name="Talkie Player" x="154" y="182">
       <params>
          <frac32.u.map name="bank" value="0.0"/>
-         <frac32.u.map name="word" value="12.5"/>
+         <frac32.u.map name="word" value="16.0"/>
          <frac32.u.map name="rate" value="32.0"/>
-         <bool32.tgl name="loop" value="1"/>
+         <bool32.tgl name="loop" value="0"/>
          <bool32.tgl name="freeze" value="0"/>
          <bool32.mom name="reset" value="0"/>
          <bool32.mom name="mark" value="0"/>
@@ -381,16 +381,21 @@ uint16_t readInterval;
 // Params/Inlets //
 ///////////////////
 
+// Persistant bools
+bool gate;
 bool trig;
-uint32_t wordIndex;
-uint32_t rate;
 bool loop;
 bool freeze;
-bool step;
 bool glitch;
-bool gate;
+
+// Momentary bools
+bool step;
 bool reset;
 bool mark;
+
+// Continuous params
+uint32_t wordIndex;
+uint32_t rate;
 
 ///////////////////
 ///////////////////
@@ -583,16 +588,20 @@ LogTextMessage("Initialising toneburst Talkie Synth Controller");
 readInterval = 1200;
 playEnable = true;
 
-// Inlet/param init
-trig = false;
-gate = false;
-reset = false;
-mark = false;
+//////////////////////
+// Inlet/param init //
+//////////////////////
 
-loop = false;
+gate = false;
 freeze = false;
 glitch = false;
+
+reset = false;
+mark = false;
+trig = false;
 step = false;
+ 
+loop = false;
 rate = 0;
 wordIndex = 0;
 
@@ -600,16 +609,14 @@ wordIndex = 0;
 ptrAddr = NULL;
 ptrBit = 0;
 ptrStart = NULL;
-loop = true;
-wordLength = 0;
+
 ptrGlitchOffset = 0;	// Offset from start of word pointer
 ptrBitGlitchOffset = 0;
 
-//
+// Calculate total number of bytes in word bank
 for(uint8_t i = 0; i < numWords; i++) {
 	bankBytes += UK_ACORN[i].length;
 }
-
 
 ]]></code.init>
          <code.krate><![CDATA[
