@@ -16,7 +16,7 @@
    </obj>
    <obj type="ctrl/dial p" uuid="cc5d2846c3d50e425f450c4b9851371b54f4d674" name="Volume" x="910" y="84">
       <params>
-         <frac32.u.map name="value" value="21.5"/>
+         <frac32.u.map name="value" value="47.5"/>
       </params>
       <attribs/>
    </obj>
@@ -30,17 +30,18 @@
    </obj>
    <obj type="ctrl/toggle" uuid="42b8134fa729d54bfc8d62d6ef3fa99498c1de99" name="PLAY" x="70" y="182">
       <params>
-         <bool32.tgl name="b" value="0"/>
+         <bool32.tgl name="b" value="1"/>
       </params>
       <attribs/>
    </obj>
    <patchobj type="patch/object" uuid="b7a840a4-fac9-40b2-aaca-6f965cd5f0e5" name="Talkie Player" x="154" y="182">
       <params>
          <frac32.u.map name="bank" value="0.0"/>
-         <frac32.u.map name="word" value="16.0"/>
+         <frac32.u.map name="word" value="45.5"/>
          <frac32.u.map name="rate" value="32.0"/>
          <bool32.tgl name="loop" value="0"/>
          <bool32.tgl name="freeze" value="0"/>
+         <bool32.mom name="step" value="0"/>
          <bool32.mom name="reset" value="0"/>
          <bool32.mom name="mark" value="0"/>
          <bool32.mom name="glitch" value="0"/>
@@ -55,9 +56,9 @@
             <frac32.positive name="word" description="word-select"/>
             <bool32.risingfalling name="gate" description="gate"/>
             <frac32.positive name="rate" description="playback rate"/>
-            <bool32 name="loop"/>
+            <bool32 name="loop" description="loop enable"/>
             <bool32 name="freeze" description="freeze playback"/>
-            <bool32 name="step" description="step read"/>
+            <bool32 name="step" description="step read (freeze mode only)"/>
             <bool32.rising name="reset" description="reset to start or reset marker"/>
             <bool32.rising name="mark" description="set reset mark"/>
             <bool32 name="glitch" description="glitch"/>
@@ -84,6 +85,7 @@
             <frac32.u.map name="rate" description="read rate"/>
             <bool32.tgl name="loop" description="loop"/>
             <bool32.tgl name="freeze" description="freeze frame"/>
+            <bool32.mom name="step" description="step read (freeze mode only)"/>
             <bool32.mom name="reset" description="reset to start or reset-mark"/>
             <bool32.mom name="mark" description="add reset-mark"/>
             <bool32.mom name="glitch" description="glitch"/>
@@ -629,7 +631,7 @@ wordIndex = mapU32(__USAT(param_word + inlet_word, 27), 0, 79);
 rate = __USAT(param_rate + inlet_rate, 27);
 readInterval = mapU32(curveLog32(rate), 480, 15);
 loop = (param_loop || inlet_loop)? true : false;
-freeze = param_freeze | inlet_freeze;
+freeze = (param_freeze || inlet_freeze || !rate)? true : false;
 
 ////////////////////
 // Detect Gate-On //
@@ -660,25 +662,11 @@ if(inlet_gate) {
 	gate = false;
 }
 
-/////////////////////////
-// Detect Glitch Press //
-/////////////////////////
-
-if(param_glitch || inlet_glitch) {
-	if(!glitch)
-		tk_glitchPtr();
-	glitch = true;
-} else {
-	if(glitch)
-		tk_glitchPtrReset();
-	glitch = false;
-}
-
 /////////////////////////////////////
 // Detect Step Trig on rising edge //
 /////////////////////////////////////
 
-if(inlet_step) {
+if(inlet_step || param_step) {
 	if(!step) {
 		if(freeze)
 			tk_readWord();
@@ -712,6 +700,20 @@ if(param_mark || inlet_mark) {
 	mark = false;
 }
 
+/////////////////////////
+// Detect Glitch Press //
+/////////////////////////
+
+if(param_glitch || inlet_glitch) {
+	if(!glitch)
+		tk_glitchPtr();
+	glitch = true;
+} else {
+	if(glitch)
+		tk_glitchPtrReset();
+	glitch = false;
+}
+
 ///////////////
 // Read Bits //
 ///////////////
@@ -719,7 +721,7 @@ if(param_mark || inlet_mark) {
 //
 if(readCounter == 0 && inlet_gate) {
 	// Only read if gate on and rate > 0
-	if(!freeze && rate) {
+	if(!freeze) {
 		tk_readWord();
 		gate = true;
 	}
@@ -753,8 +755,8 @@ outlet_synthK10    = synthK10;
    </patchobj>
    <patchobj type="patch/object" uuid="325e427b-0c89-4479-8959-cce80a02a21c" name="Talkie Tranformer" x="308" y="182">
       <params>
-         <bool32.tgl name="bend" value="0"/>
-         <frac32.u.map name="bendIndex" MidiCC="21" value="27.0"/>
+         <bool32.tgl name="bend" value="1"/>
+         <frac32.u.map name="bendIndex" MidiCC="21" value="37.5"/>
          <frac32.s.map name="sweep" value="0.0"/>
       </params>
       <attribs/>
@@ -884,10 +886,10 @@ __attribute__ ( ( always_inline ) ) __STATIC_INLINE int32_t mapU32(int32_t val, 
 ]]></code.declaration>
          <code.init><![CDATA[
 
+LogTextMessage("Initialising toneburst Talkie Synth Transformer");
+
 bend = 0;
 sweep = 0;
-
-LogTextMessage("Initialising toneburst Talkie Synth Transformer");
 
 ]]></code.init>
          <code.krate><![CDATA[
@@ -1153,6 +1155,8 @@ __attribute__ ( ( always_inline ) ) __STATIC_INLINE int32_t slew32(int32_t targe
 ]]></code.declaration>
          <code.init><![CDATA[
 
+LogTextMessage("Initialising toneburst Talkie Synth Voiced Source");
+
 // Counters (count S-Rate cycles)
 renderCounter = 0;
 // S-Rate cycle periods for sample-calculate function
@@ -1167,8 +1171,6 @@ octave = 0;
 oscPeriod = 0;
 glide = 0;
 chirp = 0;
-
-LogTextMessage("Initialising toneburst Talkie Synth Voiced Source");
 
 ]]></code.init>
          <code.krate><![CDATA[
@@ -1292,10 +1294,12 @@ int32_t tk_renderUnvoiced() {
 ]]></code.declaration>
          <code.init><![CDATA[
 
+LogTextMessage("Initialising toneburst Talkie Synth Unvoiced Source");
+
 osc_p = 0;
 rcount = 0;
 
-LogTextMessage("Initialising toneburst Talkie Synth Unvoiced Source");]]></code.init>
+]]></code.init>
          <code.krate><![CDATA[
 
 
@@ -1404,10 +1408,10 @@ __attribute__ ( ( always_inline ) ) __STATIC_INLINE int32_t curveExp32(int32_t v
 ]]></code.declaration>
          <code.init><![CDATA[
 
+LogTextMessage("Initialising toneburst Talkie Synth excitation source mixer");
+
 mix = 0;
 mixSlewState = 0;
-
-LogTextMessage("Initialising toneburst Talkie Synth excitation source mixer");
 
 ]]></code.init>
          <code.krate><![CDATA[
@@ -1615,6 +1619,8 @@ __attribute__ ( ( always_inline ) ) __STATIC_INLINE int32_t slew32(int32_t targe
 ]]></code.declaration>
          <code.init><![CDATA[
 
+LogTextMessage("Initialising toneburst Talkie Synth formant filter-bank");
+
 // Counters (count S-Rate cycles)
 renderCounter = 0;
 // S-Rate cycle periods for sample-calculate function
@@ -1630,8 +1636,6 @@ sample = 0;
 sampleRate = 0;
 crush = 9;
 slewRate = 0;
-
-LogTextMessage("Initialising toneburst Talkie Synth formant filter-bank");
 
 ]]></code.init>
          <code.krate><![CDATA[
@@ -1726,8 +1730,8 @@ for(uint8_t j = 0; j < BUFSIZE; j++) {
       </net>
       <net>
          <source obj="Keyboard" outlet="note"/>
-         <dest obj="Talkie Unvoiced Source" inlet="pitch"/>
          <dest obj="Talkie Voiced Source" inlet="note"/>
+         <dest obj="Talkie Unvoiced Source" inlet="pitch"/>
       </net>
       <net>
          <source obj="vca_1" outlet="o"/>
@@ -1759,8 +1763,8 @@ for(uint8_t j = 0; j < BUFSIZE; j++) {
       </net>
       <net>
          <source obj="Talkie Tranformer" outlet="synthPeriod"/>
-         <dest obj="Talkie Mixer" inlet="synthPeriod"/>
          <dest obj="Talkie Voiced Source" inlet="synthPeriod"/>
+         <dest obj="Talkie Mixer" inlet="synthPeriod"/>
       </net>
       <net>
          <source obj="Talkie Tranformer" outlet="synthK1"/>
@@ -1869,7 +1873,7 @@ for(uint8_t j = 0; j < BUFSIZE; j++) {
    </settings>
    <notes><![CDATA[]]></notes>
    <windowPos>
-      <x>816</x>
+      <x>134</x>
       <y>23</y>
       <width>1306</width>
       <height>834</height>
