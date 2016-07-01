@@ -30,16 +30,16 @@
    </obj>
    <obj type="ctrl/toggle" uuid="42b8134fa729d54bfc8d62d6ef3fa99498c1de99" name="PLAY" x="70" y="182">
       <params>
-         <bool32.tgl name="b" value="1"/>
+         <bool32.tgl name="b" value="0"/>
       </params>
       <attribs/>
    </obj>
    <patchobj type="patch/object" uuid="b7a840a4-fac9-40b2-aaca-6f965cd5f0e5" name="Talkie Player" x="154" y="182">
       <params>
          <frac32.u.map name="bank" value="0.0"/>
-         <frac32.u.map name="word" value="33.5"/>
+         <frac32.u.map name="word" value="42.5"/>
          <frac32.u.map name="rate" value="25.0"/>
-         <bool32.tgl name="loop" value="1"/>
+         <bool32.tgl name="loop" value="0"/>
          <bool32.tgl name="freeze" value="0"/>
          <bool32.mom name="step" value="0"/>
          <bool32.mom name="reset" value="0"/>
@@ -287,70 +287,7 @@ struct bankMeta {
 	struct wordMeta *bank;
 };
 
-////////////////
-// Word Banks //
-////////////////
-
-wordMeta UK_ACORN_LETTERS_NUMBERS[50] = {
-	{.length = 145, .data = &spZERO[0]},
-	{.length = 105, .data = &spONE[0]},
-	{.length = 95,  .data = &spTWO[0]},
-	{.length = 109, .data = &spTHREE[0]},
-	{.length = 111, .data = &spFOUR[0]},
-	{.length = 118, .data = &spFIVE[0]},
-	{.length = 77,  .data = &spSIX[0]},
-	{.length = 93,  .data = &spSEVEN[0]},
-	{.length = 52,  .data = &spEIGHT[0]},
-	{.length = 140, .data = &spNINE[0]},
-	{.length = 97,  .data = &spTEN[0]},
-	{.length = 124, .data = &spELEVEN[0]},
-	{.length = 127, .data = &spTWELVE[0]},
-	{.length = 64,  .data = &spTWEN_[0]},
-	{.length = 73,  .data = &spTHIR_[0]},
-	{.length = 73,  .data = &spFOUR_[0]},
-	{.length = 51,  .data = &spFIF_[0]},
-	{.length = 56,  .data = &spSIX_[0]},
-	{.length = 69,  .data = &spSEVEN_[0]},
-	{.length = 43,  .data = &spEIGH_[0]},
-	{.length = 96,  .data = &spNINE_[0]},
-	{.length = 91,  .data = &spPOINT[0]},
-	{.length = 104, .data = &spHUNDRED[0]},
-	{.length = 154, .data = &spTHOUSAND[0]},
-	{.length = 89,  .data = &spA[0]},
-	{.length = 88,  .data = &spB[0]},
-	{.length = 100, .data = &spC[0]},
-	{.length = 75,  .data = &spD[0]},
-	{.length = 49,  .data = &spE[0]},
-	{.length = 65,  .data = &spF[0]},
-	{.length = 94,  .data = &spG[0]},
-	{.length = 87,  .data = &spH[0]},
-	{.length = 114, .data = &spI[0]},
-	{.length = 98,  .data = &spJ[0]},
-	{.length = 89,  .data = &spK[0]},
-	{.length = 93,  .data = &spL[0]},
-	{.length = 94,  .data = &spM[0]},
-	{.length = 90,  .data = &spN[0]},
-	{.length = 72,  .data = &spO[0]},
-	{.length = 55,  .data = &spP[0]},
-	{.length = 86,  .data = &spQ[0]},
-	{.length = 59,  .data = &spR[0]},
-	{.length = 80,  .data = &spS[0]},
-	{.length = 87,  .data = &spT[0]},
-	{.length = 112, .data = &spU[0]},
-	{.length = 101, .data = &spV[0]},
-	{.length = 101, .data = &spW[0]},
-	{.length = 92,  .data = &spX[0]},
-	{.length = 117, .data = &spY[0]},
-	{.length = 101, .data = &spZ[0]},
-};
-
-/////////////////////////
-// Array of Word Banks //
-/////////////////////////
-
-bankMeta banks[1] = {
-	{.count = 50, .bytes = 0, .bank = UK_ACORN_LETTERS_NUMBERS}
-};
+//wordMeta UK_ACORN_LETTERS_NUMBERS[50];
 
 ///////////////////////////////////
 // Synth Parameter Lookup Tables //
@@ -686,9 +623,6 @@ rate = 0;
 wordIndex = 0;
 
 // Pointers
-
-wordBank = UK_ACORN_LETTERS_NUMBERS;
-
 ptrAddr = NULL;
 ptrBit = 0;
 ptrStart = NULL;
@@ -701,7 +635,69 @@ ptrBitGlitchOffset = 0;
 	bankBytes += UK_ACORN[i].length;
 }*/
 
-]]></code.init>
+////////////////
+// Word Banks //
+////////////////
+
+wordMeta UK_ACORN_LETTERS_NUMBERS[50];
+UK_ACORN_LETTERS_NUMBERS[0]  = {.length = 145, .data = &spZERO[0]};
+UK_ACORN_LETTERS_NUMBERS[1]  = {.length = 105, .data = &spONE[0]};
+UK_ACORN_LETTERS_NUMBERS[2]  = {.length = 95,  .data = &spTWO[0]};
+UK_ACORN_LETTERS_NUMBERS[3]  = {.length = 109, .data = &spTHREE[0]};
+UK_ACORN_LETTERS_NUMBERS[4]  = {.length = 111, .data = &spFOUR[0]};
+UK_ACORN_LETTERS_NUMBERS[5]  = {.length = 118, .data = &spFIVE[0]};
+UK_ACORN_LETTERS_NUMBERS[6]  = {.length = 77,  .data = &spSIX[0]};
+UK_ACORN_LETTERS_NUMBERS[7]  = {.length = 93,  .data = &spSEVEN[0]};
+UK_ACORN_LETTERS_NUMBERS[8]  = {.length = 52,  .data = &spEIGHT[0]};
+UK_ACORN_LETTERS_NUMBERS[9]  = {.length = 140, .data = &spNINE[0]};
+UK_ACORN_LETTERS_NUMBERS[10] = {.length = 97,  .data = &spTEN[0]};
+UK_ACORN_LETTERS_NUMBERS[11] = {.length = 124, .data = &spELEVEN[0]};
+UK_ACORN_LETTERS_NUMBERS[12] = {.length = 127, .data = &spTWELVE[0]};
+UK_ACORN_LETTERS_NUMBERS[13] = {.length = 64,  .data = &spTWEN_[0]};
+UK_ACORN_LETTERS_NUMBERS[14] = {.length = 73,  .data = &spTHIR_[0]};
+UK_ACORN_LETTERS_NUMBERS[15] = {.length = 73,  .data = &spFOUR_[0]};
+UK_ACORN_LETTERS_NUMBERS[16] = {.length = 51,  .data = &spFIF_[0]};
+UK_ACORN_LETTERS_NUMBERS[17] = {.length = 56,  .data = &spSIX_[0]};
+UK_ACORN_LETTERS_NUMBERS[18] = {.length = 69,  .data = &spSEVEN_[0]};
+UK_ACORN_LETTERS_NUMBERS[19] = {.length = 43,  .data = &spEIGH_[0]};
+UK_ACORN_LETTERS_NUMBERS[20] = {.length = 96,  .data = &spNINE_[0]};
+UK_ACORN_LETTERS_NUMBERS[21] = {.length = 91,  .data = &spPOINT[0]};
+UK_ACORN_LETTERS_NUMBERS[22] = {.length = 104, .data = &spHUNDRED[0]};
+UK_ACORN_LETTERS_NUMBERS[23] = {.length = 154, .data = &spTHOUSAND[0]};
+UK_ACORN_LETTERS_NUMBERS[24] = {.length = 89,  .data = &spA[0]};
+UK_ACORN_LETTERS_NUMBERS[25] = {.length = 88,  .data = &spB[0]};
+UK_ACORN_LETTERS_NUMBERS[26] = {.length = 100, .data = &spC[0]};
+UK_ACORN_LETTERS_NUMBERS[27] = {.length = 75,  .data = &spD[0]};
+UK_ACORN_LETTERS_NUMBERS[28] = {.length = 49,  .data = &spE[0]};
+UK_ACORN_LETTERS_NUMBERS[29] = {.length = 65,  .data = &spF[0]};
+UK_ACORN_LETTERS_NUMBERS[30] = {.length = 94,  .data = &spG[0]};
+UK_ACORN_LETTERS_NUMBERS[31] = {.length = 87,  .data = &spH[0]};
+UK_ACORN_LETTERS_NUMBERS[32] = {.length = 114, .data = &spI[0]};
+UK_ACORN_LETTERS_NUMBERS[33] = {.length = 98,  .data = &spJ[0]};
+UK_ACORN_LETTERS_NUMBERS[34] = {.length = 89,  .data = &spK[0]};
+UK_ACORN_LETTERS_NUMBERS[35] = {.length = 93,  .data = &spL[0]};
+UK_ACORN_LETTERS_NUMBERS[36] = {.length = 94,  .data = &spM[0]};
+UK_ACORN_LETTERS_NUMBERS[37] = {.length = 90,  .data = &spN[0]};
+UK_ACORN_LETTERS_NUMBERS[38] = {.length = 72,  .data = &spO[0]};
+UK_ACORN_LETTERS_NUMBERS[39] = {.length = 55,  .data = &spP[0]};
+UK_ACORN_LETTERS_NUMBERS[40] = {.length = 86,  .data = &spQ[0]};
+UK_ACORN_LETTERS_NUMBERS[41] = {.length = 59,  .data = &spR[0]};
+UK_ACORN_LETTERS_NUMBERS[42] = {.length = 80,  .data = &spS[0]};
+UK_ACORN_LETTERS_NUMBERS[43] = {.length = 87,  .data = &spT[0]};
+UK_ACORN_LETTERS_NUMBERS[44] = {.length = 112, .data = &spU[0]};
+UK_ACORN_LETTERS_NUMBERS[45] = {.length = 101, .data = &spV[0]};
+UK_ACORN_LETTERS_NUMBERS[46] = {.length = 101, .data = &spW[0]};
+UK_ACORN_LETTERS_NUMBERS[47] = {.length = 92,  .data = &spX[0]};
+UK_ACORN_LETTERS_NUMBERS[48] = {.length = 117, .data = &spY[0]};
+UK_ACORN_LETTERS_NUMBERS[49] = {.length = 101, .data = &spZ[0]};
+
+/////////////////////////
+// Array of Word Banks //
+/////////////////////////
+
+bankMeta banks[1] = {
+	{.count = 50, .bytes = 0, .bank = UK_ACORN_LETTERS_NUMBERS}
+};]]></code.init>
          <code.krate><![CDATA[
 
 ///////////////////
@@ -835,7 +831,7 @@ outlet_synthK10    = synthK10;
    <patchobj type="patch/object" uuid="325e427b-0c89-4479-8959-cce80a02a21c" name="Talkie Tranformer" x="308" y="182">
       <params>
          <bool32.tgl name="bend" value="0"/>
-         <frac32.u.map name="bendIndex" MidiCC="21" value="0.0"/>
+         <frac32.u.map name="bendIndex" MidiCC="21" value="21.0"/>
          <frac32.u.map name="sweep" value="32.0"/>
       </params>
       <attribs/>
@@ -1976,7 +1972,7 @@ for(uint8_t j = 0; j < BUFSIZE; j++) {
    </settings>
    <notes><![CDATA[]]></notes>
    <windowPos>
-      <x>134</x>
+      <x>66</x>
       <y>23</y>
       <width>1306</width>
       <height>834</height>
