@@ -37,7 +37,7 @@
    <patchobj type="patch/object" uuid="b7a840a4-fac9-40b2-aaca-6f965cd5f0e5" name="Talkie Player" x="154" y="182">
       <params>
          <frac32.u.map name="bank" value="0.0"/>
-         <frac32.u.map name="word" value="13.0"/>
+         <frac32.u.map name="word" value="16.0"/>
          <frac32.u.map name="rate" value="25.0"/>
          <bool32.tgl name="loop" value="1"/>
          <bool32.tgl name="freeze" value="0"/>
@@ -428,9 +428,6 @@ bool playEnable;
 // Word Data Read-State Variables //
 ////////////////////////////////////
 
-// Pointer to word bank
-struct wordMeta *wordBank;
-
 // Structure to hold word data
 struct bitLocation {
 	// Pointer to byte
@@ -439,11 +436,12 @@ struct bitLocation {
 	uint8_t bit;
 };
 
+bitLocation wordStart;
+bitLocation wordReadAddr;
+bitLocation wordGlitchStart;
+
 uint8_t* ptrAddr;
 uint8_t ptrBit;
-uint8_t* ptrStart;
-uint8_t* ptrGlitchOffset;
-uint8_t ptrBitGlitchOffset;
 
 ////////////////////////////////////
 // Read/Render Counters/Intervals //
@@ -484,11 +482,11 @@ uint32_t rate;
 //////////////////////
 
 void tk_setPtr(uint8_t* addr) {
+	wordStart = {addr, 0};
+	wordReadAddr = {addr, 0};
 	ptrAddr = addr;
-	ptrStart = ptrAddr;
-	ptrBit = 0;
-	ptrGlitchOffset = 0;
-	ptrBitGlitchOffset = 0;
+	ptrBit = 0;	
+	wordGlitchStart = {addr, 0};
 	playEnable = true;
 }
 
@@ -497,9 +495,7 @@ void tk_setPtr(uint8_t* addr) {
 ///////////////////////////////////
 
 void tk_resetToStart() {
-	ptrAddr = ptrStart;
-	ptrBit = 0;
-	playEnable = true;
+	tk_setPtr(wordStart.byte);
 }
 
 ////////////////////
@@ -507,8 +503,9 @@ void tk_resetToStart() {
 ////////////////////
 
 void tk_glitchPtr() {
-	ptrGlitchOffset = ptrAddr;
-	ptrBitGlitchOffset = ptrBit;
+	// Record exact bit-position before glitch
+	wordGlitchStart = {ptrAddr, ptrBit};
+	// Randomise bit index within byte
 	ptrBit = GenerateRandomNumber() % 7;//>> 23;
 }
 
@@ -517,8 +514,9 @@ void tk_glitchPtr() {
 ///////////////////////////
 
 void tk_glitchPtrReset() {
-	ptrAddr = ptrGlitchOffset;
-	ptrBit = ptrBitGlitchOffset;
+	// Restore exact bit-position before glitch
+	ptrAddr = wordGlitchStart.byte;
+	ptrBit = wordGlitchStart.bit;
 }
 
 ////////////////////
@@ -529,7 +527,7 @@ uint8_t tk_getBits(uint8_t bits) {
 	uint8_t value;
 	uint16_t data;
 	data = tk_revBits(*(ptrAddr))<<8;
-	if (ptrBit+bits > 8) {
+	if (ptrBit + bits > 8) {
 		data |= tk_revBits(*(ptrAddr + 1));
 	}
 	data <<= ptrBit;
@@ -684,10 +682,6 @@ rate = 0;
 // Pointers
 ptrAddr = NULL;
 ptrBit = 0;
-ptrStart = NULL;
-
-ptrGlitchOffset = 0;	// Offset from start of word pointer
-ptrBitGlitchOffset = 0;
 
 // Calculate total number of bytes in word bank
 /*for(uint8_t i = 0; i < numWords; i++) {
