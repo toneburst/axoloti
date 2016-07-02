@@ -30,14 +30,14 @@
    </obj>
    <obj type="ctrl/toggle" uuid="42b8134fa729d54bfc8d62d6ef3fa99498c1de99" name="PLAY" x="70" y="182">
       <params>
-         <bool32.tgl name="b" value="1"/>
+         <bool32.tgl name="b" value="0"/>
       </params>
       <attribs/>
    </obj>
    <patchobj type="patch/object" uuid="b7a840a4-fac9-40b2-aaca-6f965cd5f0e5" name="Talkie Player" x="154" y="182">
       <params>
          <frac32.u.map name="bank" value="64.0"/>
-         <frac32.u.map name="word" value="3.5"/>
+         <frac32.u.map name="word" value="64.0"/>
          <frac32.u.map name="rate" value="32.0"/>
          <bool32.tgl name="loop" value="0"/>
          <bool32.tgl name="freeze" value="0"/>
@@ -46,7 +46,9 @@
          <bool32.mom name="mark" value="0"/>
          <bool32.mom name="glitch" value="0"/>
       </params>
-      <attribs/>
+      <attribs>
+         <combo attributeName="ROM" selection="UK ACORN MALE"/>
+      </attribs>
       <object id="patch/object" uuid="b7a840a4-fac9-40b2-aaca-6f965cd5f0e5">
          <sDescription>talkie</sDescription>
          <author>toneburst</author>
@@ -90,7 +92,16 @@
             <bool32.mom name="mark" description="add reset-mark"/>
             <bool32.mom name="glitch" description="glitch"/>
          </params>
-         <attribs/>
+         <attribs>
+            <combo name="ROM" description="ROM bank-set">
+               <MenuEntries>
+                  <string>UK ACORN MALE</string>
+               </MenuEntries>
+               <CEntries>
+                  <string>0</string>
+               </CEntries>
+            </combo>
+         </attribs>
          <includes/>
          <code.declaration><![CDATA[
 
@@ -458,17 +469,6 @@ const wordMeta UK_ACORN_M_VOCAB[114] = {
 	{.length = 62,  .data = &UK_ACORN_M_KEY[0]}
 };
 
-/////////////////////////
-// Array of Word Banks //
-/////////////////////////
-
-uint8_t bankCount = 2;
-
-const bankMeta banks[2] = {
-	{.count = 50,  .bytes = 0, .bank = &UK_ACORN_M_LETTERS_NUMBERS[0]},
-	{.count = 114, .bytes = 0, .bank = &UK_ACORN_M_VOCAB[0]}
-};
-
 ////////////////////////////////////
 // Word Data Read-State Variables //
 ////////////////////////////////////
@@ -596,6 +596,26 @@ const int8_t tmsK10[0x08] = {
 //// FUNCTIONS ////
 ///////////////////
 ///////////////////
+
+////////////////////////////////
+// Select Array of Word Banks //
+// Based On ROM Attribute //////
+////////////////////////////////
+
+// Number of banks
+uint8_t bankCount;
+
+bankMeta banks[2];
+
+void tk_selectROM(uint8_t index) {
+	switch(index) {
+		case 0 :
+			bankCount = 2;
+			banks[0] = {.count = 50,  .bytes = 0, .bank = &UK_ACORN_M_LETTERS_NUMBERS[0]};
+			banks[1] = {.count = 114, .bytes = 0, .bank = &UK_ACORN_M_VOCAB[0]};
+			break;
+	}
+}
 
 //////////////////////
 // Set Data Pointer //
@@ -780,6 +800,11 @@ __attribute__ ( ( always_inline ) ) __STATIC_INLINE int32_t mapU32(int32_t val, 
 	return (int32_t)(x * (outMax - outMin) / 0x07FFFFFF + outMin);
 };
 
+// Scale input to 0 > out_max range
+__attribute__ ( ( always_inline ) ) __STATIC_INLINE int32_t scaleU32(int32_t val, int32_t out_max) {
+	return (int32_t)(float)val * (float)out_max / 0x07FFFFFF;
+}
+
 // Exponential interpolation
 __attribute__ ( ( always_inline ) ) __STATIC_INLINE int32_t  curveLog32(int32_t val) {
 	// Transform inlet val to float in 0 - 1 range
@@ -807,7 +832,13 @@ trig = false;
 step = false;
  
 loop = false;
-rate = 0;
+
+////////////////////////////////
+// Select Array of Word Banks //
+// Based On ROM Attribute //////
+////////////////////////////////
+
+tk_selectROM(attr_ROM);
 
 ]]></code.init>
          <code.krate><![CDATA[
@@ -816,8 +847,8 @@ rate = 0;
 // Params/Inlets //
 ///////////////////
 
-bankIndex = mapU32(__USAT(param_bank + inlet_bank, 27), 0, bankCount - 1);
-wordIndex = mapU32(__USAT(param_word + inlet_word, 27), 0, banks[bankIndex].count - 1);
+bankIndex = scaleU32(__USAT(param_bank + inlet_bank, 27), bankCount - 1);
+wordIndex = scaleU32(__USAT(param_word + inlet_word, 27), banks[bankIndex].count - 1);
 
 // Continuous parameters
 rate = __USAT(param_rate + inlet_rate, 27);
