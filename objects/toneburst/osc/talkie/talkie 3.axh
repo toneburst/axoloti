@@ -16,7 +16,7 @@
    </obj>
    <obj type="ctrl/dial p" uuid="cc5d2846c3d50e425f450c4b9851371b54f4d674" name="Volume" x="910" y="84">
       <params>
-         <frac32.u.map name="value" value="60.0"/>
+         <frac32.u.map name="value" value="64.0"/>
       </params>
       <attribs/>
    </obj>
@@ -37,7 +37,7 @@
    <patchobj type="patch/object" uuid="b7a840a4-fac9-40b2-aaca-6f965cd5f0e5" name="Talkie Player" x="154" y="182">
       <params>
          <frac32.u.map name="bank" value="0.0"/>
-         <frac32.u.map name="word" value="16.5"/>
+         <frac32.u.map name="word" value="0.0"/>
          <frac32.u.map name="rate" value="32.0"/>
          <bool32.tgl name="loop" value="0"/>
          <bool32.tgl name="freeze" value="0"/>
@@ -819,7 +819,7 @@ outlet_synthK10    = synthK10;
    <patchobj type="patch/object" uuid="325e427b-0c89-4479-8959-cce80a02a21c" name="Talkie Tranformer" x="308" y="182">
       <params>
          <bool32.tgl name="bend" value="0"/>
-         <frac32.u.map name="bendIndex" MidiCC="21" value="21.0"/>
+         <frac32.u.map name="bendIndex" MidiCC="21" value="19.5"/>
          <frac32.u.map name="sweep" value="32.0"/>
       </params>
       <attribs/>
@@ -1960,7 +1960,7 @@ for(uint8_t j = 0; j < BUFSIZE; j++) {
    </settings>
    <notes><![CDATA[]]></notes>
    <windowPos>
-      <x>66</x>
+      <x>55</x>
       <y>23</y>
       <width>1306</width>
       <height>834</height>
