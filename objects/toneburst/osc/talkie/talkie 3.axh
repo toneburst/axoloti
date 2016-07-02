@@ -36,8 +36,8 @@
    </obj>
    <patchobj type="patch/object" uuid="b7a840a4-fac9-40b2-aaca-6f965cd5f0e5" name="Talkie Player" x="154" y="182">
       <params>
-         <frac32.u.map name="bank" value="0.0"/>
-         <frac32.u.map name="word" value="0.0"/>
+         <frac32.u.map name="bank" value="64.0"/>
+         <frac32.u.map name="word" value="3.5"/>
          <frac32.u.map name="rate" value="32.0"/>
          <bool32.tgl name="loop" value="0"/>
          <bool32.tgl name="freeze" value="0"/>
@@ -462,10 +462,70 @@ const wordMeta UK_ACORN_M_VOCAB[114] = {
 // Array of Word Banks //
 /////////////////////////
 
-bankMeta banks[2] = {
+uint8_t bankCount = 2;
+
+const bankMeta banks[2] = {
 	{.count = 50,  .bytes = 0, .bank = &UK_ACORN_M_LETTERS_NUMBERS[0]},
 	{.count = 114, .bytes = 0, .bank = &UK_ACORN_M_VOCAB[0]}
 };
+
+////////////////////////////////////
+// Word Data Read-State Variables //
+////////////////////////////////////
+
+// Define structure to hold word data
+struct bitLocation {
+	// Pointer to constant 8-bit word data byte
+	const uint8_t* byte;
+	// Index of bit within byte
+	uint8_t bit;
+};
+
+// Start address of word
+bitLocation wordStart;
+// Playback location of current word
+bitLocation wordReadAddr;
+// Playback location on  glitch enable
+bitLocation wordGlitchStart;
+// Playback location on reset Mark trigger
+bitLocation wordResetMark;
+
+////////////////////////////////////
+// Read/Render Counters/Intervals //
+////////////////////////////////////
+
+uint16_t readCounter;
+uint16_t readInterval;
+
+////////////////////////////
+// Params/Inlet Variables //
+////////////////////////////
+
+// Continuous params
+uint8_t bankIndex;
+uint8_t wordIndex;
+uint32_t rate;
+
+// Persistant bools
+bool gate;
+bool trig;
+bool loop;
+bool freeze;
+bool glitch;
+
+// Momentary bools
+bool step;
+bool reset;
+bool mark;
+
+///////////////////////////
+// Synth State Variables //
+///////////////////////////
+
+uint8_t synthPeriod;
+uint16_t synthEnergy;
+int16_t synthK1,synthK2;
+int8_t synthK3,synthK4,synthK5,synthK6,synthK7,synthK8,synthK9,synthK10;
 
 ///////////////////////////////////
 // Synth Parameter Lookup Tables //
@@ -531,62 +591,6 @@ const int8_t tmsK10[0x08] = {
 	0xCD,0xDF,0xF1,0x04,0x16,0x20,0x3B,0x4D
 };
 
-///////////////////////////
-// Synth State Variables //
-///////////////////////////
-
-uint8_t synthPeriod;
-uint16_t synthEnergy;
-int16_t synthK1,synthK2;
-int8_t synthK3,synthK4,synthK5,synthK6,synthK7,synthK8,synthK9,synthK10;
-// Play toggle. Set false at end of word, true at pointer-reset
-bool playEnable;
-
-////////////////////////////////////
-// Word Data Read-State Variables //
-////////////////////////////////////
-
-// Structure to hold word data
-struct bitLocation {
-	// Pointer to byte
-	const uint8_t* byte;
-	// Bit within byte
-	uint8_t bit;
-};
-
-bitLocation wordStart;
-bitLocation wordReadAddr;
-bitLocation wordGlitchStart;
-bitLocation resetMark;
-
-////////////////////////////////////
-// Read/Render Counters/Intervals //
-////////////////////////////////////
-
-uint16_t readCounter;
-uint16_t readInterval;
-
-///////////////////
-// Params/Inlets //
-///////////////////
-
-// Persistant bools
-bool gate;
-bool trig;
-bool loop;
-bool freeze;
-bool glitch;
-
-// Momentary bools
-bool step;
-bool reset;
-bool mark;
-
-// Continuous params
-uint8_t bankIndex;
-uint8_t wordIndex;
-uint32_t rate;
-
 ///////////////////
 ///////////////////
 //// FUNCTIONS ////
@@ -598,14 +602,10 @@ uint32_t rate;
 //////////////////////
 
 void tk_startWord(const uint8_t* addr) {
-	resetMark = {addr, 0};
-	tk_setPtr(addr);
-}
-
-void tk_setPtr(const uint8_t* addr) {
-	wordStart = {addr, 0};	
+	wordStart = {addr, 0};
+	wordResetMark = {addr, 0};
 	wordGlitchStart = wordStart;
-	wordReadAddr = wordStart;
+	tk_resetToStart();
 }
 
 ///////////////////////////////////
@@ -613,12 +613,28 @@ void tk_setPtr(const uint8_t* addr) {
 ///////////////////////////////////
 
 void tk_resetToStart() {
-	tk_setPtr(wordStart.byte);
+	wordReadAddr = wordStart;
 }
 
-////////////////////
-// Glitch Pointer //
-////////////////////
+///////////////////////////
+// Reset Pointer To Mark //
+///////////////////////////
+
+void tk_resetToMark() {
+	wordReadAddr = wordResetMark;
+}
+
+////////////////////////
+// Set New Reset Mark //
+////////////////////////
+
+void tk_setResetMark() {
+	wordResetMark = wordReadAddr;
+}
+
+/////////////////////////////////////
+// Glitch Pointer On Glitch Enable //
+/////////////////////////////////////
 
 void tk_glitchPtr() {
 	// Record exact bit-position before glitch
@@ -627,9 +643,9 @@ void tk_glitchPtr() {
 	wordReadAddr.bit = GenerateRandomNumber() % 7;
 }
 
-///////////////////////////
-// Add Offset To Pointer //
-///////////////////////////
+////////////////////////////////////////
+// Reset Pointer After Glitch Disable //
+////////////////////////////////////////
 
 void tk_glitchPtrReset() {
 	// Restore exact bit-position before glitch
@@ -643,7 +659,7 @@ void tk_glitchPtrReset() {
 uint8_t tk_getBits(uint8_t bits) {
 	uint8_t value;
 	uint16_t data;
-	data = tk_revBits(*(wordReadAddr.byte))<<8;
+	data = tk_revBits(*(wordReadAddr.byte)) << 8;
 	if (wordReadAddr.bit + bits > 8) {
 		data |= tk_revBits(*(wordReadAddr.byte + 1));
 	}
@@ -690,6 +706,8 @@ void tk_silence() {
 	synthK8  = 0;
 	synthK9  = 0;
 	synthK10 = 0;
+	// Also set gate false
+	// (Best to do it here, or somehere else?)
 	gate = false;
 }
 
@@ -701,14 +719,15 @@ void tk_readWord() {
 	if(gate) {
 		uint8_t repeat;
 		uint8_t energy;
-		// Speak if end of word not reached and ptrAddress is set
+		// Speak if end of word not reached
 		if (energy != 0xf) {
 			energy = tk_getBits(4);
 			if (energy == 0) {
 				// Energy = 0: rest frame
 				synthEnergy = 0;
 			} else if (energy == 0xf) {
-				// Energy = 15: stop frame. Silence the synthesiser.
+				// Energy = 15: stop frame.
+				// Silence the synthesiser or reset to start if loop true
 				if(loop)
 					tk_resetToStart();
 				else
@@ -772,18 +791,11 @@ __attribute__ ( ( always_inline ) ) __STATIC_INLINE int32_t  curveLog32(int32_t 
 ]]></code.declaration>
          <code.init><![CDATA[
 
-LogTextMessage("Initialising toneburst Talkie Synth Controller");
-
-// S-Rate cycle periods for read and sample-calculate functions
-readInterval = 1200;
-playEnable = true;
+LogTextMessage("Initialising toneburst Talkie Synth ROM Player");
 
 //////////////////////
 // Inlet/param init //
 //////////////////////
-
-bankIndex = 0;
-wordIndex = 0;
 
 gate = false;
 freeze = false;
@@ -797,11 +809,6 @@ step = false;
 loop = false;
 rate = 0;
 
-// Calculate total number of bytes in word bank
-/*for(uint8_t i = 0; i < numWords; i++) {
-	bankBytes += UK_ACORN[i].length;
-}*/
-
 ]]></code.init>
          <code.krate><![CDATA[
 
@@ -809,9 +816,14 @@ rate = 0;
 // Params/Inlets //
 ///////////////////
 
+bankIndex = mapU32(__USAT(param_bank + inlet_bank, 27), 0, bankCount - 1);
 wordIndex = mapU32(__USAT(param_word + inlet_word, 27), 0, banks[bankIndex].count - 1);
+
+// Continuous parameters
 rate = __USAT(param_rate + inlet_rate, 27);
 readInterval = mapU32(curveLog32(rate), 480, 15);
+
+// Boolean parameters
 loop = (param_loop || inlet_loop)? true : false;
 freeze = (param_freeze || inlet_freeze || !rate)? true : false;
 
@@ -854,10 +866,10 @@ if(inlet_step || param_step) {
 // Detect Reset on rising edge //
 /////////////////////////////////
 
-/*if(param_reset || inlet_reset) {
+if(param_reset || inlet_reset) {
 	if(!reset) {
-		//
-		
+		// Reset to current reset mark
+		tk_resetToMark();
 	}		
 	reset = true;
 } else {
@@ -870,13 +882,13 @@ if(inlet_step || param_step) {
 
 if(param_mark || inlet_mark) {
 	if(!mark) {
-		//
-		
+		// Set new reset mark at current word playback position
+		tk_setResetMark();
 	}			
 	mark = true;
 } else {
 	mark = false;
-}*/
+}
 
 /////////////////////////
 // Detect Glitch Press //
@@ -1607,7 +1619,7 @@ __attribute__ ( ( always_inline ) ) __STATIC_INLINE int32_t curveExp32(int32_t v
 ]]></code.declaration>
          <code.init><![CDATA[
 
-LogTextMessage("Initialising toneburst Talkie Synth excitation source mixer");
+LogTextMessage("Initialising toneburst Talkie Synth Excitation Source Mixer");
 
 mix = 0;
 mixSlewState = 0;
@@ -1818,7 +1830,7 @@ __attribute__ ( ( always_inline ) ) __STATIC_INLINE int32_t slew32(int32_t targe
 ]]></code.declaration>
          <code.init><![CDATA[
 
-LogTextMessage("Initialising toneburst Talkie Synth formant filter-bank");
+LogTextMessage("Initialising toneburst Talkie Synth Formant Filter Bank");
 
 // Counters (count S-Rate cycles)
 renderCounter = 0;

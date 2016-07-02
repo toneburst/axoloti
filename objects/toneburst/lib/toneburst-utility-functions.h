@@ -10,6 +10,11 @@
 		// Return val in correct 27-bit integer range
 		return (int32_t)(x * (outMax - outMin) / 0x07FFFFFF + outMin);
 	};
+	
+	// Scale input to 0 > out_max range
+	__attribute__ ( ( always_inline ) ) __STATIC_INLINE int32_t scaleU32(int32_t val, int32_t out_max) {
+
+	}
 
 	// Exponential interpolation for 27-bit param/inlet values
 	__attribute__ ( ( always_inline ) ) __STATIC_INLINE int32_t curveLog32(int32_t val) {
@@ -27,19 +32,6 @@
 		float curve = inf*inf;
 		// Return val in correct 27-bit integer range
 		return (int32_t)(curve * (float)(1 << 27));
-	}
-
-	// 32-bit slew function, with pointer to state variable
-	// (Adapted from Library glide object)
-	__attribute__ ( ( always_inline ) ) __STATIC_INLINE int32_t slew32(int32_t target, int32_t *state, int32_t slewTime, bool enable) {
-		if (enable && slewTime > 0) {
-			*state = ___SMMLA(*state - target, (-1 << 26) + (slewTime >> 1), *state);
-			return *state;
-		} else {
-			// Update slew state so we don't get a jump next time slew is enabled
-			*state = target;
-			return target;
-		}
 	}
 
 	// 8-Bit clamp val to range min > max
@@ -63,6 +55,19 @@
 		int32_t result = (int32_t)b * x;
 		result += (int32_t)a * ccompl;
 		return result >> 16;
+	}
+	
+	// 32-bit slew function, with pointer to state variable
+	// (Adapted from Library glide object)
+	__attribute__ ( ( always_inline ) ) __STATIC_INLINE int32_t slew32(int32_t target, int32_t *state, int32_t slewTime, bool enable) {
+		if (enable && slewTime > 0) {
+			*state = ___SMMLA(*state - target, (-1 << 26) + (slewTime >> 1), *state);
+			return *state;
+		} else {
+			// Update slew state so we don't get a jump next time slew is enabled
+			*state = target;
+			return target;
+		}
 	}
 
 #endif
