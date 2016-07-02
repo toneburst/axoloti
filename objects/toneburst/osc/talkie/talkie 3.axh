@@ -37,9 +37,9 @@
    <patchobj type="patch/object" uuid="b7a840a4-fac9-40b2-aaca-6f965cd5f0e5" name="Talkie Player" x="154" y="182">
       <params>
          <frac32.u.map name="bank" value="0.0"/>
-         <frac32.u.map name="word" value="16.0"/>
-         <frac32.u.map name="rate" value="25.0"/>
-         <bool32.tgl name="loop" value="1"/>
+         <frac32.u.map name="word" value="16.5"/>
+         <frac32.u.map name="rate" value="32.0"/>
+         <bool32.tgl name="loop" value="0"/>
          <bool32.tgl name="freeze" value="0"/>
          <bool32.mom name="step" value="0"/>
          <bool32.mom name="reset" value="0"/>
@@ -439,9 +439,7 @@ struct bitLocation {
 bitLocation wordStart;
 bitLocation wordReadAddr;
 bitLocation wordGlitchStart;
-
-uint8_t* ptrAddr;
-uint8_t ptrBit;
+bitLocation resetMark;
 
 ////////////////////////////////////
 // Read/Render Counters/Intervals //
@@ -481,13 +479,17 @@ uint32_t rate;
 // Set Data Pointer //
 //////////////////////
 
-void tk_setPtr(uint8_t* addr) {
-	wordStart = {addr, 0};
-	wordReadAddr = {addr, 0};
-	ptrAddr = addr;
-	ptrBit = 0;	
-	wordGlitchStart = {addr, 0};
+void tk_startWord(uint8_t* addr) {
+	resetMark = {addr, 0};
+	tk_setPtr(addr);
 	playEnable = true;
+	gate = true;
+}
+
+void tk_setPtr(uint8_t* addr) {
+	wordStart = {addr, 0};	
+	wordGlitchStart = wordStart;
+	wordReadAddr = wordStart;
 }
 
 ///////////////////////////////////
@@ -504,9 +506,9 @@ void tk_resetToStart() {
 
 void tk_glitchPtr() {
 	// Record exact bit-position before glitch
-	wordGlitchStart = {ptrAddr, ptrBit};
+	wordGlitchStart = wordReadAddr;
 	// Randomise bit index within byte
-	ptrBit = GenerateRandomNumber() % 7;//>> 23;
+	wordReadAddr.bit = GenerateRandomNumber() % 7;
 }
 
 ///////////////////////////
@@ -515,8 +517,7 @@ void tk_glitchPtr() {
 
 void tk_glitchPtrReset() {
 	// Restore exact bit-position before glitch
-	ptrAddr = wordGlitchStart.byte;
-	ptrBit = wordGlitchStart.bit;
+	wordReadAddr = wordGlitchStart;
 }
 
 ////////////////////
@@ -526,16 +527,16 @@ void tk_glitchPtrReset() {
 uint8_t tk_getBits(uint8_t bits) {
 	uint8_t value;
 	uint16_t data;
-	data = tk_revBits(*(ptrAddr))<<8;
-	if (ptrBit + bits > 8) {
-		data |= tk_revBits(*(ptrAddr + 1));
+	data = tk_revBits(*(wordReadAddr.byte))<<8;
+	if (wordReadAddr.bit + bits > 8) {
+		data |= tk_revBits(*(wordReadAddr.byte + 1));
 	}
-	data <<= ptrBit;
+	data <<= wordReadAddr.bit;
 	value = data >> (16-bits);
-	ptrBit += bits;
-	if (ptrBit >= 8) {
-		ptrBit -= 8;
-		ptrAddr++;
+	wordReadAddr.bit += bits;
+	if (wordReadAddr.bit >= 8) {
+		wordReadAddr.bit -= 8;
+		wordReadAddr.byte++;
 	}
 	return value;
 }
@@ -585,7 +586,7 @@ void tk_readWord() {
 		uint8_t repeat;
 		uint8_t energy;
 		// Speak if end of word not reached and ptrAddress is set
-		if (energy != 0xf && ptrAddr) {
+		if (energy != 0xf) {
 			energy = tk_getBits(4);
 			if (energy == 0) {
 				// Energy = 0: rest frame
@@ -679,10 +680,6 @@ step = false;
 loop = false;
 rate = 0;
 
-// Pointers
-ptrAddr = NULL;
-ptrBit = 0;
-
 // Calculate total number of bytes in word bank
 /*for(uint8_t i = 0; i < numWords; i++) {
 	bankBytes += UK_ACORN[i].length;
@@ -708,21 +705,19 @@ freeze = (param_freeze || inlet_freeze || !rate)? true : false;
 if(inlet_gate) {
 	if(!trig) {
 		// Set pointer and reset pointer offset
-		tk_setPtr(banks[bankIndex].bank[wordIndex].data);
+		tk_startWord(banks[bankIndex].bank[wordIndex].data);
 		// Reset cycle counters
 		readCounter = 0;
-		// Open gate
+		// Open gate outlet
 		gate = true;
-		//
-		//rMarkLoc.byte = wordBank[wordIndex].data;
-		//rMarkLoc.bit = 0;
 	}
 	trig = true;
 } else {
 	// Silence synth on gate-off
 	tk_silence();
+	// Unset gate toggle
 	trig = false;
-	// Close gate
+	// Close gate outlet
 	gate = false;
 }
 
@@ -745,8 +740,10 @@ if(inlet_step || param_step) {
 /////////////////////////////////
 
 /*if(param_reset || inlet_reset) {
-	if(!reset)
-			
+	if(!reset) {
+		//
+		
+	}		
 	reset = true;
 } else {
 	reset = false;
