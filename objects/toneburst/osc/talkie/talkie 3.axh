@@ -10,16 +10,19 @@
       <params/>
       <attribs/>
    </obj>
+   <comment type="patch/comment" x="308" y="56" text="TO DO:"/>
    <obj type="midi/in/keyb mod" uuid="abcd509d15e7d13d5381203fd2b4d0ac6fe57bb3" name="Keyboard" x="42" y="70">
       <params/>
       <attribs/>
    </obj>
+   <comment type="patch/comment" x="308" y="84" text="Count bytes in banks, add to meta"/>
    <obj type="ctrl/dial p" uuid="cc5d2846c3d50e425f450c4b9851371b54f4d674" name="Volume" x="910" y="84">
       <params>
          <frac32.u.map name="value" value="64.0"/>
       </params>
       <attribs/>
    </obj>
+   <comment type="patch/comment" x="308" y="112" text="Add Glitch Mode toggle"/>
    <obj type="math/*" uuid="3ac307b9f782049739ed62504081b96d580ea336" name="*_1" x="1036" y="112">
       <params/>
       <attribs/>
@@ -30,7 +33,7 @@
    </obj>
    <obj type="ctrl/toggle" uuid="42b8134fa729d54bfc8d62d6ef3fa99498c1de99" name="PLAY" x="70" y="182">
       <params>
-         <bool32.tgl name="b" value="1"/>
+         <bool32.tgl name="b" value="0"/>
       </params>
       <attribs/>
    </obj>
@@ -39,7 +42,7 @@
          <frac32.u.map name="bank" value="64.0"/>
          <frac32.u.map name="word" value="13.5"/>
          <frac32.u.map name="rate" value="32.0"/>
-         <bool32.tgl name="loop" value="1"/>
+         <bool32.tgl name="loop" value="0"/>
          <bool32.tgl name="freeze" value="0"/>
          <bool32.mom name="step" value="0"/>
          <bool32.mom name="reset" value="0"/>
@@ -469,6 +472,31 @@ const wordMeta UK_ACORN_M_VOCAB[114] = {
 	{.length = 62,  .data = &UK_ACORN_M_KEY[0]}
 };
 
+// Array of ROM banks
+const bankMeta UK_ACORN_M[2] = {
+	{.count = 50,  .bytes = 0, .bank = &UK_ACORN_M_LETTERS_NUMBERS[0]},
+	{.count = 114, .bytes = 0, .bank = &UK_ACORN_M_VOCAB[0]}
+};
+
+
+//////////////////////////
+//////////////////////////
+//// Global Variables ////
+//////////////////////////
+//////////////////////////
+
+
+///////////////////////////
+// Bank-Select Variables //
+///////////////////////////
+
+// Holds number of banks in current ROM
+uint8_t bankCount;
+
+// Pointer to ROM banks array
+// (initialised to banks array based on attribute val in Init Code)
+const bankMeta* banksPtr = NULL;
+
 ////////////////////////////////////
 // Word Data Read-State Variables //
 ////////////////////////////////////
@@ -591,28 +619,13 @@ const int8_t tmsK10[0x08] = {
 	0xCD,0xDF,0xF1,0x04,0x16,0x20,0x3B,0x4D
 };
 
+
 ///////////////////
 ///////////////////
 //// FUNCTIONS ////
 ///////////////////
 ///////////////////
 
-////////////////////////////////
-// Select Array of Word Banks //
-// Based On ROM Attribute //////
-////////////////////////////////
-
-// Number of banks
-uint8_t bankCount;
-
-const bankMeta UK_ACORN_M[2] = {
-	{.count = 50,  .bytes = 0, .bank = &UK_ACORN_M_LETTERS_NUMBERS[0]},
-	{.count = 114, .bytes = 0, .bank = &UK_ACORN_M_VOCAB[0]}
-};
-
-// Pointer to banks array
-// (initialised to banks array based on attribute val in Init Code)
-const bankMeta* banksPtr = NULL;
 
 //////////////////////
 // Set Data Pointer //
@@ -785,11 +798,18 @@ void tk_readWord() {
 	}
 }
 
-///////////////////////
-// Utility Functions //
-///////////////////////
 
-// Scale input to range out_min > out_max
+///////////////////////////
+///////////////////////////
+//// Utility Functions ////
+///////////////////////////
+///////////////////////////
+
+
+////////////////////////////////////////////
+// Scale input to range out_min > out_max //
+////////////////////////////////////////////
+
 __attribute__ ( ( always_inline ) ) __STATIC_INLINE int32_t mapU32(int32_t val, int32_t out_min, int32_t out_max) {
 	float x = (float)val;
 	float outMin = (float)out_min;
@@ -797,12 +817,18 @@ __attribute__ ( ( always_inline ) ) __STATIC_INLINE int32_t mapU32(int32_t val, 
 	return (int32_t)(x * (outMax - outMin) / 0x07FFFFFF + outMin);
 };
 
-// Scale input to 0 > out_max range
+//////////////////////////////////////
+// Scale input to 0 > out_max range //
+//////////////////////////////////////
+
 __attribute__ ( ( always_inline ) ) __STATIC_INLINE int32_t scaleU32(int32_t val, int32_t out_max) {
 	return (int32_t)(float)val * (float)out_max / 0x07FFFFFF;
 }
 
-// Exponential interpolation
+///////////////////////////////
+// Exponential interpolation //
+///////////////////////////////
+
 __attribute__ ( ( always_inline ) ) __STATIC_INLINE int32_t  curveLog32(int32_t val) {
 	// Transform inlet val to float in 0 - 1 range
 	float inf = val * (float)(1.0f / (1 << 27));
