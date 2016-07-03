@@ -30,16 +30,16 @@
    </obj>
    <obj type="ctrl/toggle" uuid="42b8134fa729d54bfc8d62d6ef3fa99498c1de99" name="PLAY" x="70" y="182">
       <params>
-         <bool32.tgl name="b" value="0"/>
+         <bool32.tgl name="b" value="1"/>
       </params>
       <attribs/>
    </obj>
    <patchobj type="patch/object" uuid="b7a840a4-fac9-40b2-aaca-6f965cd5f0e5" name="Talkie Player" x="154" y="182">
       <params>
          <frac32.u.map name="bank" value="64.0"/>
-         <frac32.u.map name="word" value="64.0"/>
+         <frac32.u.map name="word" value="13.5"/>
          <frac32.u.map name="rate" value="32.0"/>
-         <bool32.tgl name="loop" value="0"/>
+         <bool32.tgl name="loop" value="1"/>
          <bool32.tgl name="freeze" value="0"/>
          <bool32.mom name="step" value="0"/>
          <bool32.mom name="reset" value="0"/>
@@ -605,17 +605,14 @@ const int8_t tmsK10[0x08] = {
 // Number of banks
 uint8_t bankCount;
 
-bankMeta banks[2];
+const bankMeta UK_ACORN_M[2] = {
+	{.count = 50,  .bytes = 0, .bank = &UK_ACORN_M_LETTERS_NUMBERS[0]},
+	{.count = 114, .bytes = 0, .bank = &UK_ACORN_M_VOCAB[0]}
+};
 
-void tk_selectROM(uint8_t index) {
-	switch(index) {
-		case 0 :
-			bankCount = 2;
-			banks[0] = {.count = 50,  .bytes = 0, .bank = &UK_ACORN_M_LETTERS_NUMBERS[0]};
-			banks[1] = {.count = 114, .bytes = 0, .bank = &UK_ACORN_M_VOCAB[0]};
-			break;
-	}
-}
+// Pointer to banks array
+// (initialised to banks array based on attribute val in Init Code)
+const bankMeta* banksPtr = NULL;
 
 //////////////////////
 // Set Data Pointer //
@@ -838,7 +835,12 @@ loop = false;
 // Based On ROM Attribute //////
 ////////////////////////////////
 
-tk_selectROM(attr_ROM);
+switch(attr_ROM) {
+	case 0 :
+		bankCount = 2;
+		banksPtr = &UK_ACORN_M[0];
+		break;
+}
 
 ]]></code.init>
          <code.krate><![CDATA[
@@ -848,7 +850,7 @@ tk_selectROM(attr_ROM);
 ///////////////////
 
 bankIndex = scaleU32(__USAT(param_bank + inlet_bank, 27), bankCount - 1);
-wordIndex = scaleU32(__USAT(param_word + inlet_word, 27), banks[bankIndex].count - 1);
+wordIndex = scaleU32(__USAT(param_word + inlet_word, 27), banksPtr[bankIndex].count - 1);
 
 // Continuous parameters
 rate = __USAT(param_rate + inlet_rate, 27);
@@ -866,8 +868,8 @@ if(inlet_gate) {
 	if(!trig) {
 		// Open gate
 		gate = true;
-		// Set pointer and reset pointer offset
-		tk_startWord(banks[bankIndex].bank[wordIndex].data);
+		// Set pointer to start of word
+		tk_startWord(banksPtr[bankIndex].bank[wordIndex].data);
 		// Reset cycle counters
 		readCounter = 0;
 	}
