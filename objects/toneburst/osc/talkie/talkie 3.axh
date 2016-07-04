@@ -1743,7 +1743,7 @@ outlet_wave = a >> 35;
          <frac32.u.map name="srate" value="32.0"/>
          <frac32.u.map name="crush" value="0.0"/>
          <bool32.tgl name="slew" value="0"/>
-         <frac32.u.map name="slewrate" value="36.5"/>
+         <frac32.u.map name="slewrate" value="50.0"/>
       </params>
       <attribs/>
       <object id="patch/object" uuid="2e3b980b-4415-428f-b6ca-29f283183066">
