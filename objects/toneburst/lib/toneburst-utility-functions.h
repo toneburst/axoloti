@@ -13,10 +13,10 @@
 	
 	// Scale input to 0 > out_max range
 	__attribute__ ( ( always_inline ) ) __STATIC_INLINE int32_t scaleU32(int32_t val, int32_t out_max) {
-
+		return (int32_t)(float)val * (float)out_max / 0x07FFFFFF;
 	}
 
-	// Exponential interpolation for 27-bit param/inlet values
+	// Logarithmic interpolation for 27-bit param/inlet values
 	__attribute__ ( ( always_inline ) ) __STATIC_INLINE int32_t curveLog32(int32_t val) {
 		// Transform inlet val to float in 0 - 1 range
 		float inf = val * (float)(1.0f / (1 << 27));
@@ -49,7 +49,8 @@
 		return (val <= min) ? min : (val >= max) ? max : val;
 	}
 
-	// 16-bit xfade (adapted from Factory xfade object)
+	// 16-bit xfade
+	// (adapted from Factory xfade object)
 	__attribute__ ( ( always_inline ) ) __STATIC_INLINE int16_t xfade16(int16_t a, int16_t b, uint16_t x) {
 		int16_t ccompl = (1 << 15) - x;
 		int32_t result = (int32_t)b * x;
@@ -58,7 +59,7 @@
 	}
 	
 	// 32-bit slew function, with pointer to state variable
-	// (Adapted from Library glide object)
+	// (Adapted from Factory glide object)
 	__attribute__ ( ( always_inline ) ) __STATIC_INLINE int32_t slew32(int32_t target, int32_t *state, int32_t slewTime, bool enable) {
 		if (enable && slewTime > 0) {
 			*state = ___SMMLA(*state - target, (-1 << 26) + (slewTime >> 1), *state);
@@ -68,6 +69,15 @@
 			*state = target;
 			return target;
 		}
+	}
+	
+	// 32-bit square root
+	// (Adapted from Factory sqrt object)
+	__attribute__ ( ( always_inline ) ) __STATIC_INLINE int32_t sqrt32(int32_t val) {
+		int32_t ai = (val > 0) ? val : -val;
+		float aif = ai;
+		aif = _VSQRTF(aif);
+		return (int)aif;
 	}
 
 #endif

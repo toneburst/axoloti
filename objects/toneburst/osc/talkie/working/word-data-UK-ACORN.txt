@@ -249,7 +249,7 @@ word UK_ACORN_ALL[161] = {
 	{.length = 114, .data = &UK_ACORN_M_I[0]},
 	{.length = 127, .data = &UK_ACORN_M_ILLEGAL[0]},
 	{.length = 63,  .data = &UK_ACORN_M_IN_[0]},
-	{.length = 91,  .data = &UK_ACORN_M_INPUT[0]}
+	{.length = 91,  .data = &UK_ACORN_M_INPUT[0]},
 	{.length = 79,  .data = &UK_ACORN_M_IS[0]},
 	{.length = 98,  .data = &UK_ACORN_M_J[0]},
 	{.length = 89,  .data = &UK_ACORN_M_K[0]},

@@ -33,13 +33,14 @@
    </obj>
    <obj type="ctrl/toggle" uuid="42b8134fa729d54bfc8d62d6ef3fa99498c1de99" name="PLAY" x="70" y="182">
       <params>
-         <bool32.tgl name="b" value="0"/>
+         <bool32.tgl name="b" value="1"/>
       </params>
       <attribs/>
    </obj>
    <patchobj type="patch/object" uuid="b7a840a4-fac9-40b2-aaca-6f965cd5f0e5" name="Talkie Player" x="154" y="182">
       <params>
-         <frac32.u.map name="bank" value="64.0"/>
+         <bool32.tgl name="mode" value="0"/>
+         <frac32.u.map name="bank" value="0.0"/>
          <frac32.u.map name="word" value="17.0"/>
          <frac32.u.map name="rate" value="32.0"/>
          <bool32.tgl name="loop" value="1"/>
@@ -57,9 +58,10 @@
          <author>toneburst</author>
          <license>BSD</license>
          <inlets>
+            <bool32.risingfalling name="gate" description="gate"/>
+            <bool32 name="mode" description="normal/circuit-bent mode"/>
             <frac32.positive name="bank" description="word bank"/>
             <frac32.positive name="word" description="word-select"/>
-            <bool32.risingfalling name="gate" description="gate"/>
             <frac32.positive name="rate" description="playback rate"/>
             <bool32 name="loop" description="loop enable"/>
             <bool32 name="freeze" description="freeze playback"/>
@@ -85,6 +87,7 @@
          </outlets>
          <displays/>
          <params>
+            <bool32.tgl name="mode" description="normal/circuit-bent mode"/>
             <frac32.u.map name="bank" description="word-bank"/>
             <frac32.u.map name="word" description="word-select"/>
             <frac32.u.map name="rate" description="read rate"/>
@@ -114,7 +117,7 @@
 
 // Word data
 struct wordMeta {
-	// Length of word
+	// Length of word (bytes)
 	uint8_t length;
 	// Pointer to start of word data
 	const uint8_t* data;
@@ -128,6 +131,8 @@ struct bankMeta {
 	uint16_t bytes;
 	// Pointer to bank array (array of word structs)
 	const struct wordMeta* bank;
+	// Scale for Bank/Word controls in Bent mode
+	uint8_t bscale;
 };
 
 ///////////////////
@@ -473,9 +478,9 @@ const wordMeta UK_ACORN_M_VOCAB[114] = {
 };
 
 // Array of ROM banks
-const bankMeta UK_ACORN_M[2] = {
-	{.count = 50,  .bytes = 0, .bank = &UK_ACORN_M_LETTERS_NUMBERS[0]},
-	{.count = 114, .bytes = 0, .bank = &UK_ACORN_M_VOCAB[0]}
+const bankMeta UK_ACORN_M[3] = {
+	{.count = 50,  .bytes = 4555,  .bank = &UK_ACORN_M_LETTERS_NUMBERS[0], .bscale = 67},
+	{.count = 114, .bytes = 11279, .bank = &UK_ACORN_M_VOCAB[0], .bscale = 106},
 };
 
 
@@ -836,6 +841,17 @@ __attribute__ ( ( always_inline ) ) __STATIC_INLINE int32_t  curveLog32(int32_t 
 	return (int32_t)(curve * (float)(1 << 27));
 }
 
+/////////////////
+// Square Root //
+/////////////////
+
+__attribute__ ( ( always_inline ) ) __STATIC_INLINE int32_t sqrt32(int32_t val) {
+	int32_t ai = (val > 0) ? val : -val;
+	float aif = ai;
+	aif = _VSQRTF(aif);
+	return (int)aif;
+}
+
 ]]></code.declaration>
          <code.init><![CDATA[
 
@@ -867,6 +883,16 @@ switch(attr_ROM) {
 		banksPtr = &UK_ACORN_M[0];
 		break;
 }
+
+// Calculate meta values for banks
+/*for(int i = 0; i < bankCount; i++) {
+	int bytes = 0;
+	for(int j = 0; j < banksPtr[i].count; j++) {
+		bytes += banksPtr[i].bank[j].length;
+	}
+	LogTextMessage("bank %u: %u bytes", i, bytes);
+	LogTextMessage("bank/word scale: %u", sqrt32(bytes));
+}*/
 
 ]]></code.init>
          <code.krate><![CDATA[
@@ -1002,7 +1028,7 @@ outlet_synthK10    = synthK10;
    <patchobj type="patch/object" uuid="325e427b-0c89-4479-8959-cce80a02a21c" name="Talkie Tranformer" x="308" y="182">
       <params>
          <bool32.tgl name="bend" value="0"/>
-         <frac32.u.map name="bendIndex" MidiCC="21" value="21.0"/>
+         <frac32.u.map name="bendIndex" MidiCC="21" value="23.5"/>
          <frac32.u.map name="sweep" value="32.0"/>
       </params>
       <attribs/>
@@ -1717,7 +1743,7 @@ outlet_wave = a >> 35;
          <frac32.u.map name="srate" value="32.0"/>
          <frac32.u.map name="crush" value="0.0"/>
          <bool32.tgl name="slew" value="0"/>
-         <frac32.u.map name="slewrate" value="53.5"/>
+         <frac32.u.map name="slewrate" value="36.5"/>
       </params>
       <attribs/>
       <object id="patch/object" uuid="2e3b980b-4415-428f-b6ca-29f283183066">
