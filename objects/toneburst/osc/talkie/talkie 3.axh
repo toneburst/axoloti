@@ -39,11 +39,11 @@
    </obj>
    <patchobj type="patch/object" uuid="b7a840a4-fac9-40b2-aaca-6f965cd5f0e5" name="Talkie Player" x="154" y="182">
       <params>
-         <bool32.tgl name="mode" value="0"/>
-         <frac32.u.map name="bank" value="0.0"/>
-         <frac32.u.map name="word" value="17.0"/>
+         <bool32.tgl name="mode" value="1"/>
+         <frac32.u.map name="bank" value="32.0"/>
+         <frac32.u.map name="word" value="18.0"/>
          <frac32.u.map name="rate" value="32.0"/>
-         <bool32.tgl name="loop" value="1"/>
+         <bool32.tgl name="loop" value="0"/>
          <bool32.tgl name="freeze" value="0"/>
          <bool32.mom name="step" value="0"/>
          <bool32.mom name="reset" value="0"/>
@@ -132,6 +132,7 @@ struct bankMeta {
 	// Pointer to bank array (array of word structs)
 	const struct wordMeta* bank;
 	// Scale for Bank/Word controls in Bent mode
+	// (Square-root of number of bytes in bank)
 	uint8_t bscale;
 };
 
@@ -901,16 +902,13 @@ switch(attr_ROM) {
 // Params/Inlets //
 ///////////////////
 
-bankIndex = scaleU32(__USAT(param_bank + inlet_bank, 27), bankCount - 1);
-wordIndex = scaleU32(__USAT(param_word + inlet_word, 27), banksPtr[bankIndex].count - 1);
-
 // Continuous parameters
 rate = __USAT(param_rate + inlet_rate, 27);
 readInterval = mapU32(curveLog32(rate), 480, 15);
 
 // Boolean parameters
-loop = (param_loop || inlet_loop)? true : false;
-freeze = (param_freeze || inlet_freeze || !rate)? true : false;
+loop = (param_loop || inlet_loop) ? true : false;
+freeze = (param_freeze || inlet_freeze || !rate) ? true : false;
 
 ////////////////////
 // Detect Gate-On //
@@ -920,8 +918,27 @@ if(inlet_gate) {
 	if(!trig) {
 		// Open gate
 		gate = true;
-		// Set pointer to start of word
-		tk_startWord(banksPtr[bankIndex].bank[wordIndex].data);
+		
+		// Calculate pointer position for start of word
+		if(param_mode || inlet_mode) {
+			// Bend mode enabled
+			// Pointer points to bytes within words to trigger circuit-bent-stye glitchy noises
+			// Scaling factor for Bank and Word controls store in struct.
+			bankIndex = scaleU32(__USAT(param_bank + inlet_bank, 27), banksPtr[1].bscale) * banksPtr[1].bscale;
+			wordIndex = scaleU32(__USAT(param_word + inlet_word, 27), banksPtr[1].bscale);
+
+			// Set pointer to start of word
+			tk_startWord(banksPtr[1].bank[0].data + (bankIndex + wordIndex));
+		} else {
+			// Standard mode
+			// Pointer points to start of word
+			bankIndex = scaleU32(__USAT(param_bank + inlet_bank, 27), bankCount - 1);
+			wordIndex = scaleU32(__USAT(param_word + inlet_word, 27), banksPtr[bankIndex].count - 1);
+			
+			// Set pointer to start of word
+			tk_startWord(banksPtr[bankIndex].bank[wordIndex].data);
+		}
+		
 		// Reset cycle counters
 		readCounter = 0;
 	}
